@@ -1,0 +1,43 @@
+{
+  "name": "ts-collections",
+  "version": "1.0.0",
+  "description": "A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and performance transparency. Designed for education, large-scale applications, and library-level reuse, with clean abstractions, extensible contracts, and tree-shakable ESM builds",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "lint": "eslint src",
+    "docs": "typedoc",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "map",
+    "set",
+    "list",
+    "queue",
+    "library",
+    "iterator",
+    "framework",
+    "algorithms",
+    "typescript",
+    "collections",
+    "data-structures",
+    "java-collections"
+  ],
+  "author": "",
+  "packageManager": "pnpm@10.18.1",
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT",
+  "devDependencies": {
+    "": "link:/",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "eslint": "^9.39.2",
+    "prettier": "^3.7.4",
+    "tsup": "^8.5.1",
+    "typedoc": "^0.28.16",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  }
+}
