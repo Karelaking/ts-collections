@@ -4,9 +4,9 @@ import type { Map as MapInterface } from "../interfaces/Map";
 import { AbstractMap } from "../abstracts/AbstractMap";
 
 /**
- * A hash-based Map implementation using JavaScript's native Map for storage.
+ * A hash-based Map implementation using native JavaScript Map.
  * Provides O(1) average case for put, get, and remove operations.
- * Uses JSON stringification for consistent key hashing.
+ * Optimized for both TypeScript and JavaScript runtimes.
  *
  * @template K The type of keys in this map
  * @template V The type of values in this map
@@ -21,34 +21,40 @@ import { AbstractMap } from "../abstracts/AbstractMap";
  * ```
  */
 export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, V> {
-  private mapEntries: Map<string, { key: K; value: V }> = new Map();
+  private mapEntries: globalThis.Map<K, V>;
+
+  constructor() {
+    super();
+    this.mapEntries = new globalThis.Map<K, V>();
+  }
 
   override put(key: K, value: V): V | undefined {
-    const hashKey = this.hash(key);
-    const existing = this.mapEntries.get(hashKey);
-    this.mapEntries.set(hashKey, { key, value });
-    return existing?.value;
+    const oldValue = this.mapEntries.get(key);
+    this.mapEntries.set(key, value);
+    return oldValue;
   }
 
   override get(key: K): V | undefined {
-    const hashKey = this.hash(key);
-    return this.mapEntries.get(hashKey)?.value;
+    return this.mapEntries.get(key);
   }
 
   override remove(key: K): V | undefined {
-    const hashKey = this.hash(key);
-    const existing = this.mapEntries.get(hashKey);
-    this.mapEntries.delete(hashKey);
-    return existing?.value;
+    const value = this.mapEntries.get(key);
+    this.mapEntries.delete(key);
+    return value;
   }
 
   override containsKey(key: K): boolean {
-    const hashKey = this.hash(key);
-    return this.mapEntries.has(hashKey);
+    return this.mapEntries.has(key);
   }
 
   override containsValue(value: V): boolean {
-    return Array.from(this.mapEntries.values()).some((entry) => entry.value === value);
+    for (const v of this.mapEntries.values()) {
+      if (v === value) {
+        return true;
+      }
+    }
+    return false;
   }
 
   override size(): number {
@@ -64,47 +70,45 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
   }
 
   override keyIterator(): Iterator<K> {
-    const keyArray = Array.from(this.mapEntries.values()).map((entry) => entry.key);
+    const keys = Array.from(this.mapEntries.keys());
     let index = 0;
 
     return {
-      hasNext: () => index < keyArray.length,
+      hasNext: () => index < keys.length,
       next: () => {
-        if (index >= keyArray.length) {
+        if (index >= keys.length) {
           throw new Error("No more elements");
         }
-        const key = keyArray[index];
+        const key = keys[index++];
         if (key === undefined) {
-          throw new Error(`Key at index ${index} is undefined`);
+          throw new Error("Key is undefined");
         }
-        index += 1;
         return key;
       },
     };
   }
 
   override valueIterator(): Iterator<V> {
-    const valueArray = Array.from(this.mapEntries.values()).map((entry) => entry.value);
+    const values = Array.from(this.mapEntries.values());
     let index = 0;
 
     return {
-      hasNext: () => index < valueArray.length,
+      hasNext: () => index < values.length,
       next: () => {
-        if (index >= valueArray.length) {
+        if (index >= values.length) {
           throw new Error("No more elements");
         }
-        const value = valueArray[index];
+        const value = values[index++];
         if (value === undefined) {
-          throw new Error(`Value at index ${index} is undefined`);
+          throw new Error("Value is undefined");
         }
-        index += 1;
         return value;
       },
     };
   }
 
   override values(): Collection<V> {
-    const valueArray = Array.from(this.mapEntries.values()).map((entry) => entry.value);
+    const valueArray = Array.from(this.mapEntries.values());
     return {
       size: () => valueArray.length,
       isEmpty: () => valueArray.length === 0,
@@ -118,7 +122,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
       clear: () => {
         throw new Error("Unsupported operation");
       },
-      toArray: () => [...valueArray],
+      toArray: () => valueArray,
       iterator: () => {
         let idx = 0;
         return {
@@ -127,11 +131,10 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
             if (idx >= valueArray.length) {
               throw new Error("No more elements");
             }
-            const value = valueArray[idx];
+            const value = valueArray[idx++];
             if (value === undefined) {
-              throw new Error(`Value at index ${idx} is undefined`);
+              throw new Error("Value is undefined");
             }
-            idx += 1;
             return value;
           },
         };
@@ -153,33 +156,10 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
   }
 
   override keys(): K[] {
-    return Array.from(this.mapEntries.values()).map((entry) => entry.key);
+    return Array.from(this.mapEntries.keys());
   }
 
   override entries(): Array<[K, V]> {
-    return Array.from(this.mapEntries.values()).map((entry) => [entry.key, entry.value]);
-  }
-
-  /**
-   * Generates a hash key for a map key.
-   * Uses JSON.stringify for consistent hashing.
-   * Primitives and objects are both supported.
-   *
-   * @param key The key to hash
-   * @returns A string hash key
-   */
-  private hash(key: K): string {
-    if (key === null) {
-      return "null";
-    }
-    if (key === undefined) {
-      return "undefined";
-    }
-    try {
-      return JSON.stringify(key);
-    } catch {
-      // Fallback for circular references or non-serializable objects
-      return String(key);
-    }
+    return Array.from(this.mapEntries.entries());
   }
 }

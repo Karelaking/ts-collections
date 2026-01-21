@@ -4,9 +4,9 @@ import type { Set } from "../interfaces/Set";
 import { AbstractSet } from "../abstracts/AbstractSet";
 
 /**
- * A hash-based Set implementation using a simple object-based map for storage.
+ * A hash-based Set implementation using native JavaScript Set.
  * Provides O(1) average case for add, remove, and contains operations.
- * Uses a hash function based on JSON stringification for object keys.
+ * Optimized for both TypeScript and JavaScript runtimes.
  *
  * @template T The type of elements in this set
  *
@@ -20,25 +20,25 @@ import { AbstractSet } from "../abstracts/AbstractSet";
  * ```
  */
 export class HashSet<T> extends AbstractSet<T> implements Set<T> {
-  private elements: Map<string, T> = new Map();
+  private elements: globalThis.Set<T>;
+
+  constructor() {
+    super();
+    this.elements = new globalThis.Set<T>();
+  }
 
   override add(element: T): boolean {
-    const key = this.hash(element);
-    if (this.elements.has(key)) {
-      return false;
-    }
-    this.elements.set(key, element);
-    return true;
+    const sizeBefore = this.elements.size;
+    this.elements.add(element);
+    return this.elements.size > sizeBefore;
   }
 
   override remove(element: T): boolean {
-    const key = this.hash(element);
-    return this.elements.delete(key);
+    return this.elements.delete(element);
   }
 
   override contains(element: T): boolean {
-    const key = this.hash(element);
-    return this.elements.has(key);
+    return this.elements.has(element);
   }
 
   override size(): number {
@@ -50,7 +50,7 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
   }
 
   override iterator(): Iterator<T> {
-    const values = Array.from(this.elements.values());
+    const values = Array.from(this.elements);
     let index = 0;
 
     return {
@@ -59,26 +59,25 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
         if (index >= values.length) {
           throw new Error("No more elements");
         }
-        const element = values[index];
-        if (element === undefined) {
-          throw new Error(`Element at index ${index} is undefined`);
+        const value = values[index++];
+        if (value === undefined) {
+          throw new Error("Element is undefined");
         }
-        index += 1;
-        return element;
+        return value;
       },
     };
   }
 
   override toArray(): T[] {
-    return Array.from(this.elements.values());
+    return Array.from(this.elements);
   }
 
   override removeAll(elements: Collection<T>): boolean {
+    const otherArray = elements.toArray();
     let modified = false;
-    const elementsToRemove = elements.toArray();
 
-    for (const element of elementsToRemove) {
-      if (this.remove(element)) {
+    for (const element of otherArray) {
+      if (this.elements.delete(element)) {
         modified = true;
       }
     }
@@ -87,40 +86,23 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
   }
 
   override retainAll(elements: Collection<T>): boolean {
-    let modified = false;
-    const currentElements = this.toArray();
+    const otherSet = new globalThis.Set(elements.toArray());
+    const toRemove: T[] = [];
 
-    for (const element of currentElements) {
-      if (!elements.contains(element)) {
-        if (this.remove(element)) {
-          modified = true;
-        }
+    for (const element of this.elements) {
+      if (!otherSet.has(element)) {
+        toRemove.push(element);
       }
     }
 
-    return modified;
-  }
+    if (toRemove.length === 0) {
+      return false;
+    }
 
-  /**
-   * Generates a hash key for an element.
-   * Uses JSON.stringify for consistent hashing.
-   * Primitives and objects are both supported.
-   *
-   * @param element The element to hash
-   * @returns A string hash key
-   */
-  private hash(element: T): string {
-    if (element === null) {
-      return "null";
+    for (const element of toRemove) {
+      this.elements.delete(element);
     }
-    if (element === undefined) {
-      return "undefined";
-    }
-    try {
-      return JSON.stringify(element);
-    } catch {
-      // Fallback for circular references or non-serializable objects
-      return String(element);
-    }
+
+    return true;
   }
 }
