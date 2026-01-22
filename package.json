@@ -33,10 +33,23 @@
     "data-structures",
     "java-collections"
   ],
-  "author": "",
+  "author": "Karelaking",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Karelaking/ts-collections.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Karelaking/ts-collections/issues"
+  },
+  "homepage": "https://github.com/Karelaking/ts-collections#readme",
   "packageManager": "pnpm@10.18.1",
   "type": "module",
   "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
