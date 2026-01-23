@@ -1,33 +1,42 @@
 import type { Iterator } from "../interfaces/Iterator";
 import type { Collection } from "../interfaces/Collection";
 import type { Set } from "../interfaces/Set";
-import { AbstractSet } from "../abstracts/AbstractSet";
+import { AbstractSet, type TypeValidationOptions } from "../abstracts/AbstractSet";
 
 /**
  * A hash-based Set implementation using native JavaScript Set.
  * Provides O(1) average case for add, remove, and contains operations.
  * Optimized for both TypeScript and JavaScript runtimes.
+ * Includes automatic runtime type validation by default (like Java's type-safe collections).
  *
  * @template T The type of elements in this set
  *
  * @example
  * ```typescript
+ * // Automatic type safety (enabled by default, like Java)
  * const set = new HashSet<number>();
  * set.add(1);
  * set.add(2);
  * console.log(set.size()); // 2
  * console.log(set.contains(1)); // true
+ * set.add("text" as any); // ❌ Throws TypeError (automatic!)
+ * 
+ * // Disable type checking if needed
+ * const unvalidatedSet = new HashSet<number>({ strict: false });
+ * unvalidatedSet.add(1);
+ * unvalidatedSet.add("text"); // OK (no validation)
  * ```
  */
 export class HashSet<T> extends AbstractSet<T> implements Set<T> {
   private elements: globalThis.Set<T>;
 
-  constructor() {
-    super();
+  constructor(options?: TypeValidationOptions<T>) {
+    super(options);
     this.elements = new globalThis.Set<T>();
   }
 
   override add(element: T): boolean {
+    this.validateElementType(element);
     const sizeBefore = this.elements.size;
     this.elements.add(element);
     return this.elements.size > sizeBefore;
@@ -47,6 +56,7 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
 
   override clear(): void {
     this.elements.clear();
+    this.resetTypeInference();
   }
 
   override iterator(): Iterator<T> {

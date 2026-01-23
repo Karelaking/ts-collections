@@ -10,13 +10,33 @@ A fully-typed, Java-inspired Collections Framework for TypeScript, providing ind
 
 This project aims to provide:
 
+- **Automatic Type Safety**: Runtime type checking enabled by default (no configuration needed)
+- **Java-Friendly Design**: Familiar Collections interface for Java developers - works just like Java's type-safe collections
+- **Zero-Configuration**: Type safety works out of the box, no need to learn validation libraries
 - **Type Safety**: Full TypeScript support with generics and strict typing
 - **Predictable Behavior**: Clear contracts through interfaces and abstract base classes
-- **Java-Inspired API**: Familiar Collections interface for Java developers transitioning to TypeScript
 - **Extensibility**: Easy to create custom implementations through abstract base classes
 - **Performance Transparency**: Clear documentation of algorithm complexity
-- **Test Coverage**: Comprehensive test suites for all implementations
+- **Test Coverage**: Comprehensive test suites for all implementations (332/332 tests passing)
 - **Open Source Quality**: Clean code, best practices, and community-driven development
+
+### For Java Developers
+
+Coming from Java? **You'll feel right at home!** Type safety is automatic by default:
+
+```typescript
+// Java
+List<Integer> list = new ArrayList<>();
+list.add(1);
+list.add("text"); // ❌ Compile error
+
+// TypeScript with ts-collections
+const list = new ArrayList<number>();
+list.add(1);
+list.add("text" as any); // ❌ Runtime error (automatic!)
+```
+
+See [JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md) for detailed Java → TypeScript migration guidance.
 
 ## 🏗️ Architecture
 
@@ -64,6 +84,21 @@ yarn add ts-collections
 ```
 
 ## 🚀 Quick Start
+
+### Automatic Type Safety (Zero Configuration)
+
+**ts-collections** provides automatic runtime type safety out of the box - just like Java's type-safe collections. No configuration needed!
+
+```typescript
+import { ArrayList } from 'ts-collections';
+
+const list = new ArrayList<number>();
+list.add(1);        // ✓ OK
+list.add(2);        // ✓ OK
+list.add("text" as any);  // ❌ TypeError: type mismatch (automatic!)
+```
+
+**For Java Developers:** This works exactly like Java's `ArrayList<Integer>` - type safety is automatic and enforced at runtime with zero configuration.
 
 ### Using Lists
 
@@ -128,6 +163,26 @@ queue.offer(3);
 console.log(queue.poll()); // 1 (FIFO)
 console.log(queue.peek()); // 2 (doesn't remove)
 ```
+
+### Advanced Type Validation (Optional)
+
+For power users who need advanced validation constraints, use Zod schemas:
+
+```typescript
+import { ArrayList } from 'ts-collections';
+import { z } from 'zod';
+
+// Complex validation with Zod (optional)
+const strictNumbers = new ArrayList<number>({
+    schema: z.number().positive().int()
+});
+
+strictNumbers.add(5);      // ✓ OK
+strictNumbers.add(-1 as any);    // ❌ ERROR: must be positive
+strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
+```
+
+**Note:** Zod is optional - basic type safety works automatically without it!
 
 ## 🏛️ Design Principles
 
@@ -224,7 +279,18 @@ class CustomList<E> extends AbstractList<E> {
 }
 ```
 
-## 📖 API Documentation
+## 📖 Documentation
+
+### Quick References
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Get started in 5 minutes
+- **[JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md)** - For Java developers transitioning to TypeScript
+- **[RUNTIME_VALIDATION.md](RUNTIME_VALIDATION.md)** - Deep dive into validation features
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture and design decisions
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
+- **[PHASE2_REDESIGN.md](PHASE2_REDESIGN.md)** - Technical details of automatic type safety redesign
+
+### API Documentation
 
 Full API documentation is generated with TypeDoc:
 

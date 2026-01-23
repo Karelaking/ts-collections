@@ -1,21 +1,29 @@
 import type { Iterator } from "../interfaces/Iterator";
 import type { Queue } from "../interfaces/Queue";
-import { AbstractQueue } from "../abstracts/AbstractQueue";
+import { AbstractQueue, type TypeValidationOptions } from "../abstracts/AbstractQueue";
 
 /**
  * A linked list-based Queue implementation.
  * Provides O(1) enqueue and dequeue operations.
  * Uses a doubly-linked list internally.
+ * Includes automatic runtime type validation by default (like Java's type-safe queues).
  *
  * @template T The type of elements in this queue
  *
  * @example
  * ```typescript
+ * // Automatic type safety (enabled by default, like Java)
  * const queue = new LinkedQueue<number>();
  * queue.offer(1);
  * queue.offer(2);
  * console.log(queue.dequeue()); // 1
  * console.log(queue.size()); // 1
+ * queue.offer("text" as any); // ❌ Throws TypeError (automatic!)
+ * 
+ * // Disable type checking if needed
+ * const unvalidatedQueue = new LinkedQueue<number>({ strict: false });
+ * unvalidatedQueue.offer(1);
+ * unvalidatedQueue.offer("text"); // OK (no validation)
  * ```
  */
 export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
@@ -23,7 +31,12 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
   private tail: Node<T> | null = null;
   private elementCount = 0;
 
+  constructor(options?: TypeValidationOptions<T>) {
+    super(options);
+  }
+
   override offer(element: T): boolean {
+    this.validateElementType(element);
     const newNode: Node<T> = { value: element, next: null };
 
     if (this.tail === null) {

@@ -10,6 +10,7 @@
  *
  * - **Industry-Grade Implementation**: SOLID principles, comprehensive test coverage
  * - **Type Safety**: Full TypeScript support with generics and strict typing
+ * - **Zod Runtime Validation**: Complete type safety at runtime with Zod integration
  * - **Java-Inspired API**: Familiar Collections interface for Java developers
  * - **Extensible Design**: Abstract base classes for easy custom implementations
  * - **Tree-Shakeable**: ESM build with dead code elimination support
@@ -31,7 +32,25 @@
  * - {@link AbstractMap} - Foundation for map implementations
  * - {@link AbstractQueue} - Foundation for queue implementations
  *
- * ## Usage Example
+ * ## Runtime Type Validation with Zod
+ *
+ * All collections support optional runtime validation using Zod schemas for complete type safety:
+ *
+ * ```typescript
+ * import { ArrayList } from 'ts-collections';
+ * import { z } from 'zod';
+ *
+ * // Type-safe list with Zod validation
+ * const numbers = new ArrayList<number>({
+ *   schema: z.number().int().positive()
+ * });
+ *
+ * numbers.add(42);      // ✓ Valid
+ * numbers.add(-1);      // ✗ Throws: Validation failed
+ * numbers.add("text");  // ✗ Throws: Validation failed
+ * ```
+ *
+ * ## Usage Examples
  *
  * ```typescript
  * import { ArrayList, HashSet, HashMap } from 'ts-collections';
@@ -59,7 +78,7 @@
  * 1. **Interfaces** (`src/interfaces/`) - Define contracts
  * 2. **Abstract Classes** (`src/abstracts/`) - Provide common functionality
  * 3. **Concrete Implementations** (`src/{list,set,map,queue}/`) - Specific data structures
- * 4. **Utilities** (`src/utils/`) - Helper functions and algorithms
+ * 4. **Utilities** (`src/utils/`) - Helper functions and validation utilities
  *
  * ## Design Principles
  *
@@ -68,6 +87,7 @@
  * - **Liskov Substitution**: Subclasses can replace parent classes
  * - **Interface Segregation**: Clients depend only on needed methods
  * - **Dependency Inversion**: Depend on abstractions, not concretions
+ * - **Type Safety First**: Comprehensive validation at runtime with Zod
  *
  * @see {@link https://github.com/yourusername/ts-collections} GitHub Repository
  */
@@ -81,6 +101,24 @@ export type {
   Map,
   Queue,
 } from "./interfaces";
+
+// Type Validation Options (Zod-based)
+export type { TypeValidationOptions } from "./abstracts/AbstractCollection";
+export type { MapTypeValidationOptions } from "./abstracts/AbstractMap";
+
+// Validation Utilities
+export {
+  validateSafe,
+  createValidator,
+  createUnionValidator,
+  getSchemaDescription,
+  createTransformingValidator,
+  formatValidationError,
+  type ValidationResult,
+  type ValidationError,
+  type ValidationIssue,
+  type SchemaType,
+} from "./utils/validation";
 
 // Abstract Base Classes
 export {

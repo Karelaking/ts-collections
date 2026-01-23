@@ -1,5 +1,7 @@
 import type { Queue } from "../interfaces";
-import { AbstractCollection } from "./AbstractCollection";
+import { AbstractCollection, type TypeValidationOptions } from "./AbstractCollection";
+
+export type { TypeValidationOptions };
 
 /**
  * Abstract base class for Queue implementations.

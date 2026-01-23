@@ -1,34 +1,44 @@
 import type { Iterator } from "../interfaces/Iterator";
 import type { Collection } from "../interfaces/Collection";
 import type { Map as MapInterface } from "../interfaces/Map";
-import { AbstractMap } from "../abstracts/AbstractMap";
+import { AbstractMap, type MapTypeValidationOptions } from "../abstracts/AbstractMap";
 
 /**
  * A hash-based Map implementation using native JavaScript Map.
  * Provides O(1) average case for put, get, and remove operations.
  * Optimized for both TypeScript and JavaScript runtimes.
+ * Includes automatic runtime type validation for both keys and values by default (like Java's type-safe maps).
  *
  * @template K The type of keys in this map
  * @template V The type of values in this map
  *
  * @example
  * ```typescript
+ * // Automatic type safety (enabled by default, like Java's HashMap<K,V>)
  * const map = new HashMap<string, number>();
  * map.put("a", 1);
  * map.put("b", 2);
  * console.log(map.get("a")); // 1
  * console.log(map.size()); // 2
+ * map.put(123 as any, 456); // ❌ Throws TypeError (automatic!)
+ * 
+ * // Disable type checking if needed
+ * const unvalidatedMap = new HashMap<string, number>({ strict: false });
+ * unvalidatedMap.put("key", 123); // OK
+ * unvalidatedMap.put(123 as any, 456); // OK (no validation)
  * ```
  */
 export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, V> {
   private mapEntries: globalThis.Map<K, V>;
 
-  constructor() {
-    super();
+  constructor(options?: MapTypeValidationOptions<K, V>) {
+    super(options);
     this.mapEntries = new globalThis.Map<K, V>();
   }
 
   override put(key: K, value: V): V | undefined {
+    this.validateKeyType(key);
+    this.validateValueType(value);
     const oldValue = this.mapEntries.get(key);
     this.mapEntries.set(key, value);
     return oldValue;
@@ -67,6 +77,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
 
   override clear(): void {
     this.mapEntries.clear();
+    this.resetTypeInference();
   }
 
   override keyIterator(): Iterator<K> {

@@ -394,3 +394,25 @@ This architecture provides:
 - ✅ **Extensibility** - Easy to add new types
 - ✅ **Type Safety** - Full TypeScript support
 - ✅ **Maintainability** - SOLID principles throughout
+
+##  Runtime Type Validation Architecture (NEW)
+
+Zod-based validation system integrated as core functionality:
+
+- **validateSafe()** - Safe validation without throwing
+- **createValidator()** - Create reusable validators
+- **Cascading strategy** - Zod > Custom > Strict > None
+- **Independent key/value validation** - For HashMap
+- **Detailed error messages** - Path-aware error reporting
+- **Zero overhead when unused** - Fully opt-in
+
+All collections now support:
+`	ypescript
+const list = new ArrayList<T>({
+  schema: z.object({...}),     // Recommended
+  strictType: true,             // Lightweight
+  typeValidator: (v) => {...}   // Custom logic
+});
+`
+
+Complete type safety at compile-time and runtime!
