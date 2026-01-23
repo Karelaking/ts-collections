@@ -27,7 +27,7 @@ export interface TypeValidationOptions<T> {
    * ```
    */
   strict?: boolean;
-  
+
   /**
    * Optional Zod schema for advanced validation beyond basic type checking.
    * Only used if strict mode is enabled.
@@ -49,7 +49,7 @@ export interface TypeValidationOptions<T> {
    * @default undefined (only basic type checking is performed)
    */
   schema?: ZodSchema<T>;
-  
+
   /**
    * Optional custom validation function for advanced use cases.
    * Only used if strict mode is enabled and no Zod schema is provided.
@@ -122,7 +122,7 @@ export abstract class AbstractCollection<E> implements Collection<E> {
   constructor(options?: TypeValidationOptions<E>) {
     if (options) {
       this.strict = options.strict ?? true; // Default to true (type-safe)
-      
+
       if (options.schema) {
         this.schema = options.schema;
       }

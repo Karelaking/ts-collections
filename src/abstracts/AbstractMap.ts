@@ -23,7 +23,7 @@ export interface MapTypeValidationOptions<K, V> {
    * ```
    */
   strict?: boolean;
-  
+
   /**
    * Optional Zod schema for validating keys.
    * Only used if strict mode is enabled.
@@ -39,20 +39,20 @@ export interface MapTypeValidationOptions<K, V> {
    * ```
    */
   keySchema?: ZodSchema<K>;
-  
+
   /**
    * Optional Zod schema for validating values.
    * Only used if strict mode is enabled.
    * For power users who need advanced validation.
    */
   valueSchema?: ZodSchema<V>;
-  
+
   /**
    * Optional custom validator for keys.
    * Only used if strict mode is enabled and no keySchema is provided.
    */
   keyValidator?: (key: unknown) => boolean;
-  
+
   /**
    * Optional custom validator for values.
    * Only used if strict mode is enabled and no valueSchema is provided.
@@ -119,7 +119,7 @@ export abstract class AbstractMap<K, V> implements Map<K, V> {
   constructor(options?: MapTypeValidationOptions<K, V>) {
     if (options) {
       this.strict = options.strict ?? true; // Default to true (type-safe)
-      
+
       if (options.keySchema) {
         this.keySchema = options.keySchema;
       }

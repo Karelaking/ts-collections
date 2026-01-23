@@ -4,7 +4,7 @@ import { z, type ZodSchema, ZodError } from 'zod';
  * Result type for validation operations
  * Represents either a successful validation or a validation error
  */
-export type ValidationResult<T> = 
+export type ValidationResult<T> =
   | { success: true; data: T }
   | { success: false; error: ValidationError };
 
@@ -135,7 +135,7 @@ export function getSchemaDescription(schema: ZodSchema<unknown>): string {
     const schemaObject = schema as ZodSchema<unknown> & { _shape?: Record<string, unknown> };
     const shape = schemaObject._shape;
     if (!shape) return 'object { }';
-    
+
     const fields = Object.entries(shape)
       .map(([key, value]) => {
         const fieldSchema = value as ZodSchema<unknown> & { _def?: { typeName?: string } };
