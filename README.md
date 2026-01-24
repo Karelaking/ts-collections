@@ -3,6 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+
+
 
 A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and comprehensive test coverage.
 
@@ -40,16 +43,30 @@ See [JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md) for detailed Java → Typ
 
 ## 🏗️ Architecture
 
-The framework follows a layered architecture:
-
-```
-Interfaces (Contracts)
-    ↓
-Abstract Classes (Common Implementation)
-    ↓
-Concrete Implementations (Data Structures)
-    ↓
-Utilities & Algorithms
+```mermaid
+graph TD
+    A[Application Code] --> B[Concrete Implementations]
+    B --> C[Abstract Base Classes]
+    C --> D[Core Interfaces]
+    B --> E[Utilities & Algorithms]
+    
+    D --> D1[Collection&lt;E&gt;]
+    D --> D2[List&lt;E&gt;]
+    D --> D3[Set&lt;E&gt;]
+    D --> D4[Map&lt;K,V&gt;]
+    D --> D5[Queue&lt;E&gt;]
+    D --> D6[Iterator&lt;E&gt;]
+    
+    C --> C1[AbstractCollection&lt;E&gt;]
+    C --> C2[AbstractList&lt;E&gt;]
+    C --> C3[AbstractSet&lt;E&gt;]
+    C --> C4[AbstractMap&lt;K,V&gt;]
+    C --> C5[AbstractQueue&lt;E&gt;]
+    
+    B --> B1[ArrayList&lt;E&gt;]
+    B --> B2[HashSet&lt;E&gt;]
+    B --> B3[HashMap&lt;K,V&gt;]
+    B --> B4[LinkedQueue&lt;E&gt;]
 ```
 
 ### Core Interfaces
