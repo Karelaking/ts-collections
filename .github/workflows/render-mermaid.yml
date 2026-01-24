@@ -2,7 +2,8 @@ name: Render Mermaid Diagrams
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - '**'
   workflow_dispatch:
 
 permissions:
