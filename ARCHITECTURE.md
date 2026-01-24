@@ -28,8 +28,11 @@ graph TD
    B --> B4[LinkedQueue<E>]
    B --> B5[LinkedList<E>]
 ```
+<<<<<<< HEAD
 
 ![System Architecture](docs/diagrams/architecture.svg)
+=======
+>>>>>>> 7a073c7f83b82fae909281a560b63a6154a08843
 ```
 
 ## 🔄 Class Hierarchy
@@ -148,8 +151,11 @@ flowchart TD
       B --> B4
       B --> B5
 ```
+<<<<<<< HEAD
 
 ![Dependency Relationships](docs/diagrams/architecture.svg)
+=======
+>>>>>>> 7a073c7f83b82fae909281a560b63a6154a08843
 
 ## 🎯 SOLID Principles Mapping
 
@@ -265,8 +271,11 @@ flowchart TD
       B --> I4
       B --> I5
 ```
+<<<<<<< HEAD
 
 ![Testing Architecture](docs/diagrams/testing-architecture.svg)
+=======
+>>>>>>> 7a073c7f83b82fae909281a560b63a6154a08843
 
 ## 🔐 Type Safety Guarantees
 
