@@ -2,14 +2,75 @@
 
 ## 🎯 System Architecture Diagram
 
-Mermaid Diagram: see diagrams/architecture.mmd
+```mermaid
+graph TD
+   A[Application Code] --> B[Concrete Implementations]
+   B --> C[Abstract Base Classes]
+   C --> D[Core Interfaces]
+   B --> E[Utilities & Algorithms]
+
+   D --> D1[Collection<E>]
+   D --> D2[List<E>]
+   D --> D3[Set<E>]
+   D --> D4[Map<K,V>]
+   D --> D5[Queue<E>]
+   D --> D6[Iterator<E>]
+
+   C --> C1[AbstractCollection<E>]
+   C --> C2[AbstractList<E>]
+   C --> C3[AbstractSet<E>]
+   C --> C4[AbstractMap<K,V>]
+   C --> C5[AbstractQueue<E>]
+
+   B --> B1[ArrayList<E>]
+   B --> B2[HashSet<E>]
+   B --> B3[HashMap<K,V>]
+   B --> B4[LinkedQueue<E>]
+   B --> B5[LinkedList<E>]
+```
 ```
 
 ## 🔄 Class Hierarchy
 
 ### Collection Hierarchy
 
-Mermaid Diagram: see diagrams/class-hierarchy.mmd
+```mermaid
+classDiagram
+   class Collection~E~
+   class List~E~
+   class Set~E~
+   class Queue~E~
+   class Map~K,V~
+   class Iterator~E~
+
+   Collection <|-- List
+   Collection <|-- Set
+   Collection <|-- Queue
+
+   class AbstractCollection~E~
+   class AbstractList~E~
+   class AbstractSet~E~
+   class AbstractQueue~E~
+   class AbstractMap~K,V~
+
+   List <|.. AbstractList
+   Set <|.. AbstractSet
+   Queue <|.. AbstractQueue
+   Map <|.. AbstractMap
+   Collection <|.. AbstractCollection
+
+   class ArrayList~E~
+   class LinkedList~E~
+   class HashSet~E~
+   class HashMap~K,V~
+   class LinkedQueue~E~
+
+   AbstractList <|-- ArrayList
+   AbstractList <|-- LinkedList
+   AbstractSet <|-- HashSet
+   AbstractMap <|-- HashMap
+   AbstractQueue <|-- LinkedQueue
+```
 
 ### Map Hierarchy
 
@@ -60,7 +121,29 @@ ArrayList.add(element)
 
 ## 🔗 Dependency Relationships
 
-Mermaid Diagram: see diagrams/architecture.mmd
+```mermaid
+flowchart TD
+      A[Client Code] --> B[Concrete Collections]
+      B --> C[Abstract Base Classes]
+      C --> D[Interfaces]
+
+      B -->|extend| C
+      C -->|implement/extend| D
+
+      subgraph Collections
+         B1[ArrayList]
+         B2[HashSet]
+         B3[HashMap]
+         B4[LinkedQueue]
+         B5[LinkedList]
+      end
+
+      B --> B1
+      B --> B2
+      B --> B3
+      B --> B4
+      B --> B5
+```
 
 ## 🎯 SOLID Principles Mapping
 
@@ -155,7 +238,27 @@ Mermaid Diagram: see diagrams/architecture.mmd
 
 ## 🧪 Testing Architecture
 
-Mermaid Diagram: see diagrams/testing-architecture.mmd
+```mermaid
+flowchart TD
+      A[Test Specifications] --> B[Factory Functions (describeX)]
+      B --> C[Concrete Implementations]
+      C --> D[Custom Edge Case Tests]
+      D --> E[Test Execution (Vitest)]
+      E --> F[Coverage + Performance]
+
+      subgraph Interfaces
+         I1[describeList]
+         I2[describeSet]
+         I3[describeMap]
+         I4[describeQueue]
+         I5[describeIterator]
+      end
+      B --> I1
+      B --> I2
+      B --> I3
+      B --> I4
+      B --> I5
+```
 
 ## 🔐 Type Safety Guarantees
 
