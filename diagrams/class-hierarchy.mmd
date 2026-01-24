@@ -1,0 +1,35 @@
+classDiagram
+    class Collection~E~
+    class List~E~
+    class Set~E~
+    class Queue~E~
+    class Map~K,V~
+    class Iterator~E~
+
+    Collection <|-- List
+    Collection <|-- Set
+    Collection <|-- Queue
+
+    class AbstractCollection~E~
+    class AbstractList~E~
+    class AbstractSet~E~
+    class AbstractQueue~E~
+    class AbstractMap~K,V~
+
+    List <|.. AbstractList
+    Set <|.. AbstractSet
+    Queue <|.. AbstractQueue
+    Map <|.. AbstractMap
+    Collection <|.. AbstractCollection
+
+    class ArrayList~E~
+    class LinkedList~E~
+    class HashSet~E~
+    class HashMap~K,V~
+    class LinkedQueue~E~
+
+    AbstractList <|-- ArrayList
+    AbstractList <|-- LinkedList
+    AbstractSet <|-- HashSet
+    AbstractMap <|-- HashMap
+    AbstractQueue <|-- LinkedQueue

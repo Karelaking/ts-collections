@@ -27,31 +27,7 @@ This project aims to provide:
 
 Coming from Java? **You'll feel right at home!** Type safety is automatic by default:
 
-```typescript
-// Java
-List<Integer> list = new ArrayList<>();
-list.add(1);
-list.add("text"); // ❌ Compile error
-
-// TypeScript with ts-collections
-const list = new ArrayList<number>();
-list.add(1);
-list.add("text" as any); // ❌ Runtime error (automatic!)
-```
-
-See [JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md) for detailed Java → TypeScript migration guidance.
-
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    A[Application Code] --> B[Concrete Implementations]
-    B --> C[Abstract Base Classes]
-    C --> D[Core Interfaces]
-    B --> E[Utilities & Algorithms]
-    
-    D --> D1[Collection&lt;E&gt;]
-    D --> D2[List&lt;E&gt;]
+Mermaid Diagram: see diagrams/architecture.mmd
     D --> D3[Set&lt;E&gt;]
     D --> D4[Map&lt;K,V&gt;]
     D --> D5[Queue&lt;E&gt;]
@@ -67,6 +43,7 @@ graph TD
     B --> B2[HashSet&lt;E&gt;]
     B --> B3[HashMap&lt;K,V&gt;]
     B --> B4[LinkedQueue&lt;E&gt;]
+    B --> B5[LinkedList&lt;E&gt;]
 ```
 
 ### Core Interfaces
@@ -74,8 +51,8 @@ graph TD
 | Interface | Purpose | Methods |
 |-----------|---------|---------|
 | **Iterator** | Element traversal | `hasNext()`, `next()`, `remove?()` |
-| **Collection** | Base collection | `size()`, `add()`, `remove()`, `contains()`, etc. |
-| **List** | Ordered, index-accessible | Extends Collection + `get()`, `set()`, `addAt()`, `indexOf()` |
+| **Collection** | Base collection | `size()`, `add()`, `remove()`, `contains()`, `toArray()`, `toString()`, etc. |
+| **List** | Ordered, index-accessible | Extends Collection + `get()`, `set()`, `addAt()`, `indexOf()`, `sort()` |
 | **Set** | No duplicates | Extends Collection with uniqueness guarantee |
 | **Map** | Key-value mappings | `put()`, `get()`, `remove()`, `keys()`, `values()` |
 | **Queue** | FIFO processing | Extends Collection + `offer()`, `poll()`, `peek()` |
@@ -107,7 +84,7 @@ yarn add ts-collections
 **ts-collections** provides automatic runtime type safety out of the box - just like Java's type-safe collections. No configuration needed!
 
 ```typescript
-import { ArrayList } from 'ts-collections';
+import { ArrayList, LinkedList } from 'ts-collections';
 
 const list = new ArrayList<number>();
 list.add(1);        // ✓ OK
@@ -138,6 +115,19 @@ const iterator = list.iterator();
 while (iterator.hasNext()) {
   console.log(iterator.next());
 }
+
+// Sorting
+list.add(3);
+list.add(1);
+list.add(2);
+list.sort(); // [1, 2, 3]
+
+// LinkedList example (stable, in-place merge sort)
+const linked = new LinkedList<number>();
+linked.add(3);
+linked.add(1);
+linked.add(2);
+linked.sort(); // [1, 2, 3]
 ```
 
 ### Using Sets
@@ -320,6 +310,8 @@ Documentation is available in `docs/` directory and includes:
 - Method signatures and descriptions
 - Usage examples
 - Complexity analysis
+ - Sorting semantics (natural vs comparator)
+ - String representation via `toString()`
 
 ## 🌟 Key Features
 

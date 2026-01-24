@@ -214,5 +214,37 @@ export function describeList(createList: () => List<number>): void {
         expect(list.size()).toBe(3);
       });
     });
+
+    describe("sort", () => {
+      it("sorts numbers in natural ascending order by default", () => {
+        list.add(3);
+        list.add(1);
+        list.add(2);
+        list.sort();
+        expect(list.toArray()).toEqual([1, 2, 3]);
+      });
+
+      it("supports custom comparator", () => {
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.sort((a, b) => b - a);
+        expect(list.toArray()).toEqual([3, 2, 1]);
+      });
+
+      it("handles empty list", () => {
+        list.sort();
+        expect(list.size()).toBe(0);
+      });
+
+      it("preserves size and elements after sort", () => {
+        list.add(2);
+        list.add(2);
+        list.add(1);
+        list.sort();
+        expect(list.size()).toBe(3);
+        expect(list.toArray()).toEqual([1, 2, 2]);
+      });
+    });
   });
 }

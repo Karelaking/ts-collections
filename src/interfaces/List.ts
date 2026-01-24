@@ -77,4 +77,14 @@ export interface List<E> extends Collection<E> {
    * @throws Error if indices are out of range or fromIndex > toIndex
    */
   subList(fromIndex: number, toIndex: number): List<E>;
+
+  /**
+   * Sorts the list in place using the provided comparator.
+   * If no comparator is provided, elements are sorted in natural ascending order
+   * using `<` and `>` comparisons (numbers and strings are supported by default).
+   *
+   * @param compareFn Optional comparator returning a negative number if a < b,
+   * zero if equal, and positive if a > b
+   */
+  sort(compareFn?: (a: E, b: E) => number): void;
 }

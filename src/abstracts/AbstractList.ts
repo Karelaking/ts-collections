@@ -55,6 +55,40 @@ export abstract class AbstractList<E> extends AbstractCollection<E> implements L
   abstract subList(fromIndex: number, toIndex: number): List<E>;
 
   /**
+   * Sorts this list in place.
+   * Must be implemented by subclasses.
+   */
+  abstract sort(compareFn?: (a: E, b: E) => number): void;
+
+  /**
+   * Default natural comparator used when no comparator is supplied.
+   * Numbers are compared arithmetically, strings via localeCompare,
+   * otherwise falls back to relational comparison.
+   */
+  protected compareNatural(a: E, b: E): number {
+    if (a === b) return 0;
+
+    // Handle undefined/null deterministically to avoid throwing
+    if (a === undefined) return -1;
+    if (b === undefined) return 1;
+    if (a === null) return -1;
+    if (b === null) return 1;
+
+    if (typeof a === "number" && typeof b === "number") {
+      return a - b;
+    }
+
+    if (typeof a === "string" && typeof b === "string") {
+      return a.localeCompare(b);
+    }
+
+    // Fallback to relational comparison; consistent with JS sort contract
+    if (a < (b as unknown as E)) return -1;
+    if (a > (b as unknown as E)) return 1;
+    return 0;
+  }
+
+  /**
    * Appends the specified element to the end of this list.
    * Default implementation: delegates to addAt(index, element) with index = size()
    *
