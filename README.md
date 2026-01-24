@@ -37,43 +37,34 @@ Mermaid Diagram: see diagrams/architecture.mmd
     C --> C2[AbstractList&lt;E&gt;]
     C --> C3[AbstractSet&lt;E&gt;]
     C --> C4[AbstractMap&lt;K,V&gt;]
-    C --> C5[AbstractQueue&lt;E&gt;]
-    
-    B --> B1[ArrayList&lt;E&gt;]
-    B --> B2[HashSet&lt;E&gt;]
-    B --> B3[HashMap&lt;K,V&gt;]
-    B --> B4[LinkedQueue&lt;E&gt;]
-    B --> B5[LinkedList&lt;E&gt;]
-  ```
+### Architecture Diagram
 
-  ### Architecture Diagram
+```mermaid
+graph TD
+  A[Application Code] --> B[Concrete Implementations]
+  B --> C[Abstract Base Classes]
+  C --> D[Core Interfaces]
+  B --> E[Utilities & Algorithms]
 
-  ```mermaid
-  graph TD
-    A[Application Code] --> B[Concrete Implementations]
-    B --> C[Abstract Base Classes]
-    C --> D[Core Interfaces]
-    B --> E[Utilities & Algorithms]
+  D --> D1[Collection<E>]
+  D --> D2[List<E>]
+  D --> D3[Set<E>]
+  D --> D4[Map<K,V>]
+  D --> D5[Queue<E>]
+  D --> D6[Iterator<E>]
 
-    D --> D1[Collection<E>]
-    D --> D2[List<E>]
-    D --> D3[Set<E>]
-    D --> D4[Map<K,V>]
-    D --> D5[Queue<E>]
-    D --> D6[Iterator<E>]
+  C --> C1[AbstractCollection<E>]
+  C --> C2[AbstractList<E>]
+  C --> C3[AbstractSet<E>]
+  C --> C4[AbstractMap<K,V>]
+  C --> C5[AbstractQueue<E>]
 
-    C --> C1[AbstractCollection<E>]
-    C --> C2[AbstractList<E>]
-    C --> C3[AbstractSet<E>]
-    C --> C4[AbstractMap<K,V>]
-    C --> C5[AbstractQueue<E>]
-
-    B --> B1[ArrayList<E>]
-    B --> B2[HashSet<E>]
-    B --> B3[HashMap<K,V>]
-    B --> B4[LinkedQueue<E>]
-    B --> B5[LinkedList<E>]
-  ```
+  B --> B1[ArrayList<E>]
+  B --> B2[HashSet<E>]
+  B --> B3[HashMap<K,V>]
+  B --> B4[LinkedQueue<E>]
+  B --> B5[LinkedList<E>]
+```
 
 ### Core Interfaces
 
