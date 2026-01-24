@@ -62,7 +62,7 @@ ts-collections/
 ### 2. **Collection<E>** (Base)
 - Core operations: `add()`, `remove()`, `contains()`
 - Aggregate operations: `addAll()`, `removeAll()`, `retainAll()`, `containsAll()`
-- Inspection: `size()`, `isEmpty()`, `toArray()`, `iterator()`
+- Inspection: `size()`, `isEmpty()`, `toArray()`, `toString()`, `iterator()`
 - Cleanup: `clear()`
 
 ### 3. **List<E>** (Extends Collection)

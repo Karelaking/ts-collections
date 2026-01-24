@@ -38,6 +38,12 @@ export interface Collection<E> {
   toArray(): E[];
 
   /**
+   * Returns a string representation of this collection's elements.
+   * Default implementations serialize the array form via JSON.
+   */
+  toString(): string;
+
+  /**
    * Adds the specified element to this collection (optional operation).
    *
    * @param element Element to be added to this collection

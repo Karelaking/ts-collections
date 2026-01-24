@@ -165,6 +165,14 @@ export abstract class AbstractCollection<E> implements Collection<E> {
   abstract toArray(): E[];
 
   /**
+   * Returns a string representation of the collection based on its array form.
+   * Subclasses can override for custom formatting.
+   */
+  toString(): string {
+    return JSON.stringify(this.toArray());
+  }
+
+  /**
    * Adds the specified element to this collection.
    * Must be implemented by subclasses.
    */

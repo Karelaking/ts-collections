@@ -2,83 +2,79 @@
 
 ## 🎯 System Architecture Diagram
 
+```mermaid
+graph TD
+   A[Application Code] --> B[Concrete Implementations]
+   B --> C[Abstract Base Classes]
+   C --> D[Core Interfaces]
+   B --> E[Utilities & Algorithms]
+
+   D --> D1[Collection<E>]
+   D --> D2[List<E>]
+   D --> D3[Set<E>]
+   D --> D4[Map<K,V>]
+   D --> D5[Queue<E>]
+   D --> D6[Iterator<E>]
+
+   C --> C1[AbstractCollection<E>]
+   C --> C2[AbstractList<E>]
+   C --> C3[AbstractSet<E>]
+   C --> C4[AbstractMap<K,V>]
+   C --> C5[AbstractQueue<E>]
+
+   B --> B1[ArrayList<E>]
+   B --> B2[HashSet<E>]
+   B --> B3[HashMap<K,V>]
+   B --> B4[LinkedQueue<E>]
+   B --> B5[LinkedList<E>]
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    APPLICATION CODE                              │
-├─────────────────────────────────────────────────────────────────┤
-│  Uses: ArrayList<E>, HashSet<E>, HashMap<K,V>, LinkedQueue<E> │
-└─────────────────┬───────────────────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────────────────┐
-│              CONCRETE IMPLEMENTATIONS                            │
-├──────────────────┬──────────────────┬──────────────────────┬────┤
-│  list/           │  set/            │  map/                │ q/ │
-│  • ArrayList     │  • HashSet       │  • HashMap           │ •  │
-│  • LinkedList    │  • TreeSet       │  • TreeMap           │ Li │
-│  • Vector        │  • CopyOnWrite   │  • IdentityHashMap   │ nQ │
-└──────────────────┴──────────────────┴──────────────────────┴────┘
-                  │
-┌─────────────────▼───────────────────────────────────────────────┐
-│           ABSTRACT BASE CLASSES (Templates)                     │
-├──────────────────┬──────────────┬──────────────┬─────────────┤
-│ AbstractList<E>  │ AbstractSet   │ AbstractMap  │ AbstractQ<> │
-│                  │ <E>           │ <K,V>        │             │
-│ • Common List    │ • Common Set  │ • putAll()   │ • Dequeue   │
-│   operations     │   operations  │ • iteration  │ • Polling   │
-└──────────────────┴──────────────┴──────────────┴─────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────────────────┐
-│         ABSTRACT BASE CLASS (Foundation)                        │
-├───────────────────────────────────────────────────────────────┤
-│                    AbstractCollection<E>                        │
-│                                                                  │
-│  • containsAll() - Check containment                           │
-│  • addAll()      - Bulk addition                              │
-│  • removeAll()   - Bulk removal                               │
-│  • retainAll()   - Intersection                               │
-│  • isEmpty()     - Convenience method                         │
-└───────────────────────────────────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────────────────┐
-│                  CORE INTERFACES                                │
-├─────────────────────────────┬─────────────────────────────────┤
-│    Collection<E>            │         Map<K,V>                │
-│    ├── List<E>              │         ├── put(K,V)           │
-│    ├── Set<E>               │         ├── get(K)             │
-│    └── Queue<E>             │         ├── remove(K)          │
-│                             │         └── putAll()           │
-│    AND                      │                                 │
-│    Iterator<E>              │         Plus iterators          │
-└─────────────────────────────┴─────────────────────────────────┘
+
+![System Architecture](docs/diagrams/architecture.svg)
 ```
 
 ## 🔄 Class Hierarchy
 
 ### Collection Hierarchy
 
-```
-Collection<E> (Interface)
-├── List<E> (Interface)
-│   └── AbstractList<E> (Abstract)
-│       ├── ArrayList<E> (Concrete)
-│       ├── LinkedList<E> (Concrete)
-│       └── ...
-├── Set<E> (Interface)
-│   └── AbstractSet<E> (Abstract)
-│       ├── HashSet<E> (Concrete)
-│       ├── TreeSet<E> (Concrete)
-│       └── ...
-└── Queue<E> (Interface)
-    └── AbstractQueue<E> (Abstract)
-        ├── LinkedQueue<E> (Concrete)
-        ├── PriorityQueue<E> (Concrete)
-        └── ...
+```mermaid
+classDiagram
+   class Collection~E~
+   class List~E~
+   class Set~E~
+   class Queue~E~
+   class Map~K,V~
+   class Iterator~E~
 
-Iterator<E> (Interface)
-├── ListIterator<E> (Interface, extends Iterator)
-├── ArrayIterator<E> (Concrete)
-└── LinkedIterator<E> (Concrete)
+   Collection <|-- List
+   Collection <|-- Set
+   Collection <|-- Queue
+
+   class AbstractCollection~E~
+   class AbstractList~E~
+   class AbstractSet~E~
+   class AbstractQueue~E~
+   class AbstractMap~K,V~
+
+   List <|.. AbstractList
+   Set <|.. AbstractSet
+   Queue <|.. AbstractQueue
+   Map <|.. AbstractMap
+   Collection <|.. AbstractCollection
+
+   class ArrayList~E~
+   class LinkedList~E~
+   class HashSet~E~
+   class HashMap~K,V~
+   class LinkedQueue~E~
+
+   AbstractList <|-- ArrayList
+   AbstractList <|-- LinkedList
+   AbstractSet <|-- HashSet
+   AbstractMap <|-- HashMap
+   AbstractQueue <|-- LinkedQueue
 ```
+
+![Class Hierarchy](docs/diagrams/class-hierarchy.svg)
 
 ### Map Hierarchy
 
@@ -95,7 +91,7 @@ Map<K,V> (Interface)
 | Interface | Key Methods | Abstract | Concrete |
 |-----------|-----------|----------|----------|
 | **Iterator** | hasNext(), next(), remove?() | ✅ | ❌ |
-| **Collection** | add(), remove(), contains(), size(), iterator(), toArray(), addAll(), removeAll(), retainAll(), containsAll(), clear(), isEmpty() | ✅ | ❌ |
+| **Collection** | add(), remove(), contains(), size(), iterator(), toArray(), toString(), addAll(), removeAll(), retainAll(), containsAll(), clear(), isEmpty() | ✅ | ❌ |
 | **List** | get(), set(), addAt(), removeAt(), indexOf(), lastIndexOf(), subList() | ✅ | ❌ |
 | **Set** | (extends Collection) - guarantees uniqueness | ✅ | ❌ |
 | **Map** | put(), get(), remove(), keys(), values(), entries(), putAll() | ✅ | ❌ |
@@ -129,29 +125,31 @@ ArrayList.add(element)
 
 ## 🔗 Dependency Relationships
 
+```mermaid
+flowchart TD
+      A[Client Code] --> B[Concrete Collections]
+      B --> C[Abstract Base Classes]
+      C --> D[Interfaces]
+
+      B -->|extend| C
+      C -->|implement/extend| D
+
+      subgraph Collections
+         B1[ArrayList]
+         B2[HashSet]
+         B3[HashMap]
+         B4[LinkedQueue]
+         B5[LinkedList]
+      end
+
+      B --> B1
+      B --> B2
+      B --> B3
+      B --> B4
+      B --> B5
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Client Code                              │
-└────────────────────────┬────────────────────────────────────┘
-                         │ depends on
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Concrete Collections                            │
-│   (ArrayList, HashSet, HashMap, LinkedQueue)                │
-└────────────────────────┬────────────────────────────────────┘
-                         │ extend
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Abstract Base Classes                           │
-│  (AbstractList, AbstractSet, AbstractMap, AbstractQueue)     │
-└────────────────────────┬────────────────────────────────────┘
-                         │ implement/extend
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Interfaces                                │
-│  (Collection, List, Set, Map, Queue, Iterator)              │
-└─────────────────────────────────────────────────────────────┘
-```
+
+![Dependency Relationships](docs/diagrams/architecture.svg)
 
 ## 🎯 SOLID Principles Mapping
 
@@ -246,39 +244,29 @@ ArrayList.add(element)
 
 ## 🧪 Testing Architecture
 
+```mermaid
+flowchart TD
+      A[Test Specifications] --> B[Factory Functions (describeX)]
+      B --> C[Concrete Implementations]
+      C --> D[Custom Edge Case Tests]
+      D --> E[Test Execution (Vitest)]
+      E --> F[Coverage + Performance]
+
+      subgraph Interfaces
+         I1[describeList]
+         I2[describeSet]
+         I3[describeMap]
+         I4[describeQueue]
+         I5[describeIterator]
+      end
+      B --> I1
+      B --> I2
+      B --> I3
+      B --> I4
+      B --> I5
 ```
-┌──────────────────────────────────────────────────────┐
-│              Test Specifications                     │
-├──────────────────────────────────────────────────────┤
-│  Factory Functions (describeX)                      │
-│  • Take creator: () => T                            │
-│  • Generate comprehensive test suite                │
-│  • Ensure interface contract compliance             │
-└────────────────┬─────────────────────────────────────┘
-                 │
-    ┌────────────▼─────────────┐
-    │  Concrete Implementation │
-    │  • ArrayList<E>          │
-    │  • HashSet<E>            │
-    │ • HashMap<K,V>           │
-    │ • LinkedQueue<E>         │
-    └────────────┬──────────────┘
-                 │
-    ┌────────────▼──────────────┐
-    │ Test File Includes:        │
-    │ • describeX(creator)       │
-    │ • Custom edge case tests   │
-    │ • Performance tests        │
-    │ • Integration tests        │
-    └────────────┬───────────────┘
-                 │
-    ┌────────────▼───────────────┐
-    │  Test Execution             │
-    │ • vitest runs tests         │
-    │ • Coverage tracked          │
-    │ • Performance monitored     │
-    └─────────────────────────────┘
-```
+
+![Testing Architecture](docs/diagrams/testing-architecture.svg)
 
 ## 🔐 Type Safety Guarantees
 
@@ -373,7 +361,8 @@ User Code
     ├─ size()                 // Override
     ├─ contains(element)      // Override
     ├─ iterator()             // Override
-    ├─ toArray()              // Override
+   ├─ toArray()              // Override
+   ├─ toString()             // Inherited default (override if custom formatting)
     ├─ add(element)           // Inherited from AbstractList
     ├─ remove(element)        // Inherited from AbstractList
     ├─ clear()                // Override

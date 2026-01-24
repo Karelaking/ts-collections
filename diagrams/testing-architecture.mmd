@@ -1,0 +1,19 @@
+flowchart TD
+    A[Test Specifications] --> B[Factory Functions (describeX)]
+    B --> C[Concrete Implementations]
+    C --> D[Custom Edge Case Tests]
+    D --> E[Test Execution (Vitest)]
+    E --> F[Coverage + Performance]
+
+    subgraph Interfaces
+      I1[describeList]
+      I2[describeSet]
+      I3[describeMap]
+      I4[describeQueue]
+      I5[describeIterator]
+    end
+    B --> I1
+    B --> I2
+    B --> I3
+    B --> I4
+    B --> I5

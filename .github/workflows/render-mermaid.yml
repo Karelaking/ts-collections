@@ -1,0 +1,38 @@
+name: Render Mermaid Diagrams
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install mermaid-cli
+        run: |
+          npm i -D @mermaid-js/mermaid-cli
+
+      - name: Render diagrams to SVG
+        run: |
+          mkdir -p docs/diagrams
+          npx mmdc -i diagrams/architecture.mmd -o docs/diagrams/architecture.svg
+          npx mmdc -i diagrams/class-hierarchy.mmd -o docs/diagrams/class-hierarchy.svg
+          npx mmdc -i diagrams/testing-architecture.mmd -o docs/diagrams/testing-architecture.svg
+
+      - name: Commit rendered diagrams
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'docs/diagrams/*.svg'
+          message: 'chore: render mermaid diagrams to SVG'

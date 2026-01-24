@@ -152,6 +152,11 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
     return [...this.elements];
   }
 
+  override sort(compareFn?: (a: T, b: T) => number): void {
+    const comparator = compareFn ?? this.compareNatural.bind(this);
+    this.elements.sort(comparator);
+  }
+
   private checkIndex(index: number): void {
     if (index < 0 || index >= this.elements.length) {
       throw new Error(`Index out of bounds: ${index}`);

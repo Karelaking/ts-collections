@@ -9,6 +9,7 @@ import {
   HashSet,
   HashMap,
   LinkedQueue,
+  LinkedList,
   // Validation utilities
   validateSafe,
   createValidator,
@@ -27,6 +28,16 @@ import { z } from 'zod';
 ## Quick Examples
 
 ### ArrayList with Zod
+### LinkedList Sorting
+
+```typescript
+const list = new LinkedList<number>();
+list.add(3);
+list.add(1);
+list.add(2);
+list.sort(); // [1, 2, 3]
+```
+
 
 ```typescript
 const numbers = new ArrayList<number>({
@@ -182,13 +193,9 @@ new ArrayList<number>({
 })
 ```
 
-### Strategy 3: Strict Type
+### Strategy 3: Strict Type Inference (Default)
 
-```typescript
-new ArrayList<string>({
-  strictType: true
-})
-```
+Type is inferred from the first element added and enforced for all subsequent elements. No additional configuration required.
 
 ### Strategy 4: No Validation
 
