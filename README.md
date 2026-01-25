@@ -122,22 +122,52 @@ list.add("text" as any);  // ❌ TypeError: type mismatch (automatic!)
 ```typescript
 import { ArrayList } from 'ts-collections';
 
-const list = new ArrayList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
+// Create a new list with automatic type safety
+const numbers = new ArrayList<number>();
+
+// Add elements
+numbers.add(10);
+numbers.add(20);
+numbers.add(30);
+console.log(numbers.size()); // 3
 
 // Index-based access
-console.log(list.get(0)); // 1
+console.log(numbers.get(0)); // 10
+console.log(numbers.get(2)); // 30
 
-// Inserting at position
-list.addAt(1, 1.5); // [1, 1.5, 2, 3]
+// Insert at specific position
+numbers.addAt(1, 15); // [10, 15, 20, 30]
 
-// Iteration
-const iterator = list.iterator();
+// Replace element
+const oldValue = numbers.set(2, 25); // [10, 15, 25, 30]
+console.log(oldValue); // 20
+
+// Search operations
+console.log(numbers.indexOf(25)); // 2
+console.log(numbers.lastIndexOf(10)); // 0
+console.log(numbers.contains(15)); // true
+
+// Remove elements
+const removed = numbers.removeAt(1); // [10, 25, 30]
+console.log(removed); // 15
+
+// Get sublist
+const subList = numbers.subList(0, 2); // [10, 25]
+console.log(subList.size()); // 2
+
+// Iteration using iterator
+const iterator = numbers.iterator();
 while (iterator.hasNext()) {
   console.log(iterator.next());
 }
+
+// Convert to array
+const array = numbers.toArray();
+console.log(array); // [10, 25, 30]
+
+// Clear the list
+numbers.clear();
+console.log(numbers.size()); // 0
 ```
 
 ### Using Sets
@@ -145,13 +175,51 @@ while (iterator.hasNext()) {
 ```typescript
 import { HashSet } from 'ts-collections';
 
-const set = new HashSet<string>();
-set.add("apple");
-set.add("banana");
-set.add("apple"); // No duplicates added
+// Create a new set
+const fruits = new HashSet<string>();
 
-console.log(set.size()); // 2
-console.log(set.contains("apple")); // true
+// Add elements (duplicates are ignored)
+fruits.add("apple");
+fruits.add("banana");
+fruits.add("apple"); // Duplicate, won't be added
+console.log(fruits.size()); // 2
+
+// Check membership
+console.log(fruits.contains("apple")); // true
+console.log(fruits.contains("orange")); // false
+
+// Add more elements
+fruits.add("orange");
+fruits.add("grape");
+
+// Convert to array for iteration
+const fruitArray = fruits.toArray();
+console.log(fruitArray); // ["apple", "banana", "orange", "grape"]
+
+// Iteration using iterator
+const iterator = fruits.iterator();
+while (iterator.hasNext()) {
+  console.log(iterator.next());
+}
+
+// Set operations with collections
+const tropicalFruits = new HashSet<string>();
+tropicalFruits.add("banana");
+tropicalFruits.add("pineapple");
+tropicalFruits.add("mango");
+
+// Remove all elements from another collection
+fruits.removeAll(tropicalFruits); // Removes "banana"
+
+// Retain only elements in another collection
+const commonFruits = new HashSet<string>();
+commonFruits.add("apple");
+commonFruits.add("orange");
+fruits.retainAll(commonFruits); // Keeps only "apple" and "orange"
+
+// Clear the set
+fruits.clear();
+console.log(fruits.size()); // 0
 ```
 
 ### Using Maps
@@ -159,12 +227,57 @@ console.log(set.contains("apple")); // true
 ```typescript
 import { HashMap } from 'ts-collections';
 
-const map = new HashMap<string, number>();
-map.put("count", 42);
-map.put("total", 100);
+// Create a new map
+const userAges = new HashMap<string, number>();
 
-console.log(map.get("count")); // 42
-console.log(map.keys()); // ["count", "total"]
+// Put key-value pairs
+userAges.put("Alice", 25);
+userAges.put("Bob", 30);
+userAges.put("Charlie", 35);
+console.log(userAges.size()); // 3
+
+// Get values by key
+console.log(userAges.get("Alice")); // 25
+console.log(userAges.get("David")); // undefined
+
+// Check key existence
+console.log(userAges.containsKey("Bob")); // true
+console.log(userAges.containsKey("David")); // false
+
+// Check value existence
+console.log(userAges.containsValue(30)); // true
+console.log(userAges.containsValue(40)); // false
+
+// Update existing key
+const oldAge = userAges.put("Alice", 26); // Returns old value: 25
+console.log(userAges.get("Alice")); // 26
+
+// Remove entries
+const removedAge = userAges.remove("Charlie"); // Returns 35
+console.log(userAges.size()); // 2
+
+// Get all keys and values
+const keys = userAges.keys(); // ["Alice", "Bob"]
+const values = userAges.values(); // Collection of [26, 30]
+const entries = userAges.entries(); // [["Alice", 26], ["Bob", 30]]
+
+// Iterate over keys
+const keyIterator = userAges.keyIterator();
+while (keyIterator.hasNext()) {
+  const key = keyIterator.next();
+  console.log(`${key}: ${userAges.get(key)}`);
+}
+
+// Iterate over values
+const valueIterator = userAges.valueIterator();
+while (valueIterator.hasNext()) {
+  console.log(valueIterator.next());
+}
+
+// Check if empty and clear
+console.log(userAges.isEmpty()); // false
+userAges.clear();
+console.log(userAges.isEmpty()); // true
 ```
 
 ### Using Queues
@@ -172,13 +285,60 @@ console.log(map.keys()); // ["count", "total"]
 ```typescript
 import { LinkedQueue } from 'ts-collections';
 
-const queue = new LinkedQueue<number>();
-queue.offer(1);
-queue.offer(2);
-queue.offer(3);
+// Create a new queue (FIFO - First In, First Out)
+const taskQueue = new LinkedQueue<string>();
 
-console.log(queue.poll()); // 1 (FIFO)
-console.log(queue.peek()); // 2 (doesn't remove)
+// Add elements to the queue
+taskQueue.offer("Task 1");
+taskQueue.offer("Task 2");
+taskQueue.offer("Task 3");
+console.log(taskQueue.size()); // 3
+
+// Peek at the front without removing
+console.log(taskQueue.peek()); // "Task 1"
+console.log(taskQueue.size()); // 3 (unchanged)
+
+// Remove and return the front element
+const firstTask = taskQueue.poll(); // "Task 1"
+console.log(firstTask);
+console.log(taskQueue.size()); // 2
+
+// Get the front element (throws if empty)
+try {
+  const nextTask = taskQueue.element(); // "Task 2"
+  console.log(nextTask);
+} catch (error) {
+  console.log("Queue is empty");
+}
+
+// Process all remaining tasks
+while (taskQueue.size() > 0) {
+  const task = taskQueue.poll();
+  console.log(`Processing: ${task}`);
+}
+
+// Check if queue contains elements
+console.log(taskQueue.size()); // 0
+
+// Add more tasks
+taskQueue.offer("New Task A");
+taskQueue.offer("New Task B");
+
+// Check containment
+console.log(taskQueue.contains("New Task A")); // true
+console.log(taskQueue.contains("Old Task")); // false
+
+// Remove specific element
+const removed = taskQueue.remove("New Task A"); // true
+console.log(taskQueue.size()); // 1
+
+// Convert to array
+const remainingTasks = taskQueue.toArray();
+console.log(remainingTasks); // ["New Task B"]
+
+// Clear the queue
+taskQueue.clear();
+console.log(taskQueue.size()); // 0
 ```
 
 ### Advanced Type Validation (Optional)
@@ -201,7 +361,340 @@ strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
 
 **Note:** Zod is optional - basic type safety works automatically without it!
 
-## 🏛️ Design Principles
+## 💡 Advanced Examples & Patterns
+
+### Real-World Use Cases
+
+#### Shopping Cart with ArrayList
+
+```typescript
+import { ArrayList } from 'ts-collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+}
+
+class ShoppingCart {
+  private items = new ArrayList<Product>();
+
+  addItem(product: Product): void {
+    this.items.add(product);
+  }
+
+  removeItem(productId: string): boolean {
+    const index = this.items.toArray().findIndex(item => item.id === productId);
+    if (index !== -1) {
+      this.items.removeAt(index);
+      return true;
+    }
+    return false;
+  }
+
+  getTotalPrice(): number {
+    return this.items.toArray().reduce((total, item) => total + item.price, 0);
+  }
+
+  getItems(): Product[] {
+    return this.items.toArray();
+  }
+}
+
+const cart = new ShoppingCart();
+cart.addItem({ id: "1", name: "Laptop", price: 999 });
+cart.addItem({ id: "2", name: "Mouse", price: 25 });
+console.log(cart.getTotalPrice()); // 1024
+```
+
+#### User Session Management with HashMap
+
+```typescript
+import { HashMap } from 'ts-collections';
+
+interface UserSession {
+  userId: string;
+  loginTime: Date;
+  lastActivity: Date;
+}
+
+class SessionManager {
+  private sessions = new HashMap<string, UserSession>();
+
+  createSession(userId: string): string {
+    const sessionId = this.generateSessionId();
+    const session: UserSession = {
+      userId,
+      loginTime: new Date(),
+      lastActivity: new Date()
+    };
+    this.sessions.put(sessionId, session);
+    return sessionId;
+  }
+
+  getSession(sessionId: string): UserSession | undefined {
+    return this.sessions.get(sessionId);
+  }
+
+  updateActivity(sessionId: string): void {
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      session.lastActivity = new Date();
+    }
+  }
+
+  removeSession(sessionId: string): boolean {
+    return this.sessions.remove(sessionId) !== undefined;
+  }
+
+  getActiveSessions(): string[] {
+    return this.sessions.keys();
+  }
+
+  cleanupExpiredSessions(maxAgeMinutes: number = 30): void {
+    const now = new Date();
+    const toRemove: string[] = [];
+
+    for (const sessionId of this.sessions.keys()) {
+      const session = this.sessions.get(sessionId)!;
+      const ageMinutes = (now.getTime() - session.lastActivity.getTime()) / (1000 * 60);
+      if (ageMinutes > maxAgeMinutes) {
+        toRemove.push(sessionId);
+      }
+    }
+
+    for (const sessionId of toRemove) {
+      this.sessions.remove(sessionId);
+    }
+  }
+
+  private generateSessionId(): string {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  }
+}
+
+const sessionManager = new SessionManager();
+const sessionId = sessionManager.createSession("user123");
+console.log(sessionManager.getActiveSessions()); // [sessionId]
+```
+
+#### Unique Tag System with HashSet
+
+```typescript
+import { HashSet } from 'ts-collections';
+
+class TagManager {
+  private tags = new HashSet<string>();
+
+  addTag(tag: string): boolean {
+    // Normalize and validate tag
+    const normalizedTag = tag.toLowerCase().trim();
+    if (normalizedTag.length === 0 || normalizedTag.length > 50) {
+      return false;
+    }
+    return this.tags.add(normalizedTag);
+  }
+
+  addTags(tags: string[]): void {
+    for (const tag of tags) {
+      this.addTag(tag);
+    }
+  }
+
+  removeTag(tag: string): boolean {
+    return this.tags.remove(tag.toLowerCase().trim());
+  }
+
+  hasTag(tag: string): boolean {
+    return this.tags.contains(tag.toLowerCase().trim());
+  }
+
+  getAllTags(): string[] {
+    return this.tags.toArray().sort();
+  }
+
+  searchTags(query: string): string[] {
+    const normalizedQuery = query.toLowerCase().trim();
+    return this.tags.toArray()
+      .filter(tag => tag.includes(normalizedQuery))
+      .sort();
+  }
+
+  getTagCount(): number {
+    return this.tags.size();
+  }
+}
+
+const tagManager = new TagManager();
+tagManager.addTags(["JavaScript", "TypeScript", "React", "javascript"]); // "javascript" duplicate ignored
+console.log(tagManager.getAllTags()); // ["javascript", "react", "typescript"]
+console.log(tagManager.searchTags("script")); // ["javascript", "typescript"]
+```
+
+#### Task Processing Queue with LinkedQueue
+
+```typescript
+import { LinkedQueue } from 'ts-collections';
+
+interface Task {
+  id: string;
+  type: 'email' | 'notification' | 'cleanup';
+  priority: number;
+  data: any;
+}
+
+class TaskProcessor {
+  private taskQueue = new LinkedQueue<Task>();
+
+  addTask(task: Task): void {
+    this.taskQueue.offer(task);
+  }
+
+  addHighPriorityTask(task: Task): void {
+    // For high priority, we could implement a priority queue
+    // For now, just add to front by recreating queue
+    const tempQueue = new LinkedQueue<Task>();
+    tempQueue.offer(task); // Add high priority task first
+
+    // Move existing tasks after
+    while (this.taskQueue.size() > 0) {
+      const existingTask = this.taskQueue.poll()!;
+      tempQueue.offer(existingTask);
+    }
+
+    this.taskQueue = tempQueue;
+  }
+
+  processNextTask(): Task | undefined {
+    return this.taskQueue.poll();
+  }
+
+  peekNextTask(): Task | undefined {
+    return this.taskQueue.peek();
+  }
+
+  getPendingTaskCount(): number {
+    return this.taskQueue.size();
+  }
+
+  getTasksByType(type: Task['type']): Task[] {
+    const tasks: Task[] = [];
+    const tempQueue = new LinkedQueue<Task>();
+
+    // Process all tasks, collect matching ones, rebuild queue
+    while (this.taskQueue.size() > 0) {
+      const task = this.taskQueue.poll()!;
+      if (task.type === type) {
+        tasks.push(task);
+      }
+      tempQueue.offer(task);
+    }
+
+    this.taskQueue = tempQueue;
+    return tasks;
+  }
+
+  clearCompletedTasks(): void {
+    // In a real implementation, you'd mark tasks as completed
+    // For demo, just clear all
+    this.taskQueue.clear();
+  }
+}
+
+const processor = new TaskProcessor();
+processor.addTask({ id: "1", type: "email", priority: 1, data: { to: "user@example.com" } });
+processor.addTask({ id: "2", type: "notification", priority: 2, data: { message: "Hello!" } });
+
+// Process tasks
+while (processor.getPendingTaskCount() > 0) {
+  const task = processor.processNextTask();
+  console.log(`Processing ${task!.type} task: ${task!.id}`);
+}
+```
+
+### Iterator Patterns
+
+#### Manual Iteration
+
+```typescript
+import { ArrayList, HashSet, HashMap } from 'ts-collections';
+
+// List iteration
+const list = new ArrayList<number>();
+list.add(1); list.add(2); list.add(3);
+
+const listIterator = list.iterator();
+while (listIterator.hasNext()) {
+  console.log(listIterator.next());
+}
+
+// Set iteration
+const set = new HashSet<string>();
+set.add("a"); set.add("b"); set.add("c");
+
+const setIterator = set.iterator();
+while (setIterator.hasNext()) {
+  console.log(setIterator.next());
+}
+```
+
+#### Functional Programming with Iterators
+
+```typescript
+import { ArrayList } from 'ts-collections';
+
+// Convert iterator to array for functional operations
+function iteratorToArray<T>(iterator: { hasNext(): boolean; next(): T }): T[] {
+  const result: T[] = [];
+  while (iterator.hasNext()) {
+    result.push(iterator.next());
+  }
+  return result;
+}
+
+const numbers = new ArrayList<number>();
+numbers.add(1); numbers.add(2); numbers.add(3); numbers.add(4); numbers.add(5);
+
+// Use functional programming
+const array = iteratorToArray(numbers.iterator());
+const evenNumbers = array.filter(n => n % 2 === 0); // [2, 4]
+const doubled = array.map(n => n * 2); // [2, 4, 6, 8, 10]
+const sum = array.reduce((acc, n) => acc + n, 0); // 15
+```
+
+### Error Handling
+
+```typescript
+import { ArrayList, HashMap } from 'ts-collections';
+
+const list = new ArrayList<number>();
+list.add(1); list.add(2); list.add(3);
+
+// Safe access with bounds checking
+function safeGet<T>(list: ArrayList<T>, index: number): T | null {
+  try {
+    return list.get(index);
+  } catch (error) {
+    console.error(`Index ${index} is out of bounds`);
+    return null;
+  }
+}
+
+console.log(safeGet(list, 0)); // 1
+console.log(safeGet(list, 10)); // null (with error message)
+
+// Map operations with null checking
+const map = new HashMap<string, number>();
+map.put("key1", 100);
+
+function getOrDefault<K, V>(map: HashMap<K, V>, key: K, defaultValue: V): V {
+  const value = map.get(key);
+  return value !== undefined ? value : defaultValue;
+}
+
+console.log(getOrDefault(map, "key1", 0)); // 100
+console.log(getOrDefault(map, "key2", 0)); // 0
+```
 
 This project strictly adheres to SOLID principles:
 
