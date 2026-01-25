@@ -35,6 +35,11 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     super(options);
   }
 
+  /**
+   * Inserts the specified element into this queue if it is possible to do so immediately without violating capacity restrictions.
+   * @param element The element to add
+   * @returns true if the element was added to this queue, else false
+   */
   override offer(element: T): boolean {
     this.validateElementType(element);
     const newNode: Node<T> = { value: element, next: null };
@@ -50,6 +55,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return true;
   }
 
+  /**
+   * Retrieves and removes the head of this queue.
+   * @returns The head of this queue, or undefined if this queue is empty
+   */
   override dequeue(): T | undefined {
     if (this.head === null) {
       return undefined;
@@ -66,6 +75,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return value;
   }
 
+  /**
+   * Retrieves and removes the head of this queue, or returns undefined if this queue is empty.
+   * @returns The head of this queue, or undefined if this queue is empty
+   */
   override poll(): T | undefined {
     if (this.head === null) {
       return undefined;
@@ -82,6 +95,11 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return value;
   }
 
+  /**
+   * Retrieves, but does not remove, the head of this queue.
+   * @returns The head of this queue
+   * @throws Error if this queue is empty
+   */
   override element(): T {
     if (this.head === null) {
       throw new Error("Queue is empty");
@@ -90,6 +108,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return this.head.value;
   }
 
+  /**
+   * Retrieves, but does not remove, the head of this queue, or returns undefined if this queue is empty.
+   * @returns The head of this queue, or undefined if this queue is empty
+   */
   override peek(): T | undefined {
     if (this.head === null) {
       return undefined;
@@ -98,16 +120,28 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return this.head.value;
   }
 
+  /**
+   * Returns the number of elements in this queue.
+   * @returns The number of elements in this queue
+   */
   override size(): number {
     return this.elementCount;
   }
 
+  /**
+   * Removes all elements from this queue.
+   */
   override clear(): void {
     this.head = null;
     this.tail = null;
     this.elementCount = 0;
   }
 
+  /**
+   * Returns true if this queue contains the specified element.
+   * @param element The element whose presence in this queue is to be tested
+   * @returns true if this queue contains the specified element
+   */
   override contains(element: T): boolean {
     let current = this.head;
     while (current !== null) {
@@ -119,6 +153,11 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return false;
   }
 
+  /**
+   * Removes the first occurrence of the specified element from this queue, if it is present.
+   * @param element The element to be removed from this queue
+   * @returns true if this queue contained the specified element
+   */
   override remove(element: T): boolean {
     if (this.head === null) {
       return false;
@@ -151,6 +190,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     return false;
   }
 
+  /**
+   * Returns an iterator over the elements in this queue in proper sequence.
+   * @returns An iterator over the elements in this queue
+   */
   override iterator(): Iterator<T> {
     let current = this.head;
 
@@ -167,6 +210,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
     };
   }
 
+  /**
+   * Returns an array containing all elements in this queue in proper sequence.
+   * @returns An array containing all elements in this queue
+   */
   override toArray(): T[] {
     const result: T[] = [];
     let current = this.head;

@@ -35,6 +35,11 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
     this.elements = new globalThis.Set<T>();
   }
 
+  /**
+   * Adds the specified element to this set if it is not already present.
+   * @param element The element to be added to this set
+   * @returns true if this set did not already contain the specified element
+   */
   override add(element: T): boolean {
     this.validateElementType(element);
     const sizeBefore = this.elements.size;
@@ -42,23 +47,44 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
     return this.elements.size > sizeBefore;
   }
 
+  /**
+   * Removes the specified element from this set if it is present.
+   * @param element The element to be removed from this set
+   * @returns true if this set contained the specified element
+   */
   override remove(element: T): boolean {
     return this.elements.delete(element);
   }
 
+  /**
+   * Returns true if this set contains the specified element.
+   * @param element The element whose presence in this set is to be tested
+   * @returns true if this set contains the specified element
+   */
   override contains(element: T): boolean {
     return this.elements.has(element);
   }
 
+  /**
+   * Returns the number of elements in this set.
+   * @returns The number of elements in this set
+   */
   override size(): number {
     return this.elements.size;
   }
 
+  /**
+   * Removes all elements from this set.
+   */
   override clear(): void {
     this.elements.clear();
     this.resetTypeInference();
   }
 
+  /**
+   * Returns an iterator over the elements in this set.
+   * @returns An iterator over the elements in this set
+   */
   override iterator(): Iterator<T> {
     const values = Array.from(this.elements);
     let index = 0;
@@ -78,10 +104,19 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
     };
   }
 
+  /**
+   * Returns an array containing all elements in this set.
+   * @returns An array containing all elements in this set
+   */
   override toArray(): T[] {
     return Array.from(this.elements);
   }
 
+  /**
+   * Removes from this set all of its elements that are contained in the specified collection.
+   * @param elements The collection containing elements to be removed from this set
+   * @returns true if this set changed as a result of the call
+   */
   override removeAll(elements: Collection<T>): boolean {
     const otherArray = elements.toArray();
     let modified = false;
@@ -95,6 +130,11 @@ export class HashSet<T> extends AbstractSet<T> implements Set<T> {
     return modified;
   }
 
+  /**
+   * Retains only the elements in this set that are contained in the specified collection.
+   * @param elements The collection containing elements to be retained in this set
+   * @returns true if this set changed as a result of the call
+   */
   override retainAll(elements: Collection<T>): boolean {
     const otherSet = new globalThis.Set(elements.toArray());
     const toRemove: T[] = [];
