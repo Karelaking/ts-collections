@@ -17,22 +17,27 @@ describe("HashMap - Core Methods", () => {
   describe("constructor and size", () => {
     it("should construct an empty map", () => {
       expect(map.size()).toBe(0);
+      expect(map.length).toBe(0);
       expect(map.isEmpty()).toBe(true);
     });
 
     it("should track size after putting entries", () => {
       map.put("a", 1);
       expect(map.size()).toBe(1);
+      expect(map.length).toBe(1);
       map.put("b", 2);
       map.put("c", 3);
       expect(map.size()).toBe(3);
+      expect(map.length).toBe(3);
     });
 
     it("should not increase size when updating existing key", () => {
       map.put("key", 1);
       expect(map.size()).toBe(1);
+      expect(map.length).toBe(1);
       map.put("key", 2);
       expect(map.size()).toBe(1);
+      expect(map.length).toBe(1);
     });
 
     it("should reduce size after removal", () => {
@@ -41,6 +46,7 @@ describe("HashMap - Core Methods", () => {
       map.put("c", 3);
       map.remove("b");
       expect(map.size()).toBe(2);
+      expect(map.length).toBe(2);
     });
   });
 

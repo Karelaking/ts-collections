@@ -139,6 +139,14 @@ export abstract class AbstractCollection<E> implements Collection<E> {
   abstract size(): number;
 
   /**
+   * Returns the number of elements in this collection (alias for size()).
+   * Provided for consistency with JavaScript arrays.
+   */
+  get length(): number {
+    return this.size();
+  }
+
+  /**
    * Returns true if this collection contains no elements.
    * Default implementation checks if size is 0.
    */

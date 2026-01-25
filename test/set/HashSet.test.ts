@@ -17,22 +17,27 @@ describe("HashSet - Core Methods", () => {
   describe("constructor and size", () => {
     it("should construct an empty set", () => {
       expect(set.size()).toBe(0);
+      expect(set.length).toBe(0);
       expect(set.isEmpty()).toBe(true);
     });
 
     it("should track size after adding elements", () => {
       set.add(1);
       expect(set.size()).toBe(1);
+      expect(set.length).toBe(1);
       set.add(2);
       set.add(3);
       expect(set.size()).toBe(3);
+      expect(set.length).toBe(3);
     });
 
     it("should not increase size when adding duplicate", () => {
       set.add(1);
       expect(set.size()).toBe(1);
+      expect(set.length).toBe(1);
       set.add(1);
       expect(set.size()).toBe(1);
+      expect(set.length).toBe(1);
     });
 
     it("should reduce size after removal", () => {
@@ -41,6 +46,7 @@ describe("HashSet - Core Methods", () => {
       set.add(3);
       set.remove(2);
       expect(set.size()).toBe(2);
+      expect(set.length).toBe(2);
     });
   });
 
