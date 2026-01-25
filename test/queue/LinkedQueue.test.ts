@@ -17,15 +17,18 @@ describe("LinkedQueue - Core Methods", () => {
   describe("constructor and size", () => {
     it("should construct an empty queue", () => {
       expect(queue.size()).toBe(0);
+      expect(queue.length).toBe(0);
       expect(queue.isEmpty()).toBe(true);
     });
 
     it("should track size after offering elements", () => {
       queue.offer(1);
       expect(queue.size()).toBe(1);
+      expect(queue.length).toBe(1);
       queue.offer(2);
       queue.offer(3);
       expect(queue.size()).toBe(3);
+      expect(queue.length).toBe(3);
     });
 
     it("should reduce size after polling", () => {
@@ -34,6 +37,7 @@ describe("LinkedQueue - Core Methods", () => {
       queue.offer(3);
       queue.poll();
       expect(queue.size()).toBe(2);
+      expect(queue.length).toBe(2);
     });
   });
 

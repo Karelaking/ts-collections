@@ -141,6 +141,14 @@ export abstract class AbstractMap<K, V> implements Map<K, V> {
   abstract size(): number;
 
   /**
+   * Returns the number of key-value mappings in this map (alias for size()).
+   * Provided for consistency with JavaScript arrays.
+   */
+  get length(): number {
+    return this.size();
+  }
+
+  /**
    * Returns true if this map contains no key-value mappings.
    * Must be implemented by subclasses.
    */

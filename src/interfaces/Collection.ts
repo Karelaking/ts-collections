@@ -16,6 +16,12 @@ export interface Collection<E> {
   size(): number;
 
   /**
+   * Returns the number of elements in this collection (alias for size()).
+   * Provided for consistency with JavaScript arrays.
+   */
+  get length(): number;
+
+  /**
    * Returns true if this collection contains no elements.
    */
   isEmpty(): boolean;

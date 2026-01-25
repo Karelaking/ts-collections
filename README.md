@@ -127,6 +127,10 @@ list.add(1);
 list.add(2);
 list.add(3);
 
+// Size access (both methods work)
+console.log(list.size()); // 3
+console.log(list.length); // 3 (alias for size())
+
 // Index-based access
 console.log(list.get(0)); // 1
 
@@ -150,7 +154,10 @@ set.add("apple");
 set.add("banana");
 set.add("apple"); // No duplicates added
 
+// Size access (both methods work)
 console.log(set.size()); // 2
+console.log(set.length); // 2 (alias for size())
+
 console.log(set.contains("apple")); // true
 ```
 
@@ -162,6 +169,10 @@ import { HashMap } from 'ts-collections';
 const map = new HashMap<string, number>();
 map.put("count", 42);
 map.put("total", 100);
+
+// Size access (both methods work)
+console.log(map.size()); // 2
+console.log(map.length); // 2 (alias for size())
 
 console.log(map.get("count")); // 42
 console.log(map.keys()); // ["count", "total"]
@@ -176,6 +187,10 @@ const queue = new LinkedQueue<number>();
 queue.offer(1);
 queue.offer(2);
 queue.offer(3);
+
+// Size access (both methods work)
+console.log(queue.size()); // 3
+console.log(queue.length); // 3 (alias for size())
 
 console.log(queue.poll()); // 1 (FIFO)
 console.log(queue.peek()); // 2 (doesn't remove)
