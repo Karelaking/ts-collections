@@ -1,0 +1,57 @@
+name: Greetings
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Greet New Contributors
+        uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            👋 Hello @${{ github.actor }}! Thank you for opening your first issue on **ts-collections**! 🎉
+
+            We're excited to have your contribution to this TypeScript Collections Framework.
+
+            **What happens next?**
+            - A maintainer will review your issue soon
+            - Please provide as much detail as possible to help us understand the problem or suggestion
+            - Feel free to ask questions if you need clarification
+
+            **While you wait:**
+            - Check out our [README](https://github.com/Karelaking/ts-collections/blob/master/README.md) to learn more about the project
+            - Review our [Code of Conduct](https://github.com/Karelaking/ts-collections/blob/master/CODE_OF_CONDUCT.md)
+
+            Thank you for helping make ts-collections better! 🚀
+          pr-message: |
+            👋 Hello @${{ github.actor }}! Thank you for your first Pull Request to **ts-collections**! 🎉
+
+            We appreciate your contribution to this TypeScript Collections Framework.
+
+            **What happens next?**
+            - A maintainer will review your PR soon
+            - Please ensure all tests pass and the code follows our style guidelines
+            - Be ready to address any feedback or requested changes
+
+            **Before your PR is merged:**
+            - [ ] Ensure your code follows the project's coding standards
+            - [ ] All tests should pass
+            - [ ] Update documentation if needed
+            - [ ] Make sure your commits are clear and descriptive
+
+            **Resources:**
+            - [Architecture Guide](https://github.com/Karelaking/ts-collections/blob/master/ARCHITECTURE.md)
+            - [Quick Start Guide](https://github.com/Karelaking/ts-collections/blob/master/QUICKSTART.md)
+            - [Code of Conduct](https://github.com/Karelaking/ts-collections/blob/master/CODE_OF_CONDUCT.md)
+
+            Thank you for contributing! 🚀
