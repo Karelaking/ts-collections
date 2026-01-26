@@ -1,5 +1,4 @@
-# TypeScript Collections Framework
-
+<h1 align="center">ts-collections: TypeScript Collections Framework</h1>
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
@@ -7,7 +6,7 @@
 
 
 
-A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and comprehensive test coverage.
+ts-collections is a robust, Java-inspired collections framework for TypeScript, designed to provide developers with a powerful, type-safe, and feature-rich library for managing data structures. It is built with modern TypeScript features, ensuring high performance, scalability, and adherence to best practices.
 
 ## 🎯 Goals
 
