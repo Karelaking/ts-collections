@@ -131,6 +131,10 @@ numbers.add(20);
 numbers.add(30);
 console.log(numbers.size()); // 3
 
+// Size access (both methods work)
+console.log(list.size()); // 3
+console.log(list.length); // 3 (alias for size())
+
 // Index-based access
 console.log(numbers.get(0)); // 10
 console.log(numbers.get(2)); // 30

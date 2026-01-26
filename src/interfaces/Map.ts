@@ -15,6 +15,12 @@ export interface Map<K, V> {
   size(): number;
 
   /**
+   * Returns the number of key-value mappings in this map (alias for size()).
+   * Provided for consistency with JavaScript arrays.
+   */
+  get length(): number;
+
+  /**
    * Returns true if this map contains no key-value mappings.
    */
   isEmpty(): boolean;

@@ -17,14 +17,17 @@ describe("ArrayList - Core Methods", () => {
   describe("constructor and size", () => {
     it("should construct an empty list", () => {
       expect(list.size()).toBe(0);
+      expect(list.length).toBe(0);
     });
 
     it("should track size after adding elements", () => {
       list.add(1);
       expect(list.size()).toBe(1);
+      expect(list.length).toBe(1);
       list.add(2);
       list.add(3);
       expect(list.size()).toBe(3);
+      expect(list.length).toBe(3);
     });
 
     it("should reduce size after removal", () => {
@@ -33,6 +36,7 @@ describe("ArrayList - Core Methods", () => {
       list.add(3);
       list.removeAt(1);
       expect(list.size()).toBe(2);
+      expect(list.length).toBe(2);
     });
   });
 
