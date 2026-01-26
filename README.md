@@ -1,9 +1,12 @@
 <h1 align="center">ts-collections: TypeScript Collections Framework</h1>
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
-![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+
+[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
 
 
 ts-collections is a robust, Java-inspired collections framework for TypeScript, designed to provide developers with a powerful, type-safe, and feature-rich library for managing data structures. It is built with modern TypeScript features, ensuring high performance, scalability, and adherence to best practices.
