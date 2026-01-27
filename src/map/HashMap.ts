@@ -123,7 +123,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
    * @returns An iterator over the keys in this map
    */
   override keyIterator(): Iterator<K> {
-    const keys = Array.from(this.mapEntries.keys());
+    const keys = Array.from(this.mapEntries.keys()) as K[];
     let index = 0;
 
     return {
@@ -133,10 +133,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
           throw new Error("No more elements");
         }
         const key = keys[index++];
-        if (key === undefined) {
-          throw new Error("Key is undefined");
-        }
-        return key;
+        return key!;
       },
     };
   }
@@ -146,7 +143,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
    * @returns An iterator over the values in this map
    */
   override valueIterator(): Iterator<V> {
-    const values = Array.from(this.mapEntries.values());
+    const values = Array.from(this.mapEntries.values()) as V[];
     let index = 0;
 
     return {
@@ -156,10 +153,7 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
           throw new Error("No more elements");
         }
         const value = values[index++];
-        if (value === undefined) {
-          throw new Error("Value is undefined");
-        }
-        return value;
+        return value!;
       },
     };
   }

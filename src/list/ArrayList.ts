@@ -204,9 +204,6 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
           throw new Error("No more elements");
         }
         const element = elements[index];
-        if (element === undefined) {
-          throw new Error(`Element at index ${index} is undefined`);
-        }
         index += 1;
         return element;
       },
