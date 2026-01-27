@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS-Collections Interactive Docs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .nav {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.2rem;
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .doc-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .doc-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .doc-section h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-editor {
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid #00ff88;
+            position: relative;
+        }
+        
+        .code-editor textarea {
+            width: 100%;
+            height: 150px;
+            background: transparent;
+            border: none;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: inherit;
+            resize: vertical;
+            outline: none;
+        }
+        
+        .run-code-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .run-code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(238, 90, 36, 0.4);
+        }
+        
+        .output {
+            background: rgba(0,0,0,0.6);
+            border-radius: 8px;
+            padding: 15px;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            min-height: 60px;
+            white-space: pre-wrap;
+            border-left: 3px solid #00ff88;
+        }
+        
+        .output:empty::before {
+            content: 'Output will appear here...';
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+        }
+        
+        .api-reference {
+            grid-column: 1 / -1;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .api-table th,
+        .api-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .api-table th {
+            background: rgba(255,255,255,0.1);
+            font-weight: 600;
+        }
+        
+        .method-name {
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+        }
+        
+        @media (max-width: 768px) {
+            .docs-grid { grid-template-columns: 1fr; }
+            .title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="logo">📚 TS-Collections Docs</div>
+            <div class="nav-links">
+                <a href="#" class="active">Interactive</a>
+                <a href="demo.html">Demo</a>
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📖 Interactive Documentation</h1>
+            <p class="subtitle">Test the API directly in your browser - no setup required!</p>
+        </div>
+        
+        <div class="docs-grid">
+            <div class="doc-section">
+                <h2>🔧 Try ArrayList</h2>
+                <div class="code-editor">
+                    <textarea id="arraylist-code">const list = new ArrayList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.addAt(1, 1.5);
+
+console.log('Size:', list.size());
+console.log('Get(0):', list.get(0));
+console.log('Contains 2:', list.contains(2));
+console.log('All:', Array.from(list.iterator()));</textarea>
+                </div>
+                <button class="run-code-btn" onclick="runArrayListCode()">▶ Run Code</button>
+                <div id="arraylist-result" class="output"></div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🗺️ Try HashMap</h2>
+                <div class="code-editor">
+                    <textarea id="hashmap-code">const map = new HashMap();
+map.put('name', 'John');
+map.put('age', 25);
+map.put('city', 'NYC');
+
+console.log('Size:', map.size());
+console.log('Get name:', map.get('name'));
+console.log('Has age:', map.containsKey('age'));
+console.log('Keys:', Array.from(map.keys()));
+console.log('Values:', Array.from(map.values()));</textarea>
+                </div>
+                <button class="run-code-btn" onclick="runHashMapCode()">▶ Run Code</button>
+                <div id="hashmap-result" class="output"></div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🎯 Try HashSet</h2>
+                <div class="code-editor">
+                    <textarea id="hashset-code">const set = new HashSet();
+set.add('apple');
+set.add('banana');
+set.add('apple'); // duplicate
+set.add('cherry');
+
+console.log('Size:', set.size());
+console.log('Has apple:', set.contains('apple'));
+console.log('Has grape:', set.contains('grape'));
+console.log('All:', Array.from(set.iterator()));</textarea>
+                </div>
+                <button class="run-code-btn" onclick="runHashSetCode()">▶ Run Code</button>
+                <div id="hashset-result" class="output"></div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🔄 Try LinkedQueue</h2>
+                <div class="code-editor">
+                    <textarea id="queue-code">const queue = new LinkedQueue();
+queue.offer(1);
+queue.offer(2);
+queue.offer(3);
+
+console.log('Size:', queue.size());
+console.log('Peek:', queue.peek());
+console.log('Poll:', queue.poll());
+console.log('Size after poll:', queue.size());
+console.log('Remaining:', Array.from(queue.iterator()));</textarea>
+                </div>
+                <button class="run-code-btn" onclick="runQueueCode()">▶ Run Code</button>
+                <div id="queue-result" class="output"></div>
+            </div>
+
+            <div class="api-reference">
+                <h2>📋 Quick API Reference</h2>
+                <table class="api-table">
+                    <thead>
+                        <tr>
+                            <th>Collection</th>
+                            <th>Key Methods</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method-name">ArrayList</span></td>
+                            <td><span class="method-name">add(), get(), addAt(), removeAt()</span></td>
+                            <td>Ordered list with index access</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-name">HashMap</span></td>
+                            <td><span class="method-name">put(), get(), containsKey(), keys()</span></td>
+                            <td>Key-value mappings</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-name">HashSet</span></td>
+                            <td><span class="method-name">add(), contains(), remove(), size()</span></td>
+                            <td>Unique elements only</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-name">LinkedQueue</span></td>
+                            <td><span class="method-name">offer(), poll(), peek(), size()</span></td>
+                            <td>FIFO queue operations</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ArrayList, HashMap, HashSet, LinkedQueue } from './dist/index.js';
+
+        window.ArrayList = ArrayList;
+        window.HashMap = HashMap;
+        window.HashSet = HashSet;
+        window.LinkedQueue = LinkedQueue;
+
+        function captureConsole(callback) {
+            const originalLog = console.log;
+            const logs = [];
+            console.log = (...args) => logs.push(args.join(' '));
+            
+            try {
+                callback();
+                return logs.join('\n');
+            } catch (error) {
+                return `Error: ${error.message}`;
+            } finally {
+                console.log = originalLog;
+            }
+        }
+
+        window.runArrayListCode = function() {
+            const code = document.getElementById('arraylist-code').value;
+            const result = captureConsole(() => eval(code));
+            document.getElementById('arraylist-result').textContent = result;
+        };
+
+        window.runHashMapCode = function() {
+            const code = document.getElementById('hashmap-code').value;
+            const result = captureConsole(() => eval(code));
+            document.getElementById('hashmap-result').textContent = result;
+        };
+
+        window.runHashSetCode = function() {
+            const code = document.getElementById('hashset-code').value;
+            const result = captureConsole(() => eval(code));
+            document.getElementById('hashset-result').textContent = result;
+        };
+
+        window.runQueueCode = function() {
+            const code = document.getElementById('queue-code').value;
+            const result = captureConsole(() => eval(code));
+            document.getElementById('queue-result').textContent = result;
+        };
+    </script>
+</body>
+</html>
