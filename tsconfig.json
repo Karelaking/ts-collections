@@ -1,7 +1,7 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-     "target": "ES2022",
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "declaration": true,
@@ -22,7 +22,6 @@
   },
   "include": [
     "src/**/*",
-    "**/*.{test,spec}.?(c|m)[jt]s?(x)"
   ],
   "exclude": [
     "node_modules",

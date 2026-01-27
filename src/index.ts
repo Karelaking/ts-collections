@@ -22,6 +22,7 @@
  * - {@link Set} - Collection with no duplicate elements
  * - {@link Map} - Key-value mappings
  * - {@link Queue} - FIFO collection for element processing
+ * - {@link Stack} - LIFO collection for push/pop workflows
  * - {@link Iterator} - Element traversal
  *
  * ## Abstract Base Classes
@@ -31,6 +32,7 @@
  * - {@link AbstractSet} - Foundation for set implementations
  * - {@link AbstractMap} - Foundation for map implementations
  * - {@link AbstractQueue} - Foundation for queue implementations
+ * - {@link AbstractStack} - Foundation for stack implementations
  *
  * ## Runtime Type Validation with Zod
  *
@@ -100,6 +102,7 @@ export type {
   Set,
   Map,
   Queue,
+  Stack,
 } from "./interfaces";
 
 // Type Validation Options (Zod-based)
@@ -127,6 +130,7 @@ export {
   AbstractSet,
   AbstractMap,
   AbstractQueue,
+  AbstractStack,
 } from "./abstracts";
 
 // Concrete Implementations
@@ -135,3 +139,4 @@ export { LinkedList } from "./list/LinkedList";
 export { HashSet } from "./set/HashSet";
 export { HashMap } from "./map/HashMap";
 export { LinkedQueue } from "./queue/LinkedQueue";
+export { LinkedStack } from "./stack/LinkedStack";
