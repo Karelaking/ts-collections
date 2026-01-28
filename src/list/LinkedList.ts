@@ -4,32 +4,57 @@ import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractL
 
 /**
  * Node in a doubly linked list.
- * Holds a value and pointers to previous and next nodes.
+ *
+ * Each node holds a value and maintains bidirectional pointers to its
+ * predecessor and successor nodes in the list.
+ *
+ * @typeParam T - Type of value stored in the node.
  */
 interface Node<T> {
+  /** The value stored in this node. */
   value: T;
+  /** Reference to the previous node in the list, or `null` if this is the head. */
   previous: Node<T> | null;
+  /** Reference to the next node in the list, or `null` if this is the tail. */
   next: Node<T> | null;
 }
 
 /**
- * A doubly linked list implementation (Java-style LinkedList).
- * Provides O(1) insertion/deletion at both ends and bidirectional traversal.
- * Includes complete runtime type safety validation by default.
+ * A doubly linked list that supports efficient insertions and removals at both ends.
  *
- * @template T The type of elements in this list
+ * This list behaves like Java's `LinkedList`: it maintains bidirectional node
+ * pointers for forward and reverse traversal, and provides constant-time access
+ * to head and tail elements.
+ *
+ * ### Performance characteristics
+ * - Insert/remove at head or tail: $O(1)$
+ * - Insert/remove at arbitrary index: $O(n)$ due to traversal
+ * - Random access (`get`, `set`): $O(n)$ due to traversal
+ * - Search (`contains`, `indexOf`, `lastIndexOf`): $O(n)$
+ *
+ * ### Internal behavior
+ * - Maintains `head` and `tail` pointers to the first and last nodes.
+ * - Each `Node<T>` holds a value and pointers to its predecessor and successor.
+ * - The `getNode` method optimizes traversal by starting from the closer end
+ *   (head or tail) based on the target index.
+ * - When runtime type validation is enabled, each added or replaced element
+ *   is validated before insertion.
+ * - `subList` produces a snapshot copy, so changes to the original list do
+ *   not affect the returned list.
+ *
+ * ### Error behavior
+ * - Methods that access by index throw when the index is out of range.
+ * - `getFirst`, `getLast`, `removeFirst`, and `removeLast` throw when the list is empty.
+ * - Iterator `next()` throws when no elements remain.
+ *
+ * @typeParam T - The element type stored in the list.
  *
  * @example
- * ```typescript
- * import { LinkedList } from 'ts-collections';
- * 
- * // Automatic type safety (enabled by default, like Java)
  * const list = new LinkedList<number>();
  * list.add(1);
  * list.addFirst(0);
  * list.addLast(2);
  * console.log(list.toArray()); // [0, 1, 2]
- * list.add("text" as any); // ✗ Throws TypeError: type mismatch
  * 
  * // Bidirectional iteration
  * const fwd = list.iterator();
@@ -37,24 +62,48 @@ interface Node<T> {
  * 
  * const rev = list.reverseIterator();
  * while (rev.hasNext()) console.log(rev.next());
- * ```
  */
 export class LinkedList<T> extends AbstractList<T> implements List<T> {
-  /** First node in the list */
+  /**
+   * Reference to the first node in the list.
+   * `null` when the list is empty.
+   */
   private head: Node<T> | null = null;
-  /** Last node in the list */
+
+  /**
+   * Reference to the last node in the list.
+   * `null` when the list is empty.
+   */
   private tail: Node<T> | null = null;
-  /** Number of elements in the list */
+
+  /**
+   * The number of elements currently stored in the list.
+   */
   private elementCount: number = 0;
 
+  /**
+   * Creates a new empty doubly linked list.
+   *
+   * @param options - Optional type-validation configuration inherited from `AbstractList`.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * const strictList = new LinkedList<number>({ strictTypeChecking: true });
+   */
   constructor(options?: TypeValidationOptions<T>) {
     super(options);
   }
 
   /**
    * Appends an element to the end of the list.
-   * @param element Element to add.
-   * @returns true if added.
+   *
+   * @param element - The element to add.
+   * @returns `true` when the element is added successfully.
+   * @throws Error If the element type is invalid under the current validation rules.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(42); // true
    */
   override add(element: T): boolean {
     this.validateElementType(element);
@@ -64,7 +113,13 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Inserts an element at the beginning of the list.
-   * @param element Element to add.
+   *
+   * @param element - The element to add at the head.
+   * @throws Error If the element type is invalid under the current validation rules.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.addFirst("first");
    */
   addFirst(element: T): void {
     this.validateElementType(element);
@@ -88,7 +143,13 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Appends an element to the end of the list.
-   * @param element Element to add.
+   *
+   * @param element - The element to add at the tail.
+   * @throws Error If the element type is invalid under the current validation rules.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.addLast(99);
    */
   addLast(element: T): void {
     this.validateElementType(element);
@@ -111,10 +172,16 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Gets the element at the specified index.
-   * @param index Index to retrieve.
-   * @returns The element at the index.
-   * @throws Error if index is out of bounds.
+   * Returns the element at the specified index.
+   *
+   * @param index - Zero-based position of the element.
+   * @returns The element at the given index.
+   * @throws Error If the index is out of bounds or the node is `null`.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("a");
+   * list.get(0); // "a"
    */
   override get(index: number): T {
     this.checkIndex(index);
@@ -126,9 +193,15 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Gets the first element in the list.
-   * @returns The first element.
-   * @throws Error if the list is empty.
+   * Returns the first element in the list.
+   *
+   * @returns The element at the head of the list.
+   * @throws Error If the list is empty.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(10);
+   * list.getFirst(); // 10
    */
   getFirst(): T {
     if (this.head === null) {
@@ -138,9 +211,16 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Gets the last element in the list.
-   * @returns The last element.
-   * @throws Error if the list is empty.
+   * Returns the last element in the list.
+   *
+   * @returns The element at the tail of the list.
+   * @throws Error If the list is empty.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(10);
+   * list.add(20);
+   * list.getLast(); // 20
    */
   getLast(): T {
     if (this.tail === null) {
@@ -151,8 +231,14 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Removes and returns the first element in the list.
-   * @returns The removed element.
-   * @throws Error if the list is empty.
+   *
+   * @returns The element that was at the head.
+   * @throws Error If the list is empty.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * list.removeFirst(); // 1
    */
   removeFirst(): T {
     if (this.head === null) {
@@ -180,8 +266,15 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Removes and returns the last element in the list.
-   * @returns The removed element.
-   * @throws Error if the list is empty.
+   *
+   * @returns The element that was at the tail.
+   * @throws Error If the list is empty.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * list.add(2);
+   * list.removeLast(); // 2
    */
   removeLast(): T {
     if (this.tail === null) {
@@ -208,11 +301,18 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Replaces the element at the specified index with a new value.
-   * @param index Index to replace.
-   * @param element New value.
-   * @returns The old value at the index.
-   * @throws Error if index is out of bounds.
+   * Replaces the element at the specified index.
+   *
+   * @param index - Zero-based position of the element to replace.
+   * @param element - New element to store at the index.
+   * @returns The element previously stored at the index.
+   * @throws Error If the index is out of bounds or the new element fails validation.
+   * @throws Error If the node at the index is `null`.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * list.set(0, 2); // returns 1
    */
   override set(index: number, element: T): T {
     this.checkIndex(index);
@@ -227,10 +327,16 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Inserts an element at the specified index.
-   * @param index Index to insert at.
-   * @param element Element to insert.
-   * @throws Error if index is out of bounds.
+   * Inserts an element at the specified index, shifting later elements to the right.
+   *
+   * @param index - Zero-based insertion position. Can be equal to `size()` to append.
+   * @param element - The element to insert.
+   * @throws Error If the index is out of bounds or the element fails validation.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("b");
+   * list.addAt(0, "a");
    */
   override addAt(index: number, element: T): void {
     if (index < 0 || index > this.elementCount) {
@@ -273,9 +379,15 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Removes and returns the element at the specified index.
-   * @param index Index to remove.
+   *
+   * @param index - Zero-based position of the element to remove.
    * @returns The removed element.
-   * @throws Error if index is out of bounds.
+   * @throws Error If the index is out of bounds or removal fails.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(7);
+   * list.removeAt(0); // 7
    */
   override removeAt(index: number): T {
     this.checkIndex(index);
@@ -315,9 +427,15 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns the index of the first occurrence of the specified element, or -1 if not found.
-   * @param element Element to search for.
-   * @returns Index of the element, or -1.
+   * Returns the index of the first occurrence of an element.
+   *
+   * @param element - Element to locate.
+   * @returns Zero-based index of the first match, or `-1` if not found.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("x");
+   * list.indexOf("x"); // 0
    */
   override indexOf(element: T): number {
     let index = 0;
@@ -335,9 +453,16 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns the index of the last occurrence of the specified element, or -1 if not found.
-   * @param element Element to search for.
-   * @returns Index of the last occurrence, or -1.
+   * Returns the index of the last occurrence of an element.
+   *
+   * @param element - Element to locate.
+   * @returns Zero-based index of the last match, or `-1` if not found.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * list.add(1);
+   * list.lastIndexOf(1); // 1
    */
   override lastIndexOf(element: T): number {
     let index = this.elementCount - 1;
@@ -355,11 +480,19 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns a view of the portion of this list between the specified fromIndex (inclusive) and toIndex (exclusive).
-   * @param fromIndex Starting index (inclusive).
-   * @param toIndex Ending index (exclusive).
-   * @returns A new list containing the elements in the specified range.
-   * @throws Error if indices are invalid.
+   * Returns a new list containing elements in the specified range.
+   *
+   * @param fromIndex - Start index (inclusive).
+   * @param toIndex - End index (exclusive).
+   * @returns A new `LinkedList` with the selected elements.
+   * @throws Error If the index range is invalid.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * list.add(2);
+   * list.add(3);
+   * const sub = list.subList(1, 3); // [2, 3]
    */
   override subList(fromIndex: number, toIndex: number): List<T> {
     if (fromIndex < 0 || toIndex > this.elementCount || fromIndex > toIndex) {
@@ -378,7 +511,12 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Returns the number of elements in the list.
-   * @returns The size of the list.
+   *
+   * @returns Current size of the list.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.size(); // 0
    */
   override size(): number {
     return this.elementCount;
@@ -386,6 +524,11 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 
   /**
    * Removes all elements from the list.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("a");
+   * list.clear();
    */
   override clear(): void {
     this.head = null;
@@ -395,9 +538,15 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Checks if the list contains the specified element.
-   * @param element Element to check for.
-   * @returns true if the element is found, false otherwise.
+   * Checks whether the list contains a given element.
+   *
+   * @param element - Element to check.
+   * @returns `true` if the element is present; otherwise `false`.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(3);
+   * list.contains(3); // true
    */
   override contains(element: T): boolean {
     let current = this.head;
@@ -413,8 +562,18 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns an iterator over the elements in the list (from head to tail).
-   * @returns An iterator for forward traversal.
+   * Returns an iterator over the elements in insertion order.
+   *
+   * @returns An iterator with `hasNext()` and `next()` methods.
+   * @throws Error When `next()` is called with no remaining elements.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("a");
+   * const it = list.iterator();
+   * while (it.hasNext()) {
+   *   console.log(it.next());
+   * }
    */
   override iterator(): Iterator<T> {
     let current = this.head;
@@ -433,8 +592,14 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Converts the list to an array.
-   * @returns An array containing all elements in order.
+   * Returns a shallow copy of the list as a native array.
+   *
+   * @returns A new array containing the list elements.
+   *
+   * @example
+   * const list = new LinkedList<number>();
+   * list.add(1);
+   * const arr = list.toArray(); // [1]
    */
   override toArray(): T[] {
     const array: T[] = [];
@@ -449,8 +614,19 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns a reverse iterator over the elements in the list (from tail to head).
-   * @returns An iterator for backward traversal.
+   * Returns an iterator over the elements in reverse order.
+   *
+   * @returns An iterator with `hasNext()` and `next()` methods for backward traversal.
+   * @throws Error When `next()` is called with no remaining elements.
+   *
+   * @example
+   * const list = new LinkedList<string>();
+   * list.add("a");
+   * list.add("b");
+   * const rev = list.reverseIterator();
+   * while (rev.hasNext()) {
+   *   console.log(rev.next()); // "b", then "a"
+   * }
    */
   reverseIterator(): Iterator<T> {
     let current = this.tail;
@@ -469,9 +645,14 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns the node at the specified index, or null if out of bounds.
-   * Optimizes traversal by starting from head or tail depending on index.
-   * @param index Index of the node to retrieve.
+   * Returns the node at the specified index.
+   *
+   * @param index - Zero-based index of the node to retrieve.
+   * @returns The node at the given index, or `null` if out of bounds.
+   *
+   * @remarks
+   * Optimizes traversal by starting from the closer end (head or tail)
+   * based on the target index.
    */
   private getNode(index: number): Node<T> | null {
     if (index < 0 || index >= this.elementCount) {
@@ -501,8 +682,10 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Throws if the index is out of bounds for the list.
-   * @param index Index to check.
+   * Validates that an index is within the bounds of the list.
+   *
+   * @param index - Zero-based index to validate.
+   * @throws Error If the index is out of range.
    */
   private checkIndex(index: number): void {
     if (index < 0 || index >= this.elementCount) {
