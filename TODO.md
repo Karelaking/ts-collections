@@ -3,4 +3,4 @@
 - [x] Remove undefined check from HashMap.keyIterator().next()
 - [x] Remove undefined check from HashMap.valueIterator().next()
 - [x] Remove undefined check from HashMap.values().iterator().next()
-- [ ] Run tests to verify changes
+- [x] Run tests to verify changes
