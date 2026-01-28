@@ -1,0 +1,102 @@
+name: Issue Template Guard
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  validate-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check issue template sections
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            if (!issue || issue.pull_request) {
+              core.info('Skipping because this payload is not a standard issue.');
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const guardLabel = 'needs-template';
+            const requiredSections = [
+              '## summary',
+              '## reproduction',
+              '## expected vs actual',
+              '## environment',
+              '## collection scope'
+            ];
+
+            const body = (issue.body || '').toLowerCase();
+            const missing = requiredSections.filter(section => !body.includes(section));
+
+            const ensureLabelExists = async () => {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name: guardLabel });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner,
+                    repo,
+                    name: guardLabel,
+                    color: 'ededed',
+                    description: 'Issue is missing required template sections'
+                  });
+                  return;
+                }
+                throw error;
+              }
+            };
+
+            await ensureLabelExists();
+
+            const hasGuardLabel = issue.labels.some(label => label.name === guardLabel);
+
+            if (missing.length) {
+              if (!hasGuardLabel) {
+                await github.rest.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  labels: [guardLabel]
+                });
+
+                const message = [
+                  `Hi @${issue.user.login}, thanks for opening this issue.`,
+                  'Please update the issue to include the required sections so we can triage quickly:',
+                  '- Summary',
+                  '- Reproduction (with minimal code and steps)',
+                  '- Expected vs Actual',
+                  '- Environment',
+                  '- Collection scope',
+                  '',
+                  `You can edit this issue or open a new one via the template chooser: https://github.com/${owner}/${repo}/issues/new/choose`
+                ].join('\n');
+
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: message
+                });
+              }
+
+              core.setFailed(`Missing sections: ${missing.join(', ')}`);
+              return;
+            }
+
+            if (hasGuardLabel) {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: issue.number,
+                name: guardLabel
+              });
+            }
+
+            core.info('Issue includes required sections.');

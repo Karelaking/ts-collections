@@ -166,6 +166,9 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
     const valueArray = Array.from(this.mapEntries.values());
     return {
       size: () => valueArray.length,
+      get length() {
+        return valueArray.length;
+      },
       isEmpty: () => valueArray.length === 0,
       contains: (v: V) => valueArray.includes(v),
       add: () => {

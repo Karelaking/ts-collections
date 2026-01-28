@@ -1,0 +1,93 @@
+name: Unassign Inactive Assignees
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # daily at 03:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  unassign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unassign inactive users
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const DAYS_INACTIVE = 14;
+            const commentOnUnassign = true;
+            const cutoff = Date.now() - DAYS_INACTIVE * 24 * 60 * 60 * 1000;
+            const cutoffDate = new Date(cutoff);
+            const { owner, repo } = context.repo;
+
+            const fetchAssignedIssues = async () => {
+              const results = [];
+              let page = 1;
+              const per_page = 100;
+
+              while (true) {
+                const { data } = await github.rest.issues.listForRepo({
+                  owner,
+                  repo,
+                  state: 'open',
+                  per_page,
+                  page,
+                  assignee: '*',
+                  sort: 'updated',
+                  direction: 'asc' // older first so we can break earlier if desired
+                });
+
+                if (!data.length) break;
+                results.push(...data);
+                if (data.length < per_page) break;
+                page += 1;
+              }
+
+              return results;
+            };
+
+            const issues = await fetchAssignedIssues();
+            core.info(`Found ${issues.length} open items with assignees.`);
+
+            for (const issue of issues) {
+              // Skip items recently updated
+              const updatedAt = new Date(issue.updated_at);
+              if (updatedAt >= cutoffDate) continue;
+
+              const assignees = issue.assignees || [];
+              if (!assignees.length) continue;
+
+              const issueType = issue.pull_request ? 'pull request' : 'issue';
+              const assigneeLogins = assignees.map(a => a.login).join(', ');
+              core.info(`Unassigning ${assigneeLogins} from #${issue.number} (${issueType}) last updated ${issue.updated_at}`);
+
+              await github.rest.issues.removeAssignees({
+                owner,
+                repo,
+                issue_number: issue.number,
+                assignees: assignees.map(a => a.login)
+              });
+
+              if (commentOnUnassign) {
+                const message = [
+                  `Unassigning due to ${DAYS_INACTIVE}+ days with no updates.`,
+                  '',
+                  'If you are still working on this, feel free to reassign yourself or comment to take it back.',
+                  '',
+                  `Last update: ${issue.updated_at}`
+                ].join('\n');
+
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: message
+                });
+              }
+            }
+
+            core.info('Unassign check complete.');

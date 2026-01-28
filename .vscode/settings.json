@@ -1,0 +1,7 @@
+{
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.codeGeneration.instructionFiles": [
+    "./github/copilot-code-generation-instructions.md"
+  ],
+  "github.copilot.chat.codeGeneration.enableAutoGeneration": true
+}
