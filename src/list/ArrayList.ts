@@ -99,10 +99,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
   override get(index: number): T {
     this.checkIndex(index);
     const element = this.elements[index];
-    if (element === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
-    return element;
+    return element!;
   }
 
   /**
@@ -125,11 +122,8 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
     this.checkIndex(index);
     this.validateElementType(element);
     const oldElement = this.elements[index];
-    if (oldElement === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
     this.elements[index] = element;
-    return oldElement;
+    return oldElement!;
   }
 
 
@@ -174,10 +168,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
     this.checkIndex(index);
     const removed = this.elements.splice(index, 1);
     const element = removed[0];
-    if (element === undefined) {
-      throw new Error(`Failed to remove element at index ${index}`);
-    }
-    return element;
+    return element!;
   }
 
   /**
@@ -327,7 +318,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
           throw new Error("Element at index is undefined");
         }
         index += 1;
-        return element;
+        return element!;
       },
     };
   }
