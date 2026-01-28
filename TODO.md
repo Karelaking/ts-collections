@@ -1,0 +1,6 @@
+- [x] Remove undefined check from ArrayList.iterator().next()
+- [x] Remove undefined check from HashSet.iterator().next()
+- [x] Remove undefined check from HashMap.keyIterator().next()
+- [x] Remove undefined check from HashMap.valueIterator().next()
+- [x] Remove undefined check from HashMap.values().iterator().next()
+- [x] Run tests to verify changes
