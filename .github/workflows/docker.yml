@@ -1,0 +1,74 @@
+name: Docker Build and Test
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'package*.json'
+      - 'src/**'
+      - 'test/**'
+      - '.github/workflows/docker.yml'
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'package*.json'
+      - 'src/**'
+      - 'test/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build development image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: development
+          push: false
+          load: true
+          tags: ts-collections:dev
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run tests in Docker
+        run: docker run --rm ts-collections:dev npm test -- --run
+
+      - name: Run linter in Docker
+        run: docker run --rm ts-collections:dev npm run lint
+
+      - name: Test docker-compose services
+        run: |
+          docker compose run --rm test
+          docker compose run --rm lint
+
+      - name: Build production image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: production
+          push: false
+          tags: ts-collections:prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify production image
+        run: |
+          docker images | grep ts-collections
+          echo "✅ Docker images built successfully"

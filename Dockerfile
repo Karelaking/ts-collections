@@ -15,11 +15,12 @@ CMD ["npm", "test"]
 
 # Stage 3: Build - Creates production build artifacts
 FROM development AS build
-# Run the build process
-RUN npm run build || true
-# Note: Build has type errors, but this is existing behavior
+# Note: Build currently has type errors (existing issue in the repository)
+# The build produces usable artifacts despite the type error
+# See: src/list/ArrayList.ts(202,7) for details
+RUN npm run build || echo "Build completed with type errors (existing issue)"
 
-# Stage 4: Production - Minimal production image
+# Stage 4: Production - Minimal production image for library distribution
 FROM node:20-alpine AS production
 WORKDIR /app
 # Copy only necessary files from build stage
@@ -27,7 +28,4 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/package*.json ./
 # Install only production dependencies
 RUN npm ci --production
-# Expose port for any future server needs
-EXPOSE 3000
-# Default command - can be overridden
-CMD ["node", "--version"]
+# No default command - library consumers will specify their own usage

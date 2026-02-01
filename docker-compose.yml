@@ -1,4 +1,5 @@
-version: '3.8'
+# version field is deprecated in Docker Compose v2+
+# See: https://docs.docker.com/compose/compose-file/
 
 services:
   # Development service - Interactive development with volume mounts
@@ -49,11 +50,10 @@ services:
       - ./dist:/app/dist
     command: npm run build
 
-  # Production service - Uses minimal production image
+  # Production service - Minimal production image for library consumers
+  # Note: This is a library, not a server, so no ports are needed
   prod:
     build:
       context: .
       target: production
     container_name: ts-collections-prod
-    ports:
-      - "3000:3000"
