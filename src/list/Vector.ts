@@ -224,7 +224,151 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
     return [...this.elements];
   }
 
-  // ========== Async Operations ==========
+  // ========== Async Basic Operations ==========
+
+  /**
+   * Asynchronously adds an element from a promise or async function.
+   * 
+   * @param elementProvider Promise or async function that provides the element
+   * @returns A promise that resolves to true if the element was added
+   * 
+   * @example
+   * ```typescript
+   * await vector.push(fetchDataFromAPI());
+   * await vector.push(async () => await computeValue());
+   * ```
+   */
+  public async push(elementProvider: Promise<T> | (() => Promise<T>)): Promise<boolean> {
+    const element = typeof elementProvider === 'function' 
+      ? await elementProvider() 
+      : await elementProvider;
+    return this.add(element);
+  }
+
+  /**
+   * Asynchronously retrieves an element, useful for chaining async operations.
+   * 
+   * @param index The index of the element to retrieve
+   * @returns A promise that resolves to the element
+   * 
+   * @example
+   * ```typescript
+   * const element = await vector.pull(0);
+   * ```
+   */
+  public async pull(index: number): Promise<T> {
+    return Promise.resolve(this.get(index));
+  }
+
+  /**
+   * Asynchronously updates an element from a promise or async function.
+   * 
+   * @param index The index of the element to update
+   * @param elementProvider Promise or async function that provides the new element
+   * @returns A promise that resolves to the previous element
+   * 
+   * @example
+   * ```typescript
+   * await vector.update(0, fetchNewValue());
+   * ```
+   */
+  public async update(index: number, elementProvider: Promise<T> | (() => Promise<T>)): Promise<T> {
+    const element = typeof elementProvider === 'function'
+      ? await elementProvider()
+      : await elementProvider;
+    return this.set(index, element);
+  }
+
+  /**
+   * Asynchronously inserts an element from a promise or async function.
+   * 
+   * @param index The index at which to insert
+   * @param elementProvider Promise or async function that provides the element
+   * 
+   * @example
+   * ```typescript
+   * await vector.insert(0, fetchNewValue());
+   * ```
+   */
+  public async insert(index: number, elementProvider: Promise<T> | (() => Promise<T>)): Promise<void> {
+    const element = typeof elementProvider === 'function'
+      ? await elementProvider()
+      : await elementProvider;
+    this.addAt(index, element);
+  }
+
+  /**
+   * Asynchronously removes an element by index or matching predicate.
+   * 
+   * @param indexOrPredicate Index or async predicate function
+   * @returns A promise that resolves to the removed element or true/false for predicate
+   * 
+   * @example
+   * ```typescript
+   * await vector.remove(0);
+   * await vector.remove(async (item) => await shouldRemove(item));
+   * ```
+   */
+  public async remove(indexOrPredicate: number | ((element: T) => Promise<boolean>)): Promise<T | boolean> {
+    if (typeof indexOrPredicate === 'number') {
+      return Promise.resolve(this.removeAt(indexOrPredicate));
+    } else {
+      const predicate = indexOrPredicate;
+      for (let i = 0; i < this.elements.length; i++) {
+        if (await predicate(this.elements[i] as T)) {
+          return Promise.resolve(this.removeAt(i));
+        }
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Asynchronously checks if an element or matching element exists.
+   * 
+   * @param elementOrPredicate Element value or async predicate function
+   * @returns A promise that resolves to true if found
+   * 
+   * @example
+   * ```typescript
+   * await vector.has(5);
+   * await vector.has(async (item) => await matches(item));
+   * ```
+   */
+  public async has(elementOrPredicate: T | ((element: T) => Promise<boolean>)): Promise<boolean> {
+    if (typeof elementOrPredicate === 'function') {
+      const predicate = elementOrPredicate as (element: T) => Promise<boolean>;
+      for (const element of this.elements) {
+        if (await predicate(element as T)) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return Promise.resolve(this.contains(elementOrPredicate));
+    }
+  }
+
+  /**
+   * Asynchronously removes all elements, optionally executing cleanup for each.
+   * 
+   * @param cleanup Optional async cleanup function for each element
+   * 
+   * @example
+   * ```typescript
+   * await vector.empty(async (item) => await cleanup(item));
+   * ```
+   */
+  public async empty(cleanup?: (element: T) => Promise<void>): Promise<void> {
+    if (cleanup) {
+      for (const element of this.elements) {
+        await cleanup(element as T);
+      }
+    }
+    this.clear();
+  }
+
+  // ========== Async Collection Operations ==========
 
   /**
    * Performs the given action for each element asynchronously.

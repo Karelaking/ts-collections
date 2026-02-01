@@ -19,6 +19,132 @@ describe("Vector - Async Operations", () => {
     vector.add(3);
   });
 
+  describe("Async Basic Operations", () => {
+    describe("push", () => {
+      it("should add element from promise", async () => {
+        const result = await vector.push(Promise.resolve(4));
+        expect(result).toBe(true);
+        expect(vector.size()).toBe(4);
+        expect(vector.get(3)).toBe(4);
+      });
+
+      it("should add element from async function", async () => {
+        const asyncFunc = async () => {
+          await new Promise(resolve => setTimeout(resolve, 10));
+          return 5;
+        };
+        await vector.push(asyncFunc);
+        expect(vector.get(3)).toBe(5);
+      });
+    });
+
+    describe("pull", () => {
+      it("should retrieve element asynchronously", async () => {
+        const element = await vector.pull(1);
+        expect(element).toBe(2);
+      });
+
+      it("should throw for invalid index", async () => {
+        await expect(vector.pull(10)).rejects.toThrow("Index out of bounds");
+      });
+    });
+
+    describe("update", () => {
+      it("should update element from promise", async () => {
+        const old = await vector.update(1, Promise.resolve(20));
+        expect(old).toBe(2);
+        expect(vector.get(1)).toBe(20);
+      });
+
+      it("should update element from async function", async () => {
+        const asyncFunc = async () => {
+          await new Promise(resolve => setTimeout(resolve, 10));
+          return 30;
+        };
+        await vector.update(2, asyncFunc);
+        expect(vector.get(2)).toBe(30);
+      });
+    });
+
+    describe("insert", () => {
+      it("should insert element from promise", async () => {
+        await vector.insert(1, Promise.resolve(15));
+        expect(vector.size()).toBe(4);
+        expect(vector.get(1)).toBe(15);
+        expect(vector.get(2)).toBe(2);
+      });
+
+      it("should insert element from async function", async () => {
+        const asyncFunc = async () => 25;
+        await vector.insert(0, asyncFunc);
+        expect(vector.get(0)).toBe(25);
+        expect(vector.get(1)).toBe(1);
+      });
+    });
+
+    describe("remove", () => {
+      it("should remove element by index", async () => {
+        const removed = await vector.remove(1);
+        expect(removed).toBe(2);
+        expect(vector.size()).toBe(2);
+        expect(vector.toArray()).toEqual([1, 3]);
+      });
+
+      it("should remove element by async predicate", async () => {
+        const result = await vector.remove(async (item) => item === 2);
+        expect(result).not.toBe(false);
+        expect(vector.size()).toBe(2);
+        expect(vector.toArray()).toEqual([1, 3]);
+      });
+
+      it("should return false if predicate matches nothing", async () => {
+        const result = await vector.remove(async (item) => item > 10);
+        expect(result).toBe(false);
+        expect(vector.size()).toBe(3);
+      });
+    });
+
+    describe("has", () => {
+      it("should check if element exists", async () => {
+        const result = await vector.has(2);
+        expect(result).toBe(true);
+      });
+
+      it("should return false for non-existent element", async () => {
+        const result = await vector.has(10);
+        expect(result).toBe(false);
+      });
+
+      it("should check with async predicate", async () => {
+        const result = await vector.has(async (item) => item > 2);
+        expect(result).toBe(true);
+      });
+
+      it("should return false when predicate matches nothing", async () => {
+        const result = await vector.has(async (item) => item > 10);
+        expect(result).toBe(false);
+      });
+    });
+
+    describe("empty", () => {
+      it("should clear all elements", async () => {
+        await vector.empty();
+        expect(vector.size()).toBe(0);
+        expect(vector.isEmpty()).toBe(true);
+      });
+
+      it("should execute cleanup for each element", async () => {
+        const cleaned: number[] = [];
+        await vector.empty(async (item) => {
+          await new Promise(resolve => setTimeout(resolve, 1));
+          cleaned.push(item);
+        });
+        expect(cleaned).toEqual([1, 2, 3]);
+        expect(vector.size()).toBe(0);
+      });
+    });
+  });
+
   describe("forEach", () => {
     it("should execute callback for each element", async () => {
       const results: number[] = [];
