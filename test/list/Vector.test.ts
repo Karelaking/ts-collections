@@ -90,15 +90,21 @@ describe("Vector - Async Operations", () => {
         expect(vector.toArray()).toEqual([1, 3]);
       });
 
+      it("should throw for invalid index", async () => {
+        await expect(vector.remove(10)).rejects.toThrow("Index out of bounds");
+      });
+    });
+
+    describe("removeIf", () => {
       it("should remove element by async predicate", async () => {
-        const result = await vector.remove(async (item) => item === 2);
-        expect(result).not.toBe(false);
+        const result = await vector.removeIf(async (item) => item === 2);
+        expect(result).toBe(true);
         expect(vector.size()).toBe(2);
         expect(vector.toArray()).toEqual([1, 3]);
       });
 
       it("should return false if predicate matches nothing", async () => {
-        const result = await vector.remove(async (item) => item > 10);
+        const result = await vector.removeIf(async (item) => item > 10);
         expect(result).toBe(false);
         expect(vector.size()).toBe(3);
       });
@@ -114,14 +120,16 @@ describe("Vector - Async Operations", () => {
         const result = await vector.has(10);
         expect(result).toBe(false);
       });
+    });
 
+    describe("hasMatching", () => {
       it("should check with async predicate", async () => {
-        const result = await vector.has(async (item) => item > 2);
+        const result = await vector.hasMatching(async (item) => item > 2);
         expect(result).toBe(true);
       });
 
       it("should return false when predicate matches nothing", async () => {
-        const result = await vector.has(async (item) => item > 10);
+        const result = await vector.hasMatching(async (item) => item > 10);
         expect(result).toBe(false);
       });
     });

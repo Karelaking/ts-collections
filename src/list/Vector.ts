@@ -257,7 +257,12 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * ```
    */
   public async pull(index: number): Promise<T> {
-    return Promise.resolve(this.get(index));
+    this.checkIndex(index);
+    const element = this.elements[index];
+    if (element === undefined) {
+      throw new Error(`Element at index ${index} is undefined`);
+    }
+    return element;
   }
 
   /**
@@ -298,55 +303,80 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Asynchronously removes an element by index or matching predicate.
+   * Asynchronously removes the element at the specified index.
    * 
-   * @param indexOrPredicate Index or async predicate function
-   * @returns A promise that resolves to the removed element or true/false for predicate
+   * @param index The index of the element to remove
+   * @returns A promise that resolves to the removed element
    * 
    * @example
    * ```typescript
-   * await vector.remove(0);
-   * await vector.remove(async (item) => await shouldRemove(item));
+   * const removed = await vector.remove(0);
    * ```
    */
-  public async remove(indexOrPredicate: number | ((element: T) => Promise<boolean>)): Promise<T | boolean> {
-    if (typeof indexOrPredicate === 'number') {
-      return Promise.resolve(this.removeAt(indexOrPredicate));
-    } else {
-      const predicate = indexOrPredicate;
-      for (let i = 0; i < this.elements.length; i++) {
-        if (await predicate(this.elements[i] as T)) {
-          return Promise.resolve(this.removeAt(i));
-        }
-      }
-      return false;
+  public async remove(index: number): Promise<T> {
+    this.checkIndex(index);
+    const removed = this.elements.splice(index, 1);
+    const element = removed[0];
+    if (element === undefined) {
+      throw new Error(`Failed to remove element at index ${index}`);
     }
+    return element;
   }
 
   /**
-   * Asynchronously checks if an element or matching element exists.
+   * Asynchronously removes the first element matching the async predicate.
    * 
-   * @param elementOrPredicate Element value or async predicate function
+   * @param predicate Async function to test each element
+   * @returns A promise that resolves to true if an element was removed
+   * 
+   * @example
+   * ```typescript
+   * const removed = await vector.removeIf(async (item) => await shouldRemove(item));
+   * ```
+   */
+  public async removeIf(predicate: (element: T) => Promise<boolean>): Promise<boolean> {
+    for (let i = 0; i < this.elements.length; i++) {
+      if (await predicate(this.elements[i] as T)) {
+        this.elements.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Asynchronously checks if the vector contains the specified element.
+   * 
+   * @param element The element to check for
    * @returns A promise that resolves to true if found
    * 
    * @example
    * ```typescript
-   * await vector.has(5);
-   * await vector.has(async (item) => await matches(item));
+   * const exists = await vector.has(5);
    * ```
    */
-  public async has(elementOrPredicate: T | ((element: T) => Promise<boolean>)): Promise<boolean> {
-    if (typeof elementOrPredicate === 'function') {
-      const predicate = elementOrPredicate as (element: T) => Promise<boolean>;
-      for (const element of this.elements) {
-        if (await predicate(element as T)) {
-          return true;
-        }
+  public async has(element: T): Promise<boolean> {
+    return this.elements.includes(element);
+  }
+
+  /**
+   * Asynchronously checks if any element matches the async predicate.
+   * 
+   * @param predicate Async function to test each element
+   * @returns A promise that resolves to true if a match is found
+   * 
+   * @example
+   * ```typescript
+   * const hasMatch = await vector.hasMatching(async (item) => await matches(item));
+   * ```
+   */
+  public async hasMatching(predicate: (element: T) => Promise<boolean>): Promise<boolean> {
+    for (const element of this.elements) {
+      if (await predicate(element as T)) {
+        return true;
       }
-      return false;
-    } else {
-      return Promise.resolve(this.contains(elementOrPredicate));
     }
+    return false;
   }
 
   /**
