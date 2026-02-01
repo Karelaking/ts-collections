@@ -1,0 +1,59 @@
+# version field is deprecated in Docker Compose v2+
+# See: https://docs.docker.com/compose/compose-file/
+
+services:
+  # Development service - Interactive development with volume mounts
+  dev:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: /bin/sh
+    stdin_open: true
+    tty: true
+
+  # Test service - Runs the full test suite
+  test:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: pnpm test -- --run
+
+  # Lint service - Runs the linter
+  lint:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-lint
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run lint
+
+  # Build service - Generates dist/ directory
+  build:
+    build:
+      context: .
+      target: build
+    container_name: ts-collections-build
+    volumes:
+      - ./dist:/app/dist
+    command: pnpm run build
+
+  # Production service - Minimal production image for library consumers
+  # Note: This is a library, not a server, so no ports are needed
+  prod:
+    build:
+      context: .
+      target: production
+    container_name: ts-collections-prod

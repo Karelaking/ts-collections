@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist
+build
+*.tsbuildinfo
+
+# Testing
+coverage
+.nyc_output
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation (not needed in image)
+*.md
+wiki
+docs
+
+# CI/CD
+.github
+
+# Temporary files
+tmp
+temp
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Lock files (keep package-lock.json for npm ci)
+# package-lock.json is needed for npm ci
+yarn.lock
+pnpm-lock.yaml
