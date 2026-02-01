@@ -136,6 +136,7 @@ export {
 // Concrete Implementations
 export { ArrayList } from "./list/ArrayList";
 export { LinkedList } from "./list/LinkedList";
+export { Vector } from "./list/Vector";
 export { HashSet } from "./set/HashSet";
 export { HashMap } from "./map/HashMap";
 export { LinkedQueue } from "./queue/LinkedQueue";
