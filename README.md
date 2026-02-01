@@ -1,26 +1,80 @@
-<h1 align="center">ts-collections: TypeScript Collections Framework</h1>
+<div align="center">
+  <h1>ts-collections</h1>
+  <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
+  [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+  ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+  
+  <p>
+    <a href="#-features">Features</a> •
+    <a href="#-quick-start">Quick Start</a> •
+    <a href="#-api-overview">API Overview</a> •
+    <a href="#-documentation">Documentation</a> •
+    <a href="#-contributing">Contributing</a>
+  </p>
+</div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/) [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/) ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+---
 
-ts-collections is a robust, Java-inspired collections framework for TypeScript, designed to provide developers with a powerful, type-safe, and feature-rich library for managing data structures. It is built with modern TypeScript features, ensuring high performance, scalability, and adherence to best practices.
+## 🌟 Why ts-collections?
 
-## 🎯 Goals
+**ts-collections** is a Java-inspired collections framework that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.
 
-This project aims to provide:
+```typescript
+import { ArrayList, HashMap, HashSet } from 'ts-collections';
 
-- **Automatic Type Safety**: Runtime type checking enabled by default (no configuration needed)
-- **Java-Friendly Design**: Familiar Collections interface for Java developers - works just like Java's type-safe collections
-- **Zero-Configuration**: Type safety works out of the box, no need to learn validation libraries
-- **Type Safety**: Full TypeScript support with generics and strict typing
-- **Predictable Behavior**: Clear contracts through interfaces and abstract base classes
-- **Extensibility**: Easy to create custom implementations through abstract base classes
-- **Performance Transparency**: Clear documentation of algorithm complexity
-- **Test Coverage**: Comprehensive test suites for all implementations (332/332 tests passing)
-- **Open Source Quality**: Clean code, best practices, and community-driven development
+// Automatic type safety - no configuration needed!
+const list = new ArrayList<number>();
+list.add(42);           // ✅ Works
+list.add("text" as any); // ❌ Runtime error (caught automatically)
 
-### For Java Developers
+// Familiar Java-style APIs
+const map = new HashMap<string, User>();
+map.put("john", user);
+const value = map.get("john");
 
-Coming from Java? **You'll feel right at home!** Type safety is automatic by default:
+// Complete type inference
+const set = new HashSet<string>();
+set.add("unique");
+```
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔒 Automatic Type Safety
+Runtime type checking enabled by default - no configuration needed. Works just like Java's type-safe collections.
+
+### 🎯 Zero Configuration  
+Type safety works out of the box. No need to learn validation libraries or configure schemas.
+
+### ☕ Java-Friendly
+Familiar Collections interface for Java developers. If you know Java Collections, you already know ts-collections.
+
+</td>
+<td width="50%">
+
+### 🏗️ Extensible Architecture
+Easy to create custom implementations through abstract base classes and clear interfaces.
+
+### 📊 Performance Transparency
+All operations documented with time/space complexity (O-notation).
+
+### ✅ Battle-Tested
+332/332 tests passing. Comprehensive test coverage for all implementations.
+
+</td>
+</tr>
+</table>
+
+### Coming from Java?
+
+You'll feel right at home! Type safety works exactly like Java:
 
 ```typescript
 // Java
@@ -34,337 +88,123 @@ list.add(1);
 list.add("text" as any); // ❌ Runtime error (automatic!)
 ```
 
-See [JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md) for detailed Java → TypeScript migration guidance.
+📖 **[Java Migration Guide →](JAVA_MIGRATION_GUIDE.md)**
 
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    A[Application Code] --> B[Concrete Implementations]
-    B --> C[Abstract Base Classes]
-    C --> D[Core Interfaces]
-    B --> E[Utilities & Algorithms]
-    
-    D --> D1[Collection&lt;E&gt;]
-    D --> D2[List&lt;E&gt;]
-    D --> D3[Set&lt;E&gt;]
-    D --> D4[Map&lt;K,V&gt;]
-    D --> D5[Queue&lt;E&gt;]
-    D --> D6[Iterator&lt;E&gt;]
-    
-    C --> C1[AbstractCollection&lt;E&gt;]
-    C --> C2[AbstractList&lt;E&gt;]
-    C --> C3[AbstractSet&lt;E&gt;]
-    C --> C4[AbstractMap&lt;K,V&gt;]
-    C --> C5[AbstractQueue&lt;E&gt;]
-    
-    B --> B1[ArrayList&lt;E&gt;]
-    B --> B2[HashSet&lt;E&gt;]
-    B --> B3[HashMap&lt;K,V&gt;]
-    B --> B4[LinkedQueue&lt;E&gt;]
-```
+## 📚 API Overview
 
 ### Core Interfaces
 
-| Interface | Purpose | Methods |
-|-----------|---------|---------|
-| **Iterator** | Element traversal | `hasNext()`, `next()`, `remove?()` |
-| **Collection** | Base collection | `size()`, `add()`, `remove()`, `contains()`, etc. |
-| **List** | Ordered, index-accessible | Extends Collection + `get()`, `set()`, `addAt()`, `indexOf()` |
-| **Set** | No duplicates | Extends Collection with uniqueness guarantee |
-| **Map** | Key-value mappings | `put()`, `get()`, `remove()`, `keys()`, `values()` |
-| **Queue** | FIFO processing | Extends Collection + `offer()`, `poll()`, `peek()` |
+| Interface | Description | Key Methods |
+|-----------|-------------|-------------|
+| **Collection\<E>** | Base interface for all collections | `add()`, `remove()`, `size()`, `contains()` |
+| **List\<E>** | Ordered, indexed collection | `get()`, `set()`, `indexOf()`, `subList()` |
+| **Set\<E>** | Unique elements, no duplicates | Inherits Collection with uniqueness |
+| **Map\<K,V>** | Key-value associations | `put()`, `get()`, `containsKey()`, `entries()` |
+| **Queue\<E>** | FIFO processing | `offer()`, `poll()`, `peek()` |
 
-### Abstract Base Classes
+### Available Implementations
 
-| Class | Extends | Purpose |
-|-------|---------|---------|
-| **AbstractCollection** | — | Common Collection operations |
-| **AbstractList** | AbstractCollection | Common List operations |
-| **AbstractSet** | AbstractCollection | Set-specific behavior |
-| **AbstractMap** | — | Common Map operations |
-| **AbstractQueue** | AbstractCollection | Queue-specific behavior |
+| Type | Implementation | Characteristics |
+|------|----------------|-----------------|
+| **List** | `ArrayList<E>` | Dynamic array, fast random access O(1) |
+| **List** | `LinkedList<E>` | Doubly-linked, fast insertion/deletion |
+| **Set** | `HashSet<E>` | Hash table, fast lookup O(1) average |
+| **Map** | `HashMap<K,V>` | Hash table, fast key lookup O(1) average |
+| **Queue** | `LinkedQueue<E>` | Linked list, FIFO operations O(1) |
+
+### Architecture
+
+```mermaid
+graph TD
+    A[Collection Interface] --> B[List]
+    A --> C[Set]
+    A --> D[Queue]
+    E[Map Interface] --> F[HashMap]
+    B --> G[ArrayList]
+    B --> H[LinkedList]
+    C --> I[HashSet]
+    D --> J[LinkedQueue]
+```
 
 ## 📦 Installation
 
 ```bash
 npm install ts-collections
-# or
+```
+
+<details>
+<summary>Other package managers</summary>
+
+```bash
+# Using pnpm
 pnpm add ts-collections
-# or
+
+# Using yarn
 yarn add ts-collections
 ```
+</details>
 
 ## 🚀 Quick Start
 
-### Automatic Type Safety (Zero Configuration)
-
-**ts-collections** provides automatic runtime type safety out of the box - just like Java's type-safe collections. No configuration needed!
+### Lists - Ordered Collections
 
 ```typescript
 import { ArrayList } from 'ts-collections';
 
 const list = new ArrayList<number>();
-list.add(1);        // ✓ OK
-list.add(2);        // ✓ OK
-list.add("text" as any);  // ❌ TypeError: type mismatch (automatic!)
+list.add(10);
+list.add(20);
+list.add(30);
+
+console.log(list.get(0));     // 10
+console.log(list.size());     // 3
+list.removeAt(1);             // [10, 30]
 ```
 
-**For Java Developers:** This works exactly like Java's `ArrayList<Integer>` - type safety is automatic and enforced at runtime with zero configuration.
-
-### Using Lists
-
-```typescript
-import { ArrayList } from 'ts-collections';
-
-// Create a new list with automatic type safety
-const numbers = new ArrayList<number>();
-
-// Add elements
-numbers.add(10);
-numbers.add(20);
-numbers.add(30);
-console.log(numbers.size()); // 3
-
-// Size access (both methods work)
-console.log(list.size()); // 3
-console.log(list.length); // 3 (alias for size())
-
-// Index-based access
-console.log(numbers.get(0)); // 10
-console.log(numbers.get(2)); // 30
-
-// Insert at specific position
-numbers.addAt(1, 15); // [10, 15, 20, 30]
-
-// Replace element
-const oldValue = numbers.set(2, 25); // [10, 15, 25, 30]
-console.log(oldValue); // 20
-
-// Search operations
-console.log(numbers.indexOf(25)); // 2
-console.log(numbers.lastIndexOf(10)); // 0
-console.log(numbers.contains(15)); // true
-
-// Remove elements
-const removed = numbers.removeAt(1); // [10, 25, 30]
-console.log(removed); // 15
-
-// Get sublist
-const subList = numbers.subList(0, 2); // [10, 25]
-console.log(subList.size()); // 2
-
-// Iteration using iterator
-const iterator = numbers.iterator();
-while (iterator.hasNext()) {
-  console.log(iterator.next());
-}
-
-// Convert to array
-const array = numbers.toArray();
-console.log(array); // [10, 25, 30]
-
-// Clear the list
-numbers.clear();
-console.log(numbers.size()); // 0
-```
-
-### Using Sets
+### Sets - Unique Elements
 
 ```typescript
 import { HashSet } from 'ts-collections';
 
-// Create a new set
-const fruits = new HashSet<string>();
+const set = new HashSet<string>();
+set.add("apple");
+set.add("banana");
+set.add("apple");  // Duplicate ignored
 
-// Add elements (duplicates are ignored)
-fruits.add("apple");
-fruits.add("banana");
-fruits.add("apple"); // Duplicate, won't be added
-console.log(fruits.size()); // 2
-
-// Check membership
-console.log(fruits.contains("apple")); // true
-console.log(fruits.contains("orange")); // false
-
-// Add more elements
-fruits.add("orange");
-fruits.add("grape");
-
-// Convert to array for iteration
-const fruitArray = fruits.toArray();
-console.log(fruitArray); // ["apple", "banana", "orange", "grape"]
-
-// Iteration using iterator
-const iterator = fruits.iterator();
-while (iterator.hasNext()) {
-  console.log(iterator.next());
-}
-
-// Set operations with collections
-const tropicalFruits = new HashSet<string>();
-tropicalFruits.add("banana");
-tropicalFruits.add("pineapple");
-tropicalFruits.add("mango");
-
-// Remove all elements from another collection
-fruits.removeAll(tropicalFruits); // Removes "banana"
-
-// Retain only elements in another collection
-const commonFruits = new HashSet<string>();
-commonFruits.add("apple");
-commonFruits.add("orange");
-fruits.retainAll(commonFruits); // Keeps only "apple" and "orange"
-
-// Clear the set
-fruits.clear();
-console.log(fruits.size()); // 0
+console.log(set.size());           // 2
+console.log(set.contains("apple")); // true
 ```
 
-### Using Maps
+### Maps - Key-Value Pairs
 
 ```typescript
 import { HashMap } from 'ts-collections';
 
-// Create a new map
-const userAges = new HashMap<string, number>();
+const map = new HashMap<string, number>();
+map.put("Alice", 25);
+map.put("Bob", 30);
 
-// Put key-value pairs
-userAges.put("Alice", 25);
-userAges.put("Bob", 30);
-userAges.put("Charlie", 35);
-console.log(userAges.size()); // 3
-
-// Get values by key
-console.log(userAges.get("Alice")); // 25
-console.log(userAges.get("David")); // undefined
-
-// Check key existence
-console.log(userAges.containsKey("Bob")); // true
-console.log(userAges.containsKey("David")); // false
-
-// Check value existence
-console.log(userAges.containsValue(30)); // true
-console.log(userAges.containsValue(40)); // false
-
-// Update existing key
-const oldAge = userAges.put("Alice", 26); // Returns old value: 25
-console.log(userAges.get("Alice")); // 26
-
-// Remove entries
-const removedAge = userAges.remove("Charlie"); // Returns 35
-console.log(userAges.size()); // 2
-
-// Get all keys and values
-const keys = userAges.keys(); // ["Alice", "Bob"]
-const values = userAges.values(); // Collection of [26, 30]
-const entries = userAges.entries(); // [["Alice", 26], ["Bob", 30]]
-
-// Iterate over keys
-const keyIterator = userAges.keyIterator();
-while (keyIterator.hasNext()) {
-  const key = keyIterator.next();
-  console.log(`${key}: ${userAges.get(key)}`);
-}
-
-// Iterate over values
-const valueIterator = userAges.valueIterator();
-while (valueIterator.hasNext()) {
-  console.log(valueIterator.next());
-}
-
-// Check if empty and clear
-console.log(userAges.isEmpty()); // false
-userAges.clear();
-console.log(userAges.isEmpty()); // true
+console.log(map.get("Alice"));        // 25
+console.log(map.containsKey("Bob"));  // true
 ```
 
-### Using Queues
+### Queues - FIFO Processing
 
 ```typescript
 import { LinkedQueue } from 'ts-collections';
 
-// Create a new queue (FIFO - First In, First Out)
-const taskQueue = new LinkedQueue<string>();
+const queue = new LinkedQueue<string>();
+queue.offer("Task 1");
+queue.offer("Task 2");
 
-// Add elements to the queue
-taskQueue.offer("Task 1");
-taskQueue.offer("Task 2");
-taskQueue.offer("Task 3");
-console.log(taskQueue.size()); // 3
-
-// Peek at the front without removing
-console.log(taskQueue.peek()); // "Task 1"
-console.log(taskQueue.size()); // 3 (unchanged)
-
-// Remove and return the front element
-const firstTask = taskQueue.poll(); // "Task 1"
-console.log(firstTask);
-console.log(taskQueue.size()); // 2
-
-// Get the front element (throws if empty)
-try {
-  const nextTask = taskQueue.element(); // "Task 2"
-  console.log(nextTask);
-} catch (error) {
-  console.log("Queue is empty");
-}
-
-// Process all remaining tasks
-while (taskQueue.size() > 0) {
-  const task = taskQueue.poll();
-  console.log(`Processing: ${task}`);
-}
-
-// Check if queue contains elements
-console.log(taskQueue.size()); // 0
-
-// Add more tasks
-taskQueue.offer("New Task A");
-taskQueue.offer("New Task B");
-
-// Check containment
-console.log(taskQueue.contains("New Task A")); // true
-console.log(taskQueue.contains("Old Task")); // false
-
-// Remove specific element
-const removed = taskQueue.remove("New Task A"); // true
-console.log(taskQueue.size()); // 1
-
-// Convert to array
-const remainingTasks = taskQueue.toArray();
-console.log(remainingTasks); // ["New Task B"]
-
-// Clear the queue
-taskQueue.clear();
-console.log(taskQueue.size()); // 0
+console.log(queue.poll());  // "Task 1"
+console.log(queue.peek());  // "Task 2"
 ```
 
-### Advanced Type Validation (Optional)
+## 💡 Common Use Cases
 
-For power users who need advanced validation constraints, use Zod schemas:
-
-```typescript
-import { ArrayList } from 'ts-collections';
-import { z } from 'zod';
-
-// Complex validation with Zod (optional)
-const strictNumbers = new ArrayList<number>({
-    schema: z.number().positive().int()
-});
-
-strictNumbers.add(5);      // ✓ OK
-strictNumbers.add(-1 as any);    // ❌ ERROR: must be positive
-strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
-```
-
-**Note:** Zod is optional - basic type safety works automatically without it!
-
-## 💡 Advanced Examples & Patterns
-
-### Real-World Use Cases
-
-#### Shopping Cart with ArrayList
+<details>
+<summary><strong>Shopping Cart Example</strong></summary>
 
 ```typescript
 import { ArrayList } from 'ts-collections';
@@ -382,102 +222,67 @@ class ShoppingCart {
     this.items.add(product);
   }
 
-  removeItem(productId: string): boolean {
-    const index = this.items.toArray().findIndex(item => item.id === productId);
-    if (index !== -1) {
-      this.items.removeAt(index);
-      return true;
-    }
-    return false;
-  }
-
   getTotalPrice(): number {
-    return this.items.toArray().reduce((total, item) => total + item.price, 0);
-  }
-
-  getItems(): Product[] {
-    return this.items.toArray();
+    return this.items.toArray().reduce((sum, item) => sum + item.price, 0);
   }
 }
 
 const cart = new ShoppingCart();
 cart.addItem({ id: "1", name: "Laptop", price: 999 });
-cart.addItem({ id: "2", name: "Mouse", price: 25 });
-console.log(cart.getTotalPrice()); // 1024
+console.log(cart.getTotalPrice()); // 999
 ```
+</details>
 
-#### User Session Management with HashMap
+<details>
+<summary><strong>Session Management with Maps</strong></summary>
 
 ```typescript
 import { HashMap } from 'ts-collections';
 
-interface UserSession {
+interface Session {
   userId: string;
   loginTime: Date;
-  lastActivity: Date;
 }
 
 class SessionManager {
-  private sessions = new HashMap<string, UserSession>();
+  private sessions = new HashMap<string, Session>();
 
   createSession(userId: string): string {
-    const sessionId = this.generateSessionId();
-    const session: UserSession = {
-      userId,
-      loginTime: new Date(),
-      lastActivity: new Date()
-    };
-    this.sessions.put(sessionId, session);
+    const sessionId = this.generateId();
+    this.sessions.put(sessionId, { userId, loginTime: new Date() });
     return sessionId;
   }
 
-  getSession(sessionId: string): UserSession | undefined {
+  getSession(sessionId: string): Session | undefined {
     return this.sessions.get(sessionId);
   }
-
-  updateActivity(sessionId: string): void {
-    const session = this.sessions.get(sessionId);
-    if (session) {
-      session.lastActivity = new Date();
-    }
-  }
-
-  removeSession(sessionId: string): boolean {
-    return this.sessions.remove(sessionId) !== undefined;
-  }
-
-  getActiveSessions(): string[] {
-    return this.sessions.keys();
-  }
-
-  cleanupExpiredSessions(maxAgeMinutes: number = 30): void {
-    const now = new Date();
-    const toRemove: string[] = [];
-
-    for (const sessionId of this.sessions.keys()) {
-      const session = this.sessions.get(sessionId)!;
-      const ageMinutes = (now.getTime() - session.lastActivity.getTime()) / (1000 * 60);
-      if (ageMinutes > maxAgeMinutes) {
-        toRemove.push(sessionId);
-      }
-    }
-
-    for (const sessionId of toRemove) {
-      this.sessions.remove(sessionId);
-    }
-  }
-
-  private generateSessionId(): string {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  }
 }
-
-const sessionManager = new SessionManager();
-const sessionId = sessionManager.createSession("user123");
-console.log(sessionManager.getActiveSessions()); // [sessionId]
 ```
+</details>
 
-#### Unique Tag System with HashSet
+<details>
+<summary><strong>Task Queue Processing</strong></summary>
+
+```typescript
+import { LinkedQueue } from 'ts-collections';
+
+const taskQueue = new LinkedQueue<string>();
+
+// Add tasks
+taskQueue.offer("Process payment");
+taskQueue.offer("Send email");
+taskQueue.offer("Update inventory");
+
+// Process tasks
+while (taskQueue.size() > 0) {
+  const task = taskQueue.poll();
+  console.log(`Processing: ${task}`);
+}
+```
+</details>
+
+<details>
+<summary><strong>Unique Tags with Sets</strong></summary>
 
 ```typescript
 import { HashSet } from 'ts-collections';
@@ -486,286 +291,53 @@ class TagManager {
   private tags = new HashSet<string>();
 
   addTag(tag: string): boolean {
-    // Normalize and validate tag
-    const normalizedTag = tag.toLowerCase().trim();
-    if (normalizedTag.length === 0 || normalizedTag.length > 50) {
-      return false;
-    }
-    return this.tags.add(normalizedTag);
+    return this.tags.add(tag.toLowerCase());
   }
 
-  addTags(tags: string[]): void {
-    for (const tag of tags) {
-      this.addTag(tag);
-    }
-  }
-
-  removeTag(tag: string): boolean {
-    return this.tags.remove(tag.toLowerCase().trim());
-  }
-
-  hasTag(tag: string): boolean {
-    return this.tags.contains(tag.toLowerCase().trim());
-  }
-
-  getAllTags(): string[] {
+  getTags(): string[] {
     return this.tags.toArray().sort();
   }
-
-  searchTags(query: string): string[] {
-    const normalizedQuery = query.toLowerCase().trim();
-    return this.tags.toArray()
-      .filter(tag => tag.includes(normalizedQuery))
-      .sort();
-  }
-
-  getTagCount(): number {
-    return this.tags.size();
-  }
 }
 
-const tagManager = new TagManager();
-tagManager.addTags(["JavaScript", "TypeScript", "React", "javascript"]); // "javascript" duplicate ignored
-console.log(tagManager.getAllTags()); // ["javascript", "react", "typescript"]
-console.log(tagManager.searchTags("script")); // ["javascript", "typescript"]
+const tags = new TagManager();
+tags.addTag("JavaScript");
+tags.addTag("TypeScript");
+tags.addTag("javascript"); // Duplicate ignored
+console.log(tags.getTags()); // ["javascript", "typescript"]
 ```
+</details>
 
-#### Task Processing Queue with LinkedQueue
-
-```typescript
-import { LinkedQueue } from 'ts-collections';
-
-interface Task {
-  id: string;
-  type: 'email' | 'notification' | 'cleanup';
-  priority: number;
-  data: any;
-}
-
-class TaskProcessor {
-  private taskQueue = new LinkedQueue<Task>();
-
-  addTask(task: Task): void {
-    this.taskQueue.offer(task);
-  }
-
-  addHighPriorityTask(task: Task): void {
-    // For high priority, we could implement a priority queue
-    // For now, just add to front by recreating queue
-    const tempQueue = new LinkedQueue<Task>();
-    tempQueue.offer(task); // Add high priority task first
-
-    // Move existing tasks after
-    while (this.taskQueue.size() > 0) {
-      const existingTask = this.taskQueue.poll()!;
-      tempQueue.offer(existingTask);
-    }
-
-    this.taskQueue = tempQueue;
-  }
-
-  processNextTask(): Task | undefined {
-    return this.taskQueue.poll();
-  }
-
-  peekNextTask(): Task | undefined {
-    return this.taskQueue.peek();
-  }
-
-  getPendingTaskCount(): number {
-    return this.taskQueue.size();
-  }
-
-  getTasksByType(type: Task['type']): Task[] {
-    const tasks: Task[] = [];
-    const tempQueue = new LinkedQueue<Task>();
-
-    // Process all tasks, collect matching ones, rebuild queue
-    while (this.taskQueue.size() > 0) {
-      const task = this.taskQueue.poll()!;
-      if (task.type === type) {
-        tasks.push(task);
-      }
-      tempQueue.offer(task);
-    }
-
-    this.taskQueue = tempQueue;
-    return tasks;
-  }
-
-  clearCompletedTasks(): void {
-    // In a real implementation, you'd mark tasks as completed
-    // For demo, just clear all
-    this.taskQueue.clear();
-  }
-}
-
-const processor = new TaskProcessor();
-processor.addTask({ id: "1", type: "email", priority: 1, data: { to: "user@example.com" } });
-processor.addTask({ id: "2", type: "notification", priority: 2, data: { message: "Hello!" } });
-
-// Process tasks
-while (processor.getPendingTaskCount() > 0) {
-  const task = processor.processNextTask();
-  console.log(`Processing ${task!.type} task: ${task!.id}`);
-}
-```
-
-### Iterator Patterns
-
-#### Manual Iteration
-
-```typescript
-import { ArrayList, HashSet, HashMap } from 'ts-collections';
-
-// List iteration
-const list = new ArrayList<number>();
-list.add(1); list.add(2); list.add(3);
-
-const listIterator = list.iterator();
-while (listIterator.hasNext()) {
-  console.log(listIterator.next());
-}
-
-// Set iteration
-const set = new HashSet<string>();
-set.add("a"); set.add("b"); set.add("c");
-
-const setIterator = set.iterator();
-while (setIterator.hasNext()) {
-  console.log(setIterator.next());
-}
-```
-
-#### Functional Programming with Iterators
+### Advanced: Custom Validation with Zod (Optional)
 
 ```typescript
 import { ArrayList } from 'ts-collections';
+import { z } from 'zod';
 
-// Convert iterator to array for functional operations
-function iteratorToArray<T>(iterator: { hasNext(): boolean; next(): T }): T[] {
-  const result: T[] = [];
-  while (iterator.hasNext()) {
-    result.push(iterator.next());
-  }
-  return result;
-}
-
-const numbers = new ArrayList<number>();
-numbers.add(1); numbers.add(2); numbers.add(3); numbers.add(4); numbers.add(5);
-
-// Use functional programming
-const array = iteratorToArray(numbers.iterator());
-const evenNumbers = array.filter(n => n % 2 === 0); // [2, 4]
-const doubled = array.map(n => n * 2); // [2, 4, 6, 8, 10]
-const sum = array.reduce((acc, n) => acc + n, 0); // 15
-```
-
-### Error Handling
-
-```typescript
-import { ArrayList, HashMap } from 'ts-collections';
-
-const list = new ArrayList<number>();
-list.add(1); list.add(2); list.add(3);
-
-// Safe access with bounds checking
-function safeGet<T>(list: ArrayList<T>, index: number): T | null {
-  try {
-    return list.get(index);
-  } catch (error) {
-    console.error(`Index ${index} is out of bounds`);
-    return null;
-  }
-}
-
-console.log(safeGet(list, 0)); // 1
-console.log(safeGet(list, 10)); // null (with error message)
-
-// Map operations with null checking
-const map = new HashMap<string, number>();
-map.put("key1", 100);
-
-function getOrDefault<K, V>(map: HashMap<K, V>, key: K, defaultValue: V): V {
-  const value = map.get(key);
-  return value !== undefined ? value : defaultValue;
-}
-
-console.log(getOrDefault(map, "key1", 0)); // 100
-console.log(getOrDefault(map, "key2", 0)); // 0
-```
-
-This project strictly adheres to SOLID principles:
-
-### Single Responsibility Principle (SRP)
-Each class has a single, well-defined reason to change. Interfaces define specific contracts, and implementations focus on their specific data structure.
-
-### Open/Closed Principle (OCP)
-The design is open for extension through abstract base classes and interfaces, but closed for modification. New implementations can be added without changing existing code.
-
-### Liskov Substitution Principle (LSP)
-All subclasses can substitute their parent classes without breaking functionality. For example, any `Collection` can be used where a `Collection` is expected.
-
-### Interface Segregation Principle (ISP)
-Clients depend only on methods they actually use. For example, `Queue` doesn't force implementations to implement all `Collection` methods—it extends `Collection` to maintain the contract.
-
-### Dependency Inversion Principle (DIP)
-Code depends on abstractions (interfaces and abstract classes), not concrete implementations. Dependency injection is supported through constructor parameters.
-
-## 📊 Complexity Analysis
-
-All data structures include documented time and space complexity:
-
-```typescript
-// Example: ArrayList
-// add(element): O(1) amortized
-// removeAt(index): O(n)
-// get(index): O(1)
-// indexOf(element): O(n)
-```
-
-## 🧪 Testing
-
-The project uses **Vitest** for comprehensive test coverage. Each interface has a test suite that concrete implementations must satisfy.
-
-### Running Tests
-
-```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test --watch
-
-# Run with coverage
-pnpm test --coverage
-```
-
-### Test Suite Structure
-
-```
-test/interfaces/
-├── Iterator.test.ts
-├── Collection.test.ts
-├── List.test.ts
-├── Set.test.ts
-├── Map.test.ts
-└── Queue.test.ts
-```
-
-Each test suite exports a factory function that implementations can use:
-
-```typescript
-import { describeList } from 'ts-collections/test';
-
-describe('ArrayList', () => {
-  describeList(() => new ArrayList<number>());
+// Advanced validation for power users
+const strictNumbers = new ArrayList<number>({
+    schema: z.number().positive().int()
 });
+
+strictNumbers.add(5);      // ✅ OK
+strictNumbers.add(-1 as any);    // ❌ ERROR: must be positive
+strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
 ```
 
-## 🛠️ Building Custom Implementations
+> **Note:** Zod is optional - basic type safety works automatically without it!
 
-Extend abstract base classes to create custom data structures:
+## 🏗️ Design Principles
+
+**ts-collections** follows SOLID principles for maintainable, extensible code:
+
+- **Single Responsibility**: Each class has one clear purpose
+- **Open/Closed**: Extend through abstract classes without modifying existing code
+- **Liskov Substitution**: Subclasses work anywhere their parent class works
+- **Interface Segregation**: Clean, focused interfaces
+- **Dependency Inversion**: Depend on abstractions, not concrete implementations
+
+### Building Custom Collections
+
+Extend abstract base classes to create your own data structures:
 
 ```typescript
 import { AbstractList } from 'ts-collections';
@@ -784,7 +356,7 @@ class CustomList<E> extends AbstractList<E> {
     return this.elements[index];
   }
 
-  // ... implement remaining abstract methods
+  // Implement remaining abstract methods...
 }
 ```
 
@@ -792,134 +364,103 @@ class CustomList<E> extends AbstractList<E> {
 
 ### Quick References
 
-- **[QUICKSTART.md](QUICKSTART.md)** - Get started in 5 minutes
-- **[JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md)** - For Java developers transitioning to TypeScript
-- **[RUNTIME_VALIDATION.md](RUNTIME_VALIDATION.md)** - Deep dive into validation features
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture and design decisions
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
-- **[PHASE2_REDESIGN.md](PHASE2_REDESIGN.md)** - Technical details of automatic type safety redesign
+- 📘 [QUICKSTART.md](QUICKSTART.md) - Get started in 5 minutes
+- ☕ [JAVA_MIGRATION_GUIDE.md](JAVA_MIGRATION_GUIDE.md) - For Java developers
+- ✅ [RUNTIME_VALIDATION.md](RUNTIME_VALIDATION.md) - Validation features deep dive
+- 🏛️ [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture and design decisions
+- 🔧 [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - API quick reference
+- 🤝 [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 
 ### API Documentation
 
-Full API documentation is generated with TypeDoc:
+Generate full API docs with TypeDoc:
 
 ```bash
 pnpm docs
 ```
 
-Documentation is available in `docs/` directory and includes:
-- Interface contracts
-- Method signatures and descriptions
-- Usage examples
-- Complexity analysis
+## 🧪 Testing
 
-## 🌟 Key Features
+All implementations have comprehensive test coverage (332/332 tests passing).
 
-### Type Safety
-Full TypeScript support with strict null checks and generic type parameters:
-```typescript
-const list: List<number> = new ArrayList<number>();
-// list.add("string"); // ❌ Compile error
-list.add(42); // ✅ OK
-```
+```bash
+# Run all tests
+pnpm test
 
-### Comprehensive Contracts
-Clear, well-documented interfaces prevent misuse:
-```typescript
-// Iterator contract guarantees safe traversal
-const iterator = collection.iterator();
-while (iterator.hasNext()) {
-  const element = iterator.next(); // Safe - guaranteed to exist
-}
-```
+# Watch mode
+pnpm test --watch
 
-### Extensibility
-Easy to add new implementations:
-```typescript
-class TreeSet<E> extends AbstractSet<E> {
-  // Custom implementation using a balanced tree
-}
-```
-
-### Performance Transparency
-All operations are documented with their complexity:
-```typescript
-// O(1) amortized time
-list.add(element);
-
-// O(n) time
-list.indexOf(element);
+# With coverage
+pnpm test --coverage
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these guidelines:
+We welcome contributions! Here's how to get started:
 
 1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Test** your changes (`pnpm test`)
-4. **Lint** your code (`pnpm lint`)
-5. **Commit** with clear messages
-6. **Push** to your branch
-7. **Open** a Pull Request
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Make** your changes
+4. **Test** your changes: `pnpm test`
+5. **Lint** your code: `pnpm lint`
+6. **Commit** with clear messages
+7. **Push** to your branch
+8. **Open** a Pull Request
 
 ### Development Setup
 
 ```bash
-# Install dependencies
+# Clone and install
+git clone https://github.com/Karelaking/ts-collections.git
+cd ts-collections
 pnpm install
 
-# Run tests
-pnpm test
-
-# Run linter
-pnpm lint
-
-# Build the project
-pnpm build
-
-# Generate documentation
-pnpm docs
+# Development workflow
+pnpm test          # Run tests
+pnpm lint          # Check code style
+pnpm build         # Build the project
+pnpm docs          # Generate documentation
 ```
 
-## 📝 Code Style
+For detailed guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-This project uses:
-- **ESLint** for code quality
-- **Prettier** for code formatting
-- **TypeScript** strict mode for type safety
+## 📊 Performance
 
-All code must pass linting and formatting checks:
+All data structures document their performance characteristics:
 
-```bash
-pnpm lint
-pnpm format
-```
+| Operation | ArrayList | HashSet | HashMap | LinkedQueue |
+|-----------|-----------|---------|---------|-------------|
+| Add/Put | O(1)* | O(1)* | O(1)* | O(1) |
+| Get | O(1) | - | O(1)* | - |
+| Remove | O(n) | O(1)* | O(1)* | O(1) |
+| Contains | O(n) | O(1)* | O(1)* | O(n) |
+| Size | O(1) | O(1) | O(1) | O(1) |
+
+\* amortized time complexity
+
+Run benchmarks: `pnpm bench`
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
 
 ## 🙏 Acknowledgments
 
 - Inspired by [Java Collections Framework](https://docs.oracle.com/javase/tutorial/collections/)
 - Built with [TypeScript](https://www.typescriptlang.org/)
 - Tested with [Vitest](https://vitest.dev/)
-- Documented with [TypeDoc](https://typedoc.org/)
 
-## 🔗 Related Resources
+## 🔗 Links
 
-- [Java Collections Documentation](https://docs.oracle.com/javase/tutorial/collections/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Design Patterns](https://refactoring.guru/design-patterns)
-- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ts-collections/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ts-collections/discussions)
-- **Email**: support@example.com
+- **GitHub**: [Karelaking/ts-collections](https://github.com/Karelaking/ts-collections)
+- **npm**: [ts-collections](https://www.npmjs.com/package/ts-collections)
+- **Issues**: [Report a bug](https://github.com/Karelaking/ts-collections/issues)
+- **Discussions**: [Ask questions](https://github.com/Karelaking/ts-collections/discussions)
 
 ---
 
-**Made with ❤️ by the TypeScript Collections Framework team**
+<div align="center">
+  <strong>Made with ❤️ by the ts-collections team</strong>
+  <br>
+  <sub>⭐ Star us on GitHub if you find this useful!</sub>
+</div>
