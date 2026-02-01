@@ -3,56 +3,40 @@ import type { List } from "../interfaces/List";
 import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractList";
 
 /**
- * A Vector implementation with async operation support for TypeScript.
- * 
- * Vector extends ArrayList functionality with async methods for I/O-bound operations.
- * It provides the same core List operations as ArrayList, plus additional async methods
- * for working with promises and async callbacks.
- * 
- * Features:
- * - All standard List operations (inherited from AbstractList)
- * - Async iteration methods for I/O-bound tasks
- * - Runtime type validation by default
- * - Dynamic array with automatic memory management by JavaScript
+ * A simple array-based List implementation using dynamic resizing.
+ * Vector provides the same functionality as ArrayList with O(1) random access
+ * and O(n) insertion/deletion at arbitrary positions.
+ * Leverages JavaScript's native array resizing for optimal performance.
+ * Includes automatic runtime type validation by default.
  *
  * @template T The type of elements in this vector
  *
  * @example
  * ```typescript
  * import { Vector } from 'ts-collections';
+ * import { z } from 'zod';
  * 
- * // Create a vector
+ * // Basic usage
  * const vector = new Vector<number>();
  * vector.add(1);
  * vector.add(2);
  * console.log(vector.size()); // 2
+ * console.log(vector.get(0)); // 1
  * 
- * // Async operations for I/O-bound tasks
- * await vector.forEach(async (item) => {
- *   await saveToDatabase(item);
+ * // With type validation
+ * const strictVector = new Vector<number>({
+ *   schema: z.number().positive()
  * });
- * 
- * const doubled = await vector.map(async (item) => item * 2);
- * const filtered = await vector.filter(async (item) => item > 1);
+ * strictVector.add(5); // OK
+ * strictVector.add(-1 as any); // Throws validation error
  * ```
  */
 export class Vector<T> extends AbstractList<T> implements List<T> {
   private elements: T[] = [];
 
   /**
-   * Creates a new Vector with optional type validation.
-   * 
-   * @param options Type validation options (strict, schema, validator)
-   * 
-   * @example
-   * ```typescript
-   * // Basic vector
-   * const v1 = new Vector<number>();
-   * 
-   * // With type validation
-   * import { z } from 'zod';
-   * const v2 = new Vector<number>({ schema: z.number().positive() });
-   * ```
+   * Creates a new Vector with optional runtime type validation.
+   * @param options Configuration for runtime type checking
    */
   constructor(options?: TypeValidationOptions<T>) {
     super(options);
@@ -222,358 +206,6 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    */
   override toArray(): T[] {
     return [...this.elements];
-  }
-
-  // ========== Async Basic Operations ==========
-
-  /**
-   * Asynchronously adds an element from a promise or async function.
-   * 
-   * @param elementProvider Promise or async function that provides the element
-   * @returns A promise that resolves to true if the element was added
-   * 
-   * @example
-   * ```typescript
-   * await vector.push(fetchDataFromAPI());
-   * await vector.push(async () => await computeValue());
-   * ```
-   */
-  public async push(elementProvider: Promise<T> | (() => Promise<T>)): Promise<boolean> {
-    const element = typeof elementProvider === 'function' 
-      ? await elementProvider() 
-      : await elementProvider;
-    return this.add(element);
-  }
-
-  /**
-   * Asynchronously retrieves an element, useful for chaining async operations.
-   * 
-   * @param index The index of the element to retrieve
-   * @returns A promise that resolves to the element
-   * 
-   * @example
-   * ```typescript
-   * const element = await vector.pull(0);
-   * ```
-   */
-  public async pull(index: number): Promise<T> {
-    this.checkIndex(index);
-    const element = this.elements[index];
-    if (element === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
-    return element;
-  }
-
-  /**
-   * Asynchronously updates an element from a promise or async function.
-   * 
-   * @param index The index of the element to update
-   * @param elementProvider Promise or async function that provides the new element
-   * @returns A promise that resolves to the previous element
-   * 
-   * @example
-   * ```typescript
-   * await vector.update(0, fetchNewValue());
-   * ```
-   */
-  public async update(index: number, elementProvider: Promise<T> | (() => Promise<T>)): Promise<T> {
-    const element = typeof elementProvider === 'function'
-      ? await elementProvider()
-      : await elementProvider;
-    return this.set(index, element);
-  }
-
-  /**
-   * Asynchronously inserts an element from a promise or async function.
-   * 
-   * @param index The index at which to insert
-   * @param elementProvider Promise or async function that provides the element
-   * 
-   * @example
-   * ```typescript
-   * await vector.insert(0, fetchNewValue());
-   * ```
-   */
-  public async insert(index: number, elementProvider: Promise<T> | (() => Promise<T>)): Promise<void> {
-    const element = typeof elementProvider === 'function'
-      ? await elementProvider()
-      : await elementProvider;
-    this.addAt(index, element);
-  }
-
-  /**
-   * Asynchronously removes the element at the specified index.
-   * 
-   * @param index The index of the element to remove
-   * @returns A promise that resolves to the removed element
-   * 
-   * @example
-   * ```typescript
-   * const removed = await vector.remove(0);
-   * ```
-   */
-  public async remove(index: number): Promise<T> {
-    this.checkIndex(index);
-    const removed = this.elements.splice(index, 1);
-    const element = removed[0];
-    if (element === undefined) {
-      throw new Error(`Failed to remove element at index ${index}`);
-    }
-    return element;
-  }
-
-  /**
-   * Asynchronously removes the first element matching the async predicate.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to true if an element was removed
-   * 
-   * @example
-   * ```typescript
-   * const removed = await vector.removeIf(async (item) => await shouldRemove(item));
-   * ```
-   */
-  public async removeIf(predicate: (element: T) => Promise<boolean>): Promise<boolean> {
-    for (let i = 0; i < this.elements.length; i++) {
-      if (await predicate(this.elements[i] as T)) {
-        this.elements.splice(i, 1);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Asynchronously checks if the vector contains the specified element.
-   * 
-   * @param element The element to check for
-   * @returns A promise that resolves to true if found
-   * 
-   * @example
-   * ```typescript
-   * const exists = await vector.has(5);
-   * ```
-   */
-  public async has(element: T): Promise<boolean> {
-    return this.elements.includes(element);
-  }
-
-  /**
-   * Asynchronously checks if any element matches the async predicate.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to true if a match is found
-   * 
-   * @example
-   * ```typescript
-   * const hasMatch = await vector.hasMatching(async (item) => await matches(item));
-   * ```
-   */
-  public async hasMatching(predicate: (element: T) => Promise<boolean>): Promise<boolean> {
-    for (const element of this.elements) {
-      if (await predicate(element as T)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Asynchronously removes all elements, optionally executing cleanup for each.
-   * 
-   * @param cleanup Optional async cleanup function for each element
-   * 
-   * @example
-   * ```typescript
-   * await vector.empty(async (item) => await cleanup(item));
-   * ```
-   */
-  public async empty(cleanup?: (element: T) => Promise<void>): Promise<void> {
-    if (cleanup) {
-      for (const element of this.elements) {
-        await cleanup(element as T);
-      }
-    }
-    this.clear();
-  }
-
-  // ========== Async Collection Operations ==========
-
-  /**
-   * Performs the given action for each element asynchronously.
-   * Operations are performed sequentially to maintain order.
-   * 
-   * @param callback Async function to execute for each element
-   * 
-   * @example
-   * ```typescript
-   * await vector.forEach(async (item, index) => {
-   *   await saveToDatabase(item);
-   * });
-   * ```
-   */
-  public async forEach(callback: (element: T, index: number) => Promise<void>): Promise<void> {
-    for (let i = 0; i < this.elements.length; i++) {
-      await callback(this.elements[i] as T, i);
-    }
-  }
-
-  /**
-   * Creates a new array with the results of calling an async function on every element.
-   * 
-   * @param callback Async function that produces an element of the new array
-   * @returns A promise that resolves to a new array
-   * 
-   * @example
-   * ```typescript
-   * const doubled = await vector.map(async (item) => item * 2);
-   * ```
-   */
-  public async map<U>(callback: (element: T, index: number) => Promise<U>): Promise<U[]> {
-    const results: U[] = [];
-    for (let i = 0; i < this.elements.length; i++) {
-      results.push(await callback(this.elements[i] as T, i));
-    }
-    return results;
-  }
-
-  /**
-   * Creates a new Vector with all elements that pass the async test.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to a new Vector containing filtered elements
-   * 
-   * @example
-   * ```typescript
-   * const filtered = await vector.filter(async (item) => {
-   *   return await isValid(item);
-   * });
-   * ```
-   */
-  public async filter(predicate: (element: T, index: number) => Promise<boolean>): Promise<Vector<T>> {
-    const result = new Vector<T>();
-    for (let i = 0; i < this.elements.length; i++) {
-      const element = this.elements[i] as T;
-      if (await predicate(element, i)) {
-        result.add(element);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Tests whether at least one element passes the async test.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to true if at least one element passes the test
-   * 
-   * @example
-   * ```typescript
-   * const hasMatch = await vector.some(async (item) => {
-   *   return await checkCondition(item);
-   * });
-   * ```
-   */
-  public async some(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
-    for (let i = 0; i < this.elements.length; i++) {
-      if (await predicate(this.elements[i] as T, i)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Tests whether all elements pass the async test.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to true if all elements pass the test
-   * 
-   * @example
-   * ```typescript
-   * const allValid = await vector.every(async (item) => {
-   *   return await validate(item);
-   * });
-   * ```
-   */
-  public async every(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
-    for (let i = 0; i < this.elements.length; i++) {
-      if (!(await predicate(this.elements[i] as T, i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Finds the first element that satisfies the async predicate.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to the found element, or undefined if none found
-   * 
-   * @example
-   * ```typescript
-   * const found = await vector.find(async (item) => {
-   *   return await matches(item);
-   * });
-   * ```
-   */
-  public async find(predicate: (element: T, index: number) => Promise<boolean>): Promise<T | undefined> {
-    for (let i = 0; i < this.elements.length; i++) {
-      const element = this.elements[i] as T;
-      if (await predicate(element, i)) {
-        return element;
-      }
-    }
-    return undefined;
-  }
-
-  /**
-   * Finds the index of the first element that satisfies the async predicate.
-   * 
-   * @param predicate Async function to test each element
-   * @returns A promise that resolves to the index of the found element, or -1 if none found
-   * 
-   * @example
-   * ```typescript
-   * const index = await vector.findIndex(async (item) => {
-   *   return await matches(item);
-   * });
-   * ```
-   */
-  public async findIndex(predicate: (element: T, index: number) => Promise<boolean>): Promise<number> {
-    for (let i = 0; i < this.elements.length; i++) {
-      if (await predicate(this.elements[i] as T, i)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  /**
-   * Executes a reducer function on each element asynchronously, resulting in a single output value.
-   * 
-   * @param callback Async function to execute on each element
-   * @param initialValue Initial value for the accumulator
-   * @returns A promise that resolves to the accumulated result
-   * 
-   * @example
-   * ```typescript
-   * const sum = await vector.reduce(async (acc, item) => {
-   *   return acc + await processItem(item);
-   * }, 0);
-   * ```
-   */
-  public async reduce<U>(
-    callback: (accumulator: U, element: T, index: number) => Promise<U>,
-    initialValue: U
-  ): Promise<U> {
-    let accumulator = initialValue;
-    for (let i = 0; i < this.elements.length; i++) {
-      accumulator = await callback(accumulator, this.elements[i] as T, i);
-    }
-    return accumulator;
   }
 
   private checkIndex(index: number): void {
