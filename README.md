@@ -95,6 +95,54 @@ pnpm add ts-collections
 yarn add ts-collections
 ```
 
+## 🐳 Docker Support
+
+For a consistent development environment, ts-collections provides full Docker support:
+
+### Quick Start with Docker
+
+```bash
+# Run tests
+docker compose run --rm test
+
+# Run linter
+docker compose run --rm lint
+
+# Build the project
+docker compose run --rm build
+
+# Interactive development shell
+docker compose run --rm dev npm test
+```
+
+### Building Docker Image
+
+```bash
+# Build development image
+docker build --target development -t ts-collections:dev .
+
+# Build production image
+docker build --target production -t ts-collections:prod .
+
+# Run tests in container
+docker run --rm ts-collections:dev npm test -- --run
+```
+
+### Docker Compose Services
+
+- **dev** - Interactive development environment with volume mounts
+- **test** - Runs the full test suite
+- **lint** - Runs ESLint on source code
+- **build** - Generates production build artifacts
+- **prod** - Minimal production image
+
+### Benefits
+
+- ✅ **Consistent Environment** - Same Node.js version across all environments
+- ✅ **Easy Onboarding** - No manual setup of Node.js, TypeScript, or dependencies
+- ✅ **Isolated Testing** - Tests run in clean, isolated containers
+- ✅ **CI/CD Ready** - Use in GitHub Actions or other CI platforms
+
 ## 🚀 Quick Start
 
 ### Automatic Type Safety (Zero Configuration)

@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Development service - Interactive development with volume mounts
+  dev:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: /bin/sh
+    stdin_open: true
+    tty: true
+
+  # Test service - Runs the full test suite
+  test:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm test -- --run
+
+  # Lint service - Runs the linter
+  lint:
+    build:
+      context: .
+      target: development
+    container_name: ts-collections-lint
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run lint
+
+  # Build service - Generates dist/ directory
+  build:
+    build:
+      context: .
+      target: build
+    container_name: ts-collections-build
+    volumes:
+      - ./dist:/app/dist
+    command: npm run build
+
+  # Production service - Uses minimal production image
+  prod:
+    build:
+      context: .
+      target: production
+    container_name: ts-collections-prod
+    ports:
+      - "3000:3000"
