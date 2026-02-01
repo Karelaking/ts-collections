@@ -48,7 +48,7 @@ services:
     container_name: ts-collections-build
     volumes:
       - ./dist:/app/dist
-    command: npm run build
+    command: pnpm run build
 
   # Production service - Minimal production image for library consumers
   # Note: This is a library, not a server, so no ports are needed
