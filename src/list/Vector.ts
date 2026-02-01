@@ -210,7 +210,7 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
           throw new Error("No more elements");
         }
         const element = elements[index];
-        index += 1;
+        index++;
         return element;
       },
     };

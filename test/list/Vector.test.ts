@@ -137,7 +137,7 @@ describe("Vector - Async Operations", () => {
     it("should handle empty vector", async () => {
       const emptyVector = new Vector<number>();
       const result = await emptyVector.some(async () => true);
-      expect(result).toBe(false);
+      expect(result).toBe(false); // Empty arrays have no elements to match
     });
   });
 
@@ -168,7 +168,7 @@ describe("Vector - Async Operations", () => {
     it("should handle empty vector", async () => {
       const emptyVector = new Vector<number>();
       const result = await emptyVector.every(async () => false);
-      expect(result).toBe(true); // Empty arrays return true for every
+      expect(result).toBe(true); // Empty arrays vacuously satisfy 'every' (no counterexample exists)
     });
   });
 
