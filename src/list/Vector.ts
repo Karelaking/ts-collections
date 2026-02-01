@@ -3,18 +3,17 @@ import type { List } from "../interfaces/List";
 import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractList";
 
 /**
- * A thread-safe-inspired vector implementation adapted for TypeScript.
- * Based on Java's Vector class with added async operation support.
+ * A Vector implementation with async operation support for TypeScript.
  * 
- * Unlike Java's synchronized Vector, this TypeScript version ensures atomic operations
- * within the JavaScript event loop and provides async methods for I/O-bound tasks.
+ * Vector extends ArrayList functionality with async methods for I/O-bound operations.
+ * It provides the same core List operations as ArrayList, plus additional async methods
+ * for working with promises and async callbacks.
  * 
  * Features:
- * - Dynamic array with automatic capacity management
- * - Capacity increment strategy (similar to Java's capacityIncrement)
- * - All standard List operations
- * - Unique async operation methods for TypeScript
+ * - All standard List operations (inherited from AbstractList)
+ * - Async iteration methods for I/O-bound tasks
  * - Runtime type validation by default
+ * - Dynamic array with automatic memory management by JavaScript
  *
  * @template T The type of elements in this vector
  *
@@ -22,145 +21,58 @@ import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractL
  * ```typescript
  * import { Vector } from 'ts-collections';
  * 
- * // Create with default capacity (10) and doubling strategy
+ * // Create a vector
  * const vector = new Vector<number>();
  * vector.add(1);
  * vector.add(2);
  * console.log(vector.size()); // 2
- * console.log(vector.capacity()); // 10
- * 
- * // Create with initial capacity and capacity increment
- * const customVector = new Vector<string>({ initialCapacity: 5, capacityIncrement: 3 });
- * customVector.addElement("hello");
- * console.log(customVector.capacity()); // 5
  * 
  * // Async operations for I/O-bound tasks
- * await vector.forEachAsync(async (item) => {
- *   await someAsyncOperation(item);
+ * await vector.forEach(async (item) => {
+ *   await saveToDatabase(item);
  * });
  * 
- * const doubled = await vector.mapAsync(async (item) => item * 2);
+ * const doubled = await vector.map(async (item) => item * 2);
+ * const filtered = await vector.filter(async (item) => item > 1);
  * ```
  */
 export class Vector<T> extends AbstractList<T> implements List<T> {
-  private elements: T[];
-  private elementCount: number = 0;
-  private capacityIncrement: number;
+  private elements: T[] = [];
 
   /**
-   * Creates a new Vector with optional initial capacity and capacity increment.
+   * Creates a new Vector with optional type validation.
    * 
-   * @param options Configuration object containing:
-   *   - initialCapacity: The initial capacity of the vector (default: 10)
-   *   - capacityIncrement: Amount to increase capacity when needed (default: 0, which means doubling)
-   *   - Type validation options (strict, schema, validator)
+   * @param options Type validation options (strict, schema, validator)
    * 
    * @example
    * ```typescript
-   * // Default: capacity 10, doubling strategy
+   * // Basic vector
    * const v1 = new Vector<number>();
-   * 
-   * // Custom initial capacity
-   * const v2 = new Vector<string>({ initialCapacity: 20 });
-   * 
-   * // With capacity increment
-   * const v3 = new Vector<number>({ initialCapacity: 10, capacityIncrement: 5 });
    * 
    * // With type validation
    * import { z } from 'zod';
-   * const v4 = new Vector<number>({ schema: z.number().positive() });
+   * const v2 = new Vector<number>({ schema: z.number().positive() });
    * ```
    */
-  constructor(
-    options?: TypeValidationOptions<T> & {
-      initialCapacity?: number;
-      capacityIncrement?: number;
-    }
-  ) {
+  constructor(options?: TypeValidationOptions<T>) {
     super(options);
-    const initialCapacity = options?.initialCapacity ?? 10;
-    if (initialCapacity < 0) {
-      throw new Error("Illegal Capacity: " + initialCapacity);
-    }
-    this.elements = new Array(initialCapacity);
-    this.capacityIncrement = options?.capacityIncrement ?? 0;
   }
 
   /**
-   * Returns the current capacity of this vector.
-   * The capacity is the size of the internal array used to store elements.
-   * 
-   * @returns The current capacity
+   * Appends the specified element to the end of this vector.
+   * @param element The element to be appended to this vector
+   * @returns true if the element was added successfully
    */
-  public capacity(): number {
-    return this.elements.length;
-  }
-
-  /**
-   * Returns the number of elements in this vector.
-   * 
-   * @returns The number of elements
-   */
-  override size(): number {
-    return this.elementCount;
-  }
-
-  /**
-   * Tests if this vector has no elements.
-   * 
-   * @returns true if this vector has no elements
-   */
-  override isEmpty(): boolean {
-    return this.elementCount === 0;
-  }
-
-  /**
-   * Returns true if this vector contains the specified element.
-   * 
-   * @param element Element whose presence in this vector is to be tested
-   * @returns true if this vector contains the specified element
-   */
-  override contains(element: T): boolean {
-    return this.indexOf(element) >= 0;
-  }
-
-  /**
-   * Returns the index of the first occurrence of the specified element in this vector,
-   * or -1 if this vector does not contain the element.
-   * 
-   * @param element Element to search for
-   * @returns The index of the first occurrence of the element, or -1 if not found
-   */
-  override indexOf(element: T): number {
-    for (let i = 0; i < this.elementCount; i++) {
-      if (this.elements[i] === element) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  /**
-   * Returns the index of the last occurrence of the specified element in this vector,
-   * or -1 if this vector does not contain the element.
-   * 
-   * @param element Element to search for
-   * @returns The index of the last occurrence of the element, or -1 if not found
-   */
-  override lastIndexOf(element: T): number {
-    for (let i = this.elementCount - 1; i >= 0; i--) {
-      if (this.elements[i] === element) {
-        return i;
-      }
-    }
-    return -1;
+  override add(element: T): boolean {
+    this.validateElementType(element);
+    this.elements.push(element);
+    return true;
   }
 
   /**
    * Returns the element at the specified position in this vector.
-   * 
-   * @param index Index of the element to return
-   * @returns The element at the specified position
+   * @param index The index of the element to return
+   * @returns The element at the specified position in this vector
    * @throws Error if the index is out of bounds
    */
   override get(index: number): T {
@@ -173,56 +85,9 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Returns the element at the specified index (Java Vector compatibility method).
-   * This is an alias for get(index).
-   * 
-   * @param index Index of the element to return
-   * @returns The element at the specified position
-   * @throws Error if the index is out of bounds
-   */
-  public elementAt(index: number): T {
-    return this.get(index);
-  }
-
-  /**
-   * Returns the first element of this vector.
-   * 
-   * @returns The first element
-   * @throws Error if this vector is empty
-   */
-  public firstElement(): T {
-    if (this.elementCount === 0) {
-      throw new Error("Vector is empty");
-    }
-    const element = this.elements[0];
-    if (element === undefined) {
-      throw new Error("First element is undefined");
-    }
-    return element;
-  }
-
-  /**
-   * Returns the last element of this vector.
-   * 
-   * @returns The last element
-   * @throws Error if this vector is empty
-   */
-  public lastElement(): T {
-    if (this.elementCount === 0) {
-      throw new Error("Vector is empty");
-    }
-    const element = this.elements[this.elementCount - 1];
-    if (element === undefined) {
-      throw new Error("Last element is undefined");
-    }
-    return element;
-  }
-
-  /**
    * Replaces the element at the specified position in this vector with the specified element.
-   * 
-   * @param index Index of the element to replace
-   * @param element Element to be stored at the specified position
+   * @param index The index of the element to replace
+   * @param element The element to be stored at the specified position
    * @returns The element previously at the specified position
    * @throws Error if the index is out of bounds
    */
@@ -238,284 +103,128 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
   }
 
   /**
-   * Sets the element at the specified index (Java Vector compatibility method).
-   * This is an alias for set(index, element).
-   * 
-   * @param element Element to be stored
-   * @param index Index of the element to replace
-   */
-  public setElementAt(element: T, index: number): void {
-    this.set(index, element);
-  }
-
-  /**
-   * Appends the specified element to the end of this vector.
-   * Increases the capacity if needed.
-   * 
-   * @param element Element to be appended
-   * @returns true (as specified by Collection.add)
-   */
-  override add(element: T): boolean {
-    this.validateElementType(element);
-    this.ensureCapacityHelper(this.elementCount + 1);
-    this.elements[this.elementCount++] = element;
-    return true;
-  }
-
-  /**
-   * Adds the specified element to the end of this vector (Java Vector compatibility method).
-   * This is similar to add(element).
-   * 
-   * @param element Element to be added
-   */
-  public addElement(element: T): void {
-    this.add(element);
-  }
-
-  /**
    * Inserts the specified element at the specified position in this vector.
-   * Shifts elements to the right as necessary.
-   * 
-   * @param index Index at which the element is to be inserted
-   * @param element Element to be inserted
+   * Shifts the element currently at that position (if any) and any subsequent elements to the right.
+   * @param index The index at which the specified element is to be inserted
+   * @param element The element to be inserted
    * @throws Error if the index is out of bounds
    */
   override addAt(index: number, element: T): void {
-    if (index < 0 || index > this.elementCount) {
+    if (index < 0 || index > this.elements.length) {
       throw new Error(`Index out of bounds: ${index}`);
     }
     this.validateElementType(element);
-    this.ensureCapacityHelper(this.elementCount + 1);
-    
-    // Shift elements to the right
-    for (let i = this.elementCount; i > index; i--) {
-      this.elements[i] = this.elements[i - 1] as T;
-    }
-    
-    this.elements[index] = element;
-    this.elementCount++;
-  }
-
-  /**
-   * Inserts the specified element at the specified index (Java Vector compatibility method).
-   * This is an alias for addAt(index, element).
-   * 
-   * @param element Element to be inserted
-   * @param index Index at which the element is to be inserted
-   */
-  public insertElementAt(element: T, index: number): void {
-    this.addAt(index, element);
+    this.elements.splice(index, 0, element);
   }
 
   /**
    * Removes the element at the specified position in this vector.
    * Shifts any subsequent elements to the left.
-   * 
-   * @param index Index of the element to be removed
-   * @returns The element that was removed
+   * @param index The index of the element to be removed
+   * @returns The element that was removed from the vector
    * @throws Error if the index is out of bounds
    */
   override removeAt(index: number): T {
     this.checkIndex(index);
-    const oldElement = this.elements[index];
-    if (oldElement === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
+    const removed = this.elements.splice(index, 1);
+    const element = removed[0];
+    if (element === undefined) {
+      throw new Error(`Failed to remove element at index ${index}`);
     }
-    
-    // Shift elements to the left
-    for (let i = index; i < this.elementCount - 1; i++) {
-      this.elements[i] = this.elements[i + 1] as T;
-    }
-    
-    this.elementCount--;
-    this.elements[this.elementCount] = undefined as unknown as T;
-    return oldElement;
+    return element;
   }
 
   /**
-   * Removes the element at the specified index (Java Vector compatibility method).
-   * This is an alias for removeAt(index).
-   * 
-   * @param index Index of the element to be removed
+   * Returns the index of the first occurrence of the specified element in this vector, or -1 if this vector does not contain the element.
+   * @param element The element to search for
+   * @returns The index of the first occurrence of the specified element, or -1 if not found
    */
-  public removeElementAt(index: number): void {
-    this.removeAt(index);
+  override indexOf(element: T): number {
+    return this.elements.indexOf(element);
   }
 
   /**
-   * Removes the first occurrence of the specified element from this vector.
-   * 
-   * @param element Element to be removed
-   * @returns true if the element was removed
+   * Returns the index of the last occurrence of the specified element in this vector, or -1 if this vector does not contain the element.
+   * @param element The element to search for
+   * @returns The index of the last occurrence of the specified element, or -1 if not found
    */
-  public removeElement(element: T): boolean {
-    const index = this.indexOf(element);
-    if (index >= 0) {
-      this.removeAt(index);
-      return true;
+  override lastIndexOf(element: T): number {
+    return this.elements.lastIndexOf(element);
+  }
+
+  /**
+   * Returns a view of the portion of this vector between the specified fromIndex, inclusive, and toIndex, exclusive.
+   * @param fromIndex The low endpoint (inclusive) of the subList
+   * @param toIndex The high endpoint (exclusive) of the subList
+   * @returns A new vector containing the specified range of elements
+   * @throws Error if the indices are out of bounds or fromIndex > toIndex
+   */
+  override subList(fromIndex: number, toIndex: number): List<T> {
+    if (fromIndex < 0 || toIndex > this.elements.length || fromIndex > toIndex) {
+      throw new Error("Invalid index range");
     }
-    return false;
+    const subArray = this.elements.slice(fromIndex, toIndex);
+    const subList = new Vector<T>();
+    for (const element of subArray) {
+      subList.add(element);
+    }
+    return subList;
+  }
+
+  /**
+   * Returns the number of elements in this vector.
+   * @returns The number of elements in this vector
+   */
+  override size(): number {
+    return this.elements.length;
   }
 
   /**
    * Removes all elements from this vector.
-   * The vector will be empty after this call returns.
    */
   override clear(): void {
-    // Clear references to help GC
-    for (let i = 0; i < this.elementCount; i++) {
-      this.elements[i] = undefined as unknown as T;
-    }
-    this.elementCount = 0;
+    this.elements = [];
     this.resetTypeInference();
   }
 
   /**
-   * Removes all elements from this vector (Java Vector compatibility method).
-   * This is an alias for clear().
+   * Returns true if this vector contains the specified element.
+   * @param element The element whose presence in this vector is to be tested
+   * @returns true if this vector contains the specified element
    */
-  public removeAllElements(): void {
-    this.clear();
-  }
-
-  /**
-   * Returns a view of the portion of this vector between the specified fromIndex,
-   * inclusive, and toIndex, exclusive.
-   * 
-   * @param fromIndex Low endpoint (inclusive) of the subList
-   * @param toIndex High endpoint (exclusive) of the subList
-   * @returns A new Vector containing the specified range
-   * @throws Error if indices are invalid
-   */
-  override subList(fromIndex: number, toIndex: number): List<T> {
-    if (fromIndex < 0 || toIndex > this.elementCount || fromIndex > toIndex) {
-      throw new Error("Invalid index range");
-    }
-    const subVector = new Vector<T>();
-    for (let i = fromIndex; i < toIndex; i++) {
-      subVector.add(this.elements[i] as T);
-    }
-    return subVector;
-  }
-
-  /**
-   * Returns an array containing all of the elements in this vector in proper sequence.
-   * 
-   * @returns An array containing all elements
-   */
-  override toArray(): T[] {
-    const result: T[] = [];
-    for (let i = 0; i < this.elementCount; i++) {
-      result.push(this.elements[i] as T);
-    }
-    return result;
+  override contains(element: T): boolean {
+    return this.elements.includes(element);
   }
 
   /**
    * Returns an iterator over the elements in this vector in proper sequence.
-   * 
-   * @returns An iterator over the elements
+   * @returns An iterator over the elements in this vector
    */
   override iterator(): Iterator<T> {
     let index = 0;
     const elements = this.elements;
-    const elementCount = this.elementCount;
     return {
-      hasNext: () => index < elementCount,
+      hasNext: () => index < elements.length,
       next: () => {
-        if (index >= elementCount) {
+        if (index >= elements.length) {
           throw new Error("No more elements");
         }
-        const element = elements[index] as T;
-        index++;
+        const element = elements[index];
+        index += 1;
         return element;
       },
     };
   }
 
   /**
-   * Increases the capacity of this vector, if necessary, to ensure that it can hold
-   * at least the number of elements specified by the minimum capacity argument.
-   * 
-   * @param minCapacity The desired minimum capacity
+   * Returns an array containing all elements in this vector in proper sequence.
+   * @returns An array containing all elements in this vector
    */
-  public ensureCapacity(minCapacity: number): void {
-    if (minCapacity > this.elements.length) {
-      this.ensureCapacityHelper(minCapacity);
-    }
+  override toArray(): T[] {
+    return [...this.elements];
   }
 
-  /**
-   * Trims the capacity of this vector to be the vector's current size.
-   * This can be used to minimize the storage of a vector.
-   */
-  public trimToSize(): void {
-    const newElements = new Array(this.elementCount);
-    for (let i = 0; i < this.elementCount; i++) {
-      newElements[i] = this.elements[i];
-    }
-    this.elements = newElements;
-  }
-
-  /**
-   * Sets the size of this vector. If the new size is greater than the current size,
-   * undefined values are added. If the new size is less than the current size,
-   * elements are removed.
-   * 
-   * @param newSize The new size of this vector
-   * @throws Error if newSize is negative
-   */
-  public setSize(newSize: number): void {
-    if (newSize < 0) {
-      throw new Error("Illegal size: " + newSize);
-    }
-    
-    if (newSize > this.elementCount) {
-      this.ensureCapacityHelper(newSize);
-    } else {
-      // Clear removed elements
-      for (let i = newSize; i < this.elementCount; i++) {
-        this.elements[i] = undefined as unknown as T;
-      }
-    }
-    this.elementCount = newSize;
-  }
-
-  // ========== Async Operations (TypeScript-specific) ==========
-
-  /**
-   * Asynchronously adds an element to this vector.
-   * Useful when the element needs to be computed or fetched asynchronously.
-   * 
-   * @param elementPromise A promise that resolves to the element to add
-   * @returns A promise that resolves to true when the element is added
-   * 
-   * @example
-   * ```typescript
-   * const vector = new Vector<string>();
-   * await vector.addAsync(fetchDataFromAPI());
-   * ```
-   */
-  public async addAsync(elementPromise: Promise<T>): Promise<boolean> {
-    const element = await elementPromise;
-    return this.add(element);
-  }
-
-  /**
-   * Asynchronously removes the first occurrence of the specified element.
-   * 
-   * @param elementPromise A promise that resolves to the element to remove
-   * @returns A promise that resolves to true if the element was removed
-   * 
-   * @example
-   * ```typescript
-   * await vector.removeAsync(Promise.resolve(someValue));
-   * ```
-   */
-  public async removeAsync(elementPromise: Promise<T>): Promise<boolean> {
-    const element = await elementPromise;
-    return this.removeElement(element);
-  }
+  // ========== Async Operations ==========
 
   /**
    * Performs the given action for each element asynchronously.
@@ -525,13 +234,13 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * await vector.forEachAsync(async (item) => {
+   * await vector.forEach(async (item, index) => {
    *   await saveToDatabase(item);
    * });
    * ```
    */
-  public async forEachAsync(callback: (element: T, index: number) => Promise<void>): Promise<void> {
-    for (let i = 0; i < this.elementCount; i++) {
+  public async forEach(callback: (element: T, index: number) => Promise<void>): Promise<void> {
+    for (let i = 0; i < this.elements.length; i++) {
       await callback(this.elements[i] as T, i);
     }
   }
@@ -544,12 +253,12 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * const doubled = await vector.mapAsync(async (item) => item * 2);
+   * const doubled = await vector.map(async (item) => item * 2);
    * ```
    */
-  public async mapAsync<U>(callback: (element: T, index: number) => Promise<U>): Promise<U[]> {
+  public async map<U>(callback: (element: T, index: number) => Promise<U>): Promise<U[]> {
     const results: U[] = [];
-    for (let i = 0; i < this.elementCount; i++) {
+    for (let i = 0; i < this.elements.length; i++) {
       results.push(await callback(this.elements[i] as T, i));
     }
     return results;
@@ -563,14 +272,14 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * const filtered = await vector.filterAsync(async (item) => {
+   * const filtered = await vector.filter(async (item) => {
    *   return await isValid(item);
    * });
    * ```
    */
-  public async filterAsync(predicate: (element: T, index: number) => Promise<boolean>): Promise<Vector<T>> {
+  public async filter(predicate: (element: T, index: number) => Promise<boolean>): Promise<Vector<T>> {
     const result = new Vector<T>();
-    for (let i = 0; i < this.elementCount; i++) {
+    for (let i = 0; i < this.elements.length; i++) {
       const element = this.elements[i] as T;
       if (await predicate(element, i)) {
         result.add(element);
@@ -587,13 +296,13 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * const hasMatch = await vector.someAsync(async (item) => {
+   * const hasMatch = await vector.some(async (item) => {
    *   return await checkCondition(item);
    * });
    * ```
    */
-  public async someAsync(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
-    for (let i = 0; i < this.elementCount; i++) {
+  public async some(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
+    for (let i = 0; i < this.elements.length; i++) {
       if (await predicate(this.elements[i] as T, i)) {
         return true;
       }
@@ -609,13 +318,13 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * const allValid = await vector.everyAsync(async (item) => {
+   * const allValid = await vector.every(async (item) => {
    *   return await validate(item);
    * });
    * ```
    */
-  public async everyAsync(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
-    for (let i = 0; i < this.elementCount; i++) {
+  public async every(predicate: (element: T, index: number) => Promise<boolean>): Promise<boolean> {
+    for (let i = 0; i < this.elements.length; i++) {
       if (!(await predicate(this.elements[i] as T, i))) {
         return false;
       }
@@ -631,13 +340,13 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
    * 
    * @example
    * ```typescript
-   * const found = await vector.findAsync(async (item) => {
+   * const found = await vector.find(async (item) => {
    *   return await matches(item);
    * });
    * ```
    */
-  public async findAsync(predicate: (element: T, index: number) => Promise<boolean>): Promise<T | undefined> {
-    for (let i = 0; i < this.elementCount; i++) {
+  public async find(predicate: (element: T, index: number) => Promise<boolean>): Promise<T | undefined> {
+    for (let i = 0; i < this.elements.length; i++) {
       const element = this.elements[i] as T;
       if (await predicate(element, i)) {
         return element;
@@ -646,40 +355,55 @@ export class Vector<T> extends AbstractList<T> implements List<T> {
     return undefined;
   }
 
-  // Private helper methods
-
-  private ensureCapacityHelper(minCapacity: number): void {
-    if (minCapacity > this.elements.length) {
-      this.grow(minCapacity);
+  /**
+   * Finds the index of the first element that satisfies the async predicate.
+   * 
+   * @param predicate Async function to test each element
+   * @returns A promise that resolves to the index of the found element, or -1 if none found
+   * 
+   * @example
+   * ```typescript
+   * const index = await vector.findIndex(async (item) => {
+   *   return await matches(item);
+   * });
+   * ```
+   */
+  public async findIndex(predicate: (element: T, index: number) => Promise<boolean>): Promise<number> {
+    for (let i = 0; i < this.elements.length; i++) {
+      if (await predicate(this.elements[i] as T, i)) {
+        return i;
+      }
     }
+    return -1;
   }
 
-  private grow(minCapacity: number): void {
-    const oldCapacity = this.elements.length;
-    let newCapacity: number;
-    
-    if (this.capacityIncrement > 0) {
-      // Use capacity increment
-      newCapacity = oldCapacity + this.capacityIncrement;
-    } else {
-      // Double the capacity
-      newCapacity = oldCapacity * 2;
+  /**
+   * Executes a reducer function on each element asynchronously, resulting in a single output value.
+   * 
+   * @param callback Async function to execute on each element
+   * @param initialValue Initial value for the accumulator
+   * @returns A promise that resolves to the accumulated result
+   * 
+   * @example
+   * ```typescript
+   * const sum = await vector.reduce(async (acc, item) => {
+   *   return acc + await processItem(item);
+   * }, 0);
+   * ```
+   */
+  public async reduce<U>(
+    callback: (accumulator: U, element: T, index: number) => Promise<U>,
+    initialValue: U
+  ): Promise<U> {
+    let accumulator = initialValue;
+    for (let i = 0; i < this.elements.length; i++) {
+      accumulator = await callback(accumulator, this.elements[i] as T, i);
     }
-    
-    // Ensure we meet minimum capacity
-    if (newCapacity < minCapacity) {
-      newCapacity = minCapacity;
-    }
-    
-    const newElements = new Array(newCapacity);
-    for (let i = 0; i < this.elementCount; i++) {
-      newElements[i] = this.elements[i];
-    }
-    this.elements = newElements;
+    return accumulator;
   }
 
   private checkIndex(index: number): void {
-    if (index < 0 || index >= this.elementCount) {
+    if (index < 0 || index >= this.elements.length) {
       throw new Error(`Index out of bounds: ${index}`);
     }
   }
