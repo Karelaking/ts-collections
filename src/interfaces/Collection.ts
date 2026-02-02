@@ -9,7 +9,7 @@ import type { Iterator } from "./Iterator";
  *
  * @template E The type of elements in this collection
  */
-export interface Collection<E> {
+export interface Collection<E> extends Iterator<E> {
   /**
    * Returns the number of elements in this collection.
    */
