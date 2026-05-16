@@ -477,3 +477,23 @@ describe("HashMap - Core Methods", () => {
     });
   });
 });
+
+describe("HashMap - Runtime Type Safety", () => {
+  it("should include method and invalid key context in key validation errors", () => {
+    const map = new HashMap<string, number>();
+    map.put("age", 25);
+
+    expect(() => map.put(123 as any, 30)).toThrow(
+      "HashMap.put(123) key validation failed: Expected string but received number 123"
+    );
+  });
+
+  it("should include method and key context in value validation errors", () => {
+    const map = new HashMap<string, number>();
+    map.put("age", 25);
+
+    expect(() => map.put("age", "old" as any)).toThrow(
+      'HashMap.put("age") value validation failed: Expected number but received string "old"'
+    );
+  });
+});

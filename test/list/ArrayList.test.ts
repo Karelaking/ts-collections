@@ -706,3 +706,32 @@ describe("ArrayList - Core Methods", () => {
     });
   });
 });
+
+describe("ArrayList - Runtime Type Safety", () => {
+  it("should include collection, method, value, and index context in add errors", () => {
+    const list = new ArrayList<number>();
+    list.add(1);
+
+    expect(() => list.add("text" as any)).toThrow(
+      'ArrayList.add() validation failed: Expected number but received string "text" at index 1'
+    );
+  });
+
+  it("should include the target index in addAt validation errors", () => {
+    const list = new ArrayList<number>();
+    list.add(1);
+
+    expect(() => list.addAt(0, "text" as any)).toThrow(
+      'ArrayList.addAt(0) validation failed: Expected number but received string "text"'
+    );
+  });
+
+  it("should include the target index in set validation errors", () => {
+    const list = new ArrayList<number>();
+    list.add(1);
+
+    expect(() => list.set(0, "text" as any)).toThrow(
+      'ArrayList.set(0) validation failed: Expected number but received string "text"'
+    );
+  });
+});

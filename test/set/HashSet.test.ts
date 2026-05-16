@@ -398,3 +398,14 @@ describe("HashSet - Core Methods", () => {
     });
   });
 });
+
+describe("HashSet - Runtime Type Safety", () => {
+  it("should include collection and method context in add validation errors", () => {
+    const set = new HashSet<number>();
+    set.add(1);
+
+    expect(() => set.add("text" as any)).toThrow(
+      'HashSet.add() validation failed: Expected number but received string "text"'
+    );
+  });
+});

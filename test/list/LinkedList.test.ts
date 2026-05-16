@@ -115,7 +115,9 @@ describe("LinkedList - Runtime Type Safety", () => {
   it("should enforce type consistency by default", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.add("text" as any)).toThrow("Type mismatch");
+    expect(() => list.add("text" as any)).toThrow(
+      'LinkedList.add() validation failed: Expected number but received string "text" at index 1'
+    );
   });
 
   it("should validate with Zod schema", () => {
@@ -123,7 +125,9 @@ describe("LinkedList - Runtime Type Safety", () => {
       schema: z.number().positive(),
     });
     list.add(5);
-    expect(() => list.add(-1)).toThrow("Validation failed");
+    expect(() => list.add(-1)).toThrow(
+      "LinkedList.add() validation failed: Too small: expected number to be >0 (received number -1) at index 1"
+    );
   });
 
   it("should validate with custom validator", () => {
@@ -131,7 +135,9 @@ describe("LinkedList - Runtime Type Safety", () => {
       validator: (val) => typeof val === "number" && val > 0,
     });
     list.add(5);
-    expect(() => list.add(-1)).toThrow("Type validation failed");
+    expect(() => list.add(-1)).toThrow(
+      "LinkedList.add() validation failed: Element did not pass custom validation (received number -1) at index 1"
+    );
   });
 
   it("should allow mixed types when strict is false", () => {
@@ -145,19 +151,25 @@ describe("LinkedList - Runtime Type Safety", () => {
   it("should validate on addFirst", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.addFirst("text" as any)).toThrow("Type mismatch");
+    expect(() => list.addFirst("text" as any)).toThrow(
+      'LinkedList.addFirst() validation failed: Expected number but received string "text" at index 0'
+    );
   });
 
   it("should validate on addLast", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.addLast("text" as any)).toThrow("Type mismatch");
+    expect(() => list.addLast("text" as any)).toThrow(
+      'LinkedList.addLast() validation failed: Expected number but received string "text" at index 1'
+    );
   });
 
   it("should validate on set", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.set(0, "text" as any)).toThrow("Type mismatch");
+    expect(() => list.set(0, "text" as any)).toThrow(
+      'LinkedList.set(0) validation failed: Expected number but received string "text"'
+    );
   });
 
   it("should reset type inference after clear", () => {
