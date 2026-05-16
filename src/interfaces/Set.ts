@@ -5,6 +5,12 @@ import type { Collection } from "./Collection";
  * This interface models the mathematical set abstraction.
  *
  * @template E The type of elements in this set
+ *
+ * @example
+ * const set = new HashSet<number>();
+ * set.add(1); set.add(2); set.add(1);
+ * set.size();      // 2 (no duplicates)
+ * set.contains(1); // true
  */
 export interface Set<E> extends Collection<E> {
   /**

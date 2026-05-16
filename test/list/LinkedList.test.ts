@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { LinkedList } from "../../src/list/LinkedList";
-import { describeList } from "../interfaces/List.test";
+import { describeList } from "../interfaces/List";
 import { z } from "zod";
 
 /**

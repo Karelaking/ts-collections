@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { LinkedStack } from "../../src/stack/LinkedStack";
-import { describeStack } from "../interfaces/Stack.test";
+import { describeStack } from "../interfaces/Stack";
 
 // Run shared Stack interface tests
 describeStack(() => new LinkedStack<number>());

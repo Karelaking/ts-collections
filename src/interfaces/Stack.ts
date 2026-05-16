@@ -5,6 +5,13 @@ import type { Collection } from "./Collection";
  * Provides push and pop operations for stack behavior.
  *
  * @template E The type of elements in this stack
+ *
+ * @example
+ * const stack = new LinkedStack<number>();
+ * stack.push(1); stack.push(2);
+ * stack.peek(); // 2 (not removed)
+ * stack.pop();  // 2 (removed)
+ * stack.size(); // 1
  */
 export interface Stack<E> extends Collection<E> {
   /**

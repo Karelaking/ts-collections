@@ -8,6 +8,13 @@ import type { Collection } from "./Collection";
  * but other orderings are possible (e.g., Priority Queue, Deque).
  *
  * @template E The type of elements in this queue
+ *
+ * @example
+ * const queue = new LinkedQueue<number>();
+ * queue.offer(1); queue.offer(2);
+ * queue.peek();   // 1 (not removed)
+ * queue.poll();   // 1 (removed)
+ * queue.size();   // 1
  */
 export interface Queue<E> extends Collection<E> {
   /**

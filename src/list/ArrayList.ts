@@ -1,6 +1,9 @@
+import {
+  AbstractList,
+  type TypeValidationOptions,
+} from "../abstracts/AbstractList";
 import type { Iterator } from "../interfaces/Iterator";
 import type { List } from "../interfaces/List";
-import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractList";
 
 /**
  * A simple array-based List implementation using dynamic resizing.
@@ -14,7 +17,7 @@ import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractL
  * ```typescript
  * import { ArrayList } from 'ts-collections';
  * import { z } from 'zod';
- * 
+ *
  * // Automatic type safety (enabled by default, like Java)
  * const list = new ArrayList<number>();
  * list.add(1);
@@ -22,19 +25,19 @@ import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractL
  * console.log(list.size()); // 2
  * console.log(list.get(0)); // 1
  * list.add("text" as any); // ✗ Throws TypeError: type mismatch (automatic!)
- * 
+ *
  * // Disable type checking if needed
  * const unvalidatedList = new ArrayList<number>({ strict: false });
  * unvalidatedList.add(1);
  * unvalidatedList.add("text"); // OK (no validation)
- * 
+ *
  * // Advanced: With Zod schema for complex validation (power users)
  * const strictList = new ArrayList<number>({
  *   schema: z.number().positive()
  * });
  * strictList.add(5); // OK
  * strictList.add(-1 as any); // ✗ Throws: "Validation failed: Number must be greater than 0"
- * 
+ *
  * // Advanced: With custom validator (power users)
  * const validatedList = new ArrayList<number>({
  *   validator: (val) => typeof val === 'number' && val > 0
@@ -71,11 +74,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
    */
   override get(index: number): T {
     this.checkIndex(index);
-    const element = this.elements[index];
-    if (element === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
-    return element;
+    return this.elements[index] as T;
   }
 
   /**
@@ -89,11 +88,8 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
     this.checkIndex(index);
     this.validateElementType(element, "set", { methodArgs: [index] });
     const oldElement = this.elements[index];
-    if (oldElement === undefined) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
     this.elements[index] = element;
-    return oldElement;
+    return oldElement as T;
   }
 
   /**
@@ -120,12 +116,8 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
    */
   override removeAt(index: number): T {
     this.checkIndex(index);
-    const removed = this.elements.splice(index, 1);
-    const element = removed[0];
-    if (element === undefined) {
-      throw new Error(`Failed to remove element at index ${index}`);
-    }
-    return element;
+    const [removed] = this.elements.splice(index, 1);
+    return removed as T;
   }
 
   /**
@@ -154,7 +146,11 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
    * @throws Error if the indices are out of bounds or fromIndex > toIndex
    */
   override subList(fromIndex: number, toIndex: number): List<T> {
-    if (fromIndex < 0 || toIndex > this.elements.length || fromIndex > toIndex) {
+    if (
+      fromIndex < 0 ||
+      toIndex > this.elements.length ||
+      fromIndex > toIndex
+    ) {
       throw new Error("Invalid index range");
     }
     const subArray = this.elements.slice(fromIndex, toIndex);
@@ -205,7 +201,10 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
         }
         const element = elements[index] as T;
         index += 1;
-        return element;
+        if (element === undefined) {
+          throw new Error("No more elements");
+        }
+        return element as T   ;
       },
     };
   }

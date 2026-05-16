@@ -3,5 +3,10 @@
   "github.copilot.chat.codeGeneration.instructionFiles": [
     "./github/copilot-code-generation-instructions.md"
   ],
-  "github.copilot.chat.codeGeneration.enableAutoGeneration": true
+  "github.copilot.chat.codeGeneration.enableAutoGeneration": true,
+  "js/ts.tsdk.path": "node_modules\\typescript\\lib",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  }
 }

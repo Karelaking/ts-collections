@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { LinkedQueue } from "../../src/queue/LinkedQueue";
-import { describeQueue } from "../interfaces/Queue.test";
+import { describeQueue } from "../interfaces/Queue";
 
 /**
  * Test suite for LinkedQueue implementation

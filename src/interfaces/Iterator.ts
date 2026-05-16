@@ -3,6 +3,12 @@
  * Follows the Iterator pattern similar to Java's Iterator.
  *
  * @template E The type of elements in the iteration
+ *
+ * @example
+ * const list = new ArrayList<number>();
+ * list.add(1); list.add(2);
+ * const it = list.iterator();
+ * while (it.hasNext()) console.log(it.next()); // 1, 2
  */
 export interface Iterator<E> {
   /**

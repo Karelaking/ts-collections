@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { ArrayList } from "../../src/list/ArrayList";
-import { describeList } from "../interfaces/List.test";
+import { describeList } from "../interfaces/List";
 
 /**
  * Test suite for ArrayList implementation

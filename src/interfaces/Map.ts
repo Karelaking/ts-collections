@@ -7,6 +7,13 @@ import type { Iterator } from "./Iterator";
  *
  * @template K The type of keys maintained by this map
  * @template V The type of mapped values
+ *
+ * @example
+ * const map = new HashMap<string, number>();
+ * map.put('a', 1); map.put('b', 2);
+ * map.get('a');          // 1
+ * map.containsKey('b');  // true
+ * map.size();            // 2
  */
 export interface Map<K, V> {
   /**
@@ -64,6 +71,114 @@ export interface Map<K, V> {
    * @returns The value previously associated with key, or undefined if there was no mapping
    */
   remove(key: K): V | undefined;
+
+  /**
+   * Removes the entry for the specified key only if it is currently mapped to the specified value.
+   *
+   * This is a TypeScript-friendly parity method for Java's overloaded remove(key, value).
+   *
+   * @param key Key whose mapping is to be removed
+   * @param value Value expected to be currently associated with the key
+   * @returns true if the entry was removed
+   */
+  removeEntry(key: K, value: V): boolean;
+
+  /**
+   * Returns the value to which the specified key is mapped,
+   * or defaultValue if this map contains no mapping for the key.
+   *
+   * @param key The key whose associated value is to be returned
+   * @param defaultValue The default mapping of the key
+   */
+  getOrDefault(key: K, defaultValue: V): V;
+
+  /**
+   * Associates the specified value with the specified key if it is not already mapped.
+   *
+   * @param key Key with which the specified value is to be associated
+   * @param value Value to be associated with the specified key
+   * @returns The current value associated with key, or undefined if there was no mapping
+   */
+  putIfAbsent(key: K, value: V): V | undefined;
+
+  /**
+   * Replaces the entry for the specified key only if it is currently mapped.
+   *
+   * @param key Key with which the specified value is associated
+   * @param value Value to be associated with the specified key
+   * @returns The previous value associated with key, or undefined if there was no mapping
+   */
+  replace(key: K, value: V): V | undefined;
+
+  /**
+   * Replaces the entry for the specified key only if currently mapped to the specified old value.
+   *
+   * This is a TypeScript-friendly parity method for Java's overloaded replace(key, oldValue, newValue).
+   *
+   * @param key Key with which the specified value is associated
+   * @param oldValue Value expected to be currently associated with the specified key
+   * @param newValue Value to be associated with the specified key
+   * @returns true if the value was replaced
+   */
+  replaceEntry(key: K, oldValue: V, newValue: V): boolean;
+
+  /**
+   * If the specified key is not already associated with a value, attempts to compute its value
+   * using the given mapping function and enters it into this map unless undefined.
+   *
+   * @param key Key with which the specified value is to be associated
+   * @param mappingFunction Function to compute a value
+   * @returns Current (existing or computed) value associated with key, or undefined
+   */
+  computeIfAbsent(key: K, mappingFunction: (key: K) => V | undefined): V | undefined;
+
+  /**
+   * If the value for the specified key is present, attempts to compute a new mapping
+   * given the key and its current mapped value.
+   *
+   * If the remapping function returns undefined, the mapping is removed.
+   *
+   * @param key Key with which the specified value is associated
+   * @param remappingFunction Function to compute a new value
+   * @returns New value associated with the specified key, or undefined if none
+   */
+  computeIfPresent(
+    key: K,
+    remappingFunction: (key: K, value: V) => V | undefined,
+  ): V | undefined;
+
+  /**
+   * Attempts to compute a mapping for the specified key and its current mapped value
+   * (or undefined if there is no current mapping).
+   *
+   * If the remapping function returns undefined, the mapping is removed.
+   *
+   * @param key Key with which the specified value is associated
+   * @param remappingFunction Function to compute a new value
+   * @returns New value associated with the specified key, or undefined if none
+   */
+  compute(
+    key: K,
+    remappingFunction: (key: K, value: V | undefined) => V | undefined,
+  ): V | undefined;
+
+  /**
+   * If the specified key is not already associated with a value or is associated with undefined,
+   * associates it with the given non-null value. Otherwise, replaces the associated value with
+   * the results of the given remapping function.
+   *
+   * If the remapping function returns undefined, the mapping is removed.
+   *
+   * @param key Key with which the resulting value is to be associated
+   * @param value The non-null value to merge with the existing value
+   * @param remappingFunction Function to recompute a value if key is already present
+   * @returns New value associated with the specified key, or undefined if none
+   */
+  merge(
+    key: K,
+    value: V,
+    remappingFunction: (oldValue: V, newValue: V) => V | undefined,
+  ): V | undefined;
 
   /**
    * Copies all of the mappings from the specified map to this map.

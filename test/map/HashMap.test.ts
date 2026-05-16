@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { HashMap } from "../../src/map/HashMap";
-import { describeMap } from "../interfaces/Map.test";
+import { describeMap } from "../interfaces/Map";
 
 /**
  * Test suite for HashMap implementation

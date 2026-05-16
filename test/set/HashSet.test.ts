@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { HashSet } from "../../src/set/HashSet";
-import { describeSet } from "../interfaces/Set.test";
+import { describeSet } from "../interfaces/Set";
 
 /**
  * Test suite for HashSet implementation

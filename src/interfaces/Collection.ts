@@ -8,6 +8,13 @@ import type { Iterator } from "./Iterator";
  * Some are ordered and others unordered.
  *
  * @template E The type of elements in this collection
+ *
+ * @example
+ * const list = new ArrayList<number>();
+ * list.add(1); list.add(2);
+ * list.size();     // 2
+ * list.contains(1); // true
+ * list.toArray();  // [1, 2]
  */
 export interface Collection<E> {
   /**

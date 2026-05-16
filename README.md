@@ -1,13 +1,13 @@
 <div align="center">
   <h1>ts-collections</h1>
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
-  
+
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
   [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
   [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
   ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
-  
+
   <p>
     <a href="#-features">Features</a> •
     <a href="#-quick-start">Quick Start</a> •
@@ -21,7 +21,7 @@
 
 ## 🌟 Why ts-collections?
 
-**ts-collections** is a Java-inspired collections framework that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.
+**ts-collections** is a Java-inspired collections framework and library that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.
 
 ```typescript
 import { ArrayList, HashMap, HashSet } from 'ts-collections';
@@ -50,7 +50,7 @@ set.add("unique");
 ### 🔒 Automatic Type Safety
 Runtime type checking enabled by default - no configuration needed. Works just like Java's type-safe collections.
 
-### 🎯 Zero Configuration  
+### 🎯 Zero Configuration
 Type safety works out of the box. No need to learn validation libraries or configure schemas.
 
 ### ☕ Java-Friendly
@@ -109,8 +109,12 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 | **List** | `ArrayList<E>` | Dynamic array, fast random access O(1) |
 | **List** | `LinkedList<E>` | Doubly-linked, fast insertion/deletion |
 | **Set** | `HashSet<E>` | Hash table, fast lookup O(1) average |
+| **Set** | `TreeSet<E>` | Sorted set, comparator-based ordering |
 | **Map** | `HashMap<K,V>` | Hash table, fast key lookup O(1) average |
+| **Map** | `TreeMap<K,V>` | Sorted map, comparator-based ordering |
 | **Queue** | `LinkedQueue<E>` | Linked list, FIFO operations O(1) |
+| **Queue** | `PriorityQueue<E>` | Heap-based priority ordering |
+| **Deque** | `LinkedDeque<E>` | Double-ended queue, add/remove at both ends |
 
 ### Architecture
 
@@ -129,7 +133,11 @@ graph TD
 ## 📦 Installation
 
 ```bash
-npm install ts-collections
+npm i @karelaking/ts-collections
+```
+
+```bash
+pnpm i @karelaking/ts-collections
 ```
 
 <details>
@@ -199,6 +207,76 @@ queue.offer("Task 2");
 
 console.log(queue.poll());  // "Task 1"
 console.log(queue.peek());  // "Task 2"
+```
+
+### Iterators - Traverse Elements
+
+```typescript
+import { ArrayList } from 'ts-collections';
+
+const list = new ArrayList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+
+const iterator = list.iterator();
+while (iterator.hasNext()) {
+  console.log(iterator.next());
+}
+```
+
+### Priority Queues - Sorted Processing
+
+```typescript
+import { PriorityQueue } from 'ts-collections';
+
+const priorities = new PriorityQueue<number>();
+priorities.offer(5);
+priorities.offer(1);
+priorities.offer(3);
+
+console.log(priorities.poll()); // 1
+console.log(priorities.peek()); // 3
+```
+
+### Tree Maps - Sorted Key Order
+
+```typescript
+import { TreeMap } from 'ts-collections';
+
+const sortedMap = new TreeMap<string, number>();
+sortedMap.put("c", 3);
+sortedMap.put("a", 1);
+sortedMap.put("b", 2);
+
+console.log(sortedMap.keys()); // ["a", "b", "c"]
+```
+
+### Tree Sets - Sorted Unique Values
+
+```typescript
+import { TreeSet } from 'ts-collections';
+
+const sortedSet = new TreeSet<number>();
+sortedSet.add(3);
+sortedSet.add(1);
+sortedSet.add(2);
+
+console.log(sortedSet.toArray()); // [1, 2, 3]
+```
+
+### Double-Ended Queues - Front and Back Operations
+
+```typescript
+import { LinkedDeque } from 'ts-collections';
+
+const deque = new LinkedDeque<string>();
+deque.addFirst("middle");
+deque.addFirst("front");
+deque.addLast("back");
+
+console.log(deque.pollFirst()); // "front"
+console.log(deque.pollLast());  // "back"
 ```
 
 ## 💡 Common Use Cases
@@ -383,6 +461,8 @@ pnpm docs
 
 All implementations have comprehensive test coverage (332/332 tests passing).
 
+Test files live under the `test/` directory and mirror the `src/` structure.
+
 ```bash
 # Run all tests
 pnpm test
@@ -439,6 +519,42 @@ All data structures document their performance characteristics:
 \* amortized time complexity
 
 Run benchmarks: `pnpm bench`
+
+## 🐳 Docker
+
+Run the project in consistent, isolated environments with Docker.
+
+### Docker services
+
+- `dev` - development container with source mounts and hot editing support
+- `test` - runs `npm test` in an isolated container
+- `lint` - runs `npm run lint` in an isolated container
+- `build` - runs `npm run build` in an isolated container
+- `prod` - production image using the final build output
+
+### Common commands
+
+```bash
+docker compose run --rm dev
+docker compose run --rm test
+docker compose run --rm lint
+docker compose run --rm build
+
+docker build --target development -t ts-collections:dev .
+docker build --target production -t ts-collections:prod .
+```
+
+### Benefits
+
+- Consistent environment across machines and CI/CD
+- Strong isolation from local machine differences
+- Reproducible development and test workflows
+- Smaller, production-focused runtime images
+
+### Image targets
+
+- `--target development` for local development workflows
+- `--target production` for lean deployable images
 
 ## 📄 License
 

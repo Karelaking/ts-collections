@@ -30,11 +30,47 @@ export abstract class AbstractList<E> extends AbstractCollection<E> implements L
    */
   abstract addAt(index: number, element: E): void;
 
+  addFirst(element: E): void {
+    this.addAt(0, element);
+  }
+
+  addLast(element: E): void {
+    this.add(element);
+  }
+
   /**
    * Removes the element at the specified position in this list.
    * Must be implemented by subclasses.
    */
   abstract removeAt(index: number): E;
+
+  getFirst(): E {
+    if (this.isEmpty()) {
+      throw new Error("List is empty");
+    }
+    return this.get(0);
+  }
+
+  getLast(): E {
+    if (this.isEmpty()) {
+      throw new Error("List is empty");
+    }
+    return this.get(this.size() - 1);
+  }
+
+  removeFirst(): E {
+    if (this.isEmpty()) {
+      throw new Error("List is empty");
+    }
+    return this.removeAt(0);
+  }
+
+  removeLast(): E {
+    if (this.isEmpty()) {
+      throw new Error("List is empty");
+    }
+    return this.removeAt(this.size() - 1);
+  }
 
   /**
    * Returns the index of the first occurrence of the specified element.

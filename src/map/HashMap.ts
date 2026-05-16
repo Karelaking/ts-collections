@@ -1,7 +1,10 @@
-import type { Iterator } from "../interfaces/Iterator";
+import {
+  AbstractMap,
+  type MapTypeValidationOptions,
+} from "../abstracts/AbstractMap";
 import type { Collection } from "../interfaces/Collection";
+import type { Iterator } from "../interfaces/Iterator";
 import type { Map as MapInterface } from "../interfaces/Map";
-import { AbstractMap, type MapTypeValidationOptions } from "../abstracts/AbstractMap";
 
 /**
  * A hash-based Map implementation using native JavaScript Map.
@@ -21,14 +24,16 @@ import { AbstractMap, type MapTypeValidationOptions } from "../abstracts/Abstrac
  * console.log(map.get("a")); // 1
  * console.log(map.size()); // 2
  * map.put(123 as any, 456); // ❌ Throws TypeError (automatic!)
- * 
+ *
  * // Disable type checking if needed
  * const unvalidatedMap = new HashMap<string, number>({ strict: false });
  * unvalidatedMap.put("key", 123); // OK
  * unvalidatedMap.put(123 as any, 456); // OK (no validation)
  * ```
  */
-export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, V> {
+export class HashMap<K, V>
+  extends AbstractMap<K, V>
+  implements MapInterface<K, V> {
   private mapEntries: globalThis.Map<K, V>;
 
   constructor(options?: MapTypeValidationOptions<K, V>) {
@@ -133,7 +138,10 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
           throw new Error("No more elements");
         }
         const key = keys[index++];
-        return key!;
+        if (key === undefined) {
+          throw new Error("No more elements");
+        }
+        return key;
       },
     };
   }
@@ -153,7 +161,10 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
           throw new Error("No more elements");
         }
         const value = values[index++];
-        return value!;
+        if (value === undefined) {
+          throw new Error("No more elements");
+        }
+        return value;
       },
     };
   }

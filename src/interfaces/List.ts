@@ -5,6 +5,13 @@ import type { Collection } from "./Collection";
  * Lists typically allow duplicate elements and access by index.
  *
  * @template E The type of elements in this list
+ *
+ * @example
+ * const list = new ArrayList<string>();
+ * list.add('a'); list.add('b'); list.add('c');
+ * list.get(0);      // 'a'
+ * list.indexOf('b'); // 1
+ * list.subList(0, 2).toArray(); // ['a', 'b']
  */
 export interface List<E> extends Collection<E> {
   /**
@@ -36,6 +43,20 @@ export interface List<E> extends Collection<E> {
   addAt(index: number, element: E): void;
 
   /**
+   * Inserts the specified element at the beginning of this list.
+   *
+   * @param element Element to insert at index 0
+   */
+  addFirst(element: E): void;
+
+  /**
+   * Appends the specified element to the end of this list.
+   *
+   * @param element Element to append
+   */
+  addLast(element: E): void;
+
+  /**
    * Appends the specified element to the end of this list.
    *
    * @param element Element to be appended to this list
@@ -51,6 +72,38 @@ export interface List<E> extends Collection<E> {
    * @throws Error if the index is out of range
    */
   removeAt(index: number): E;
+
+  /**
+   * Retrieves, but does not remove, the first element of this list.
+   *
+   * @returns The first element
+   * @throws Error if this list is empty
+   */
+  getFirst(): E;
+
+  /**
+   * Retrieves, but does not remove, the last element of this list.
+   *
+   * @returns The last element
+   * @throws Error if this list is empty
+   */
+  getLast(): E;
+
+  /**
+   * Removes and returns the first element of this list.
+   *
+   * @returns The removed first element
+   * @throws Error if this list is empty
+   */
+  removeFirst(): E;
+
+  /**
+   * Removes and returns the last element of this list.
+   *
+   * @returns The removed last element
+   * @throws Error if this list is empty
+   */
+  removeLast(): E;
 
   /**
    * Returns the index of the first occurrence of the specified element in this list.

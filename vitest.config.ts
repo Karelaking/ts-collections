@@ -6,14 +6,13 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["test/**/*.test.ts"],
-    exclude: ["node_modules", "dist", ".idea", ".git", ".cache", "test/interfaces/**"],
+    exclude: ["node_modules", "dist", ".idea", ".git", ".cache", "test/interfaces/**/*.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
       include: ["src/**/*.ts"],
       exclude: [
         "src/**/index.ts",
-        "src/interfaces/**",
         "**/*.d.ts",
         "**/node_modules/**",
       ],
@@ -21,7 +20,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(process.cwd(), "./src"),
+      "@": path.resolve(process.cwd(), "src"),
     },
   },
 });
