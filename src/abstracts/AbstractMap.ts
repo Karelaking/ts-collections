@@ -1,5 +1,6 @@
 import type { Map, Iterator, Collection } from "../interfaces";
-import { z, type ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
+import { buildValidationMessage } from "../utils/validationMessage";
 
 /**
  * Options for runtime type validation in maps.
@@ -245,51 +246,59 @@ export abstract class AbstractMap<K, V> implements Map<K, V> {
    * @param key The key to validate
    * @throws {TypeError} If key validation fails
    */
-  protected validateKeyType(key: unknown): void {
+  protected validateKeyType(
+    key: unknown,
+    method: string = "put",
+    context?: {
+      methodArgs?: unknown[];
+    }
+  ): void {
     // Only validate if strict mode is enabled
     if (!this.strict) {
       return;
     }
 
-    // Zod schema takes highest precedence (for power users)
-    if (this.keySchema) {
-      try {
+    try {
+      // Zod schema takes highest precedence (for power users)
+      if (this.keySchema) {
         this.keySchema.parse(key);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          const issues = error.issues
-            .map(issue => {
-              const path = issue.path.length > 0 ? `${issue.path.join('.')}` : 'root';
-              return `${path}: ${issue.message}`;
-            })
-            .join('; ');
-          throw new TypeError(`Key validation failed: ${issues}`);
+        return;
+      }
+
+      // Custom validator takes second precedence
+      if (this.keyValidator) {
+        if (!this.keyValidator(key)) {
+          throw new TypeError(
+            'Key validation failed: key does not match the expected type'
+          );
         }
-        throw error;
+        return;
       }
-      return;
-    }
 
-    // Custom validator takes second precedence
-    if (this.keyValidator) {
-      if (!this.keyValidator(key)) {
-        throw new TypeError(
-          'Key validation failed: key does not match the expected type'
-        );
+      // Default: Strict type inference (like Java's generics)
+      if (this.size() === 0) {
+        this.inferredKeyType = this.getTypeString(key);
+      } else {
+        const keyType = this.getTypeString(key);
+        if (keyType !== this.inferredKeyType) {
+          throw new TypeError(
+            `Key type mismatch: expected ${this.inferredKeyType}, but got ${keyType}`
+          );
+        }
       }
-      return;
-    }
-
-    // Default: Strict type inference (like Java's generics)
-    if (this.size() === 0) {
-      this.inferredKeyType = this.getTypeString(key);
-    } else {
-      const keyType = this.getTypeString(key);
-      if (keyType !== this.inferredKeyType) {
-        throw new TypeError(
-          `Key type mismatch: expected ${this.inferredKeyType}, but got ${keyType}`
-        );
-      }
+    } catch (error) {
+      throw new TypeError(
+        buildValidationMessage(
+          {
+            collectionName: this.constructor.name,
+            method,
+            failureLabel: "key validation failed",
+            value: key,
+            methodArgs: context?.methodArgs,
+          },
+          error
+        )
+      );
     }
   }
 
@@ -305,51 +314,59 @@ export abstract class AbstractMap<K, V> implements Map<K, V> {
    * @param value The value to validate
    * @throws {TypeError} If value validation fails
    */
-  protected validateValueType(value: unknown): void {
+  protected validateValueType(
+    value: unknown,
+    method: string = "put",
+    context?: {
+      methodArgs?: unknown[];
+    }
+  ): void {
     // Only validate if strict mode is enabled
     if (!this.strict) {
       return;
     }
 
-    // Zod schema takes highest precedence (for power users)
-    if (this.valueSchema) {
-      try {
+    try {
+      // Zod schema takes highest precedence (for power users)
+      if (this.valueSchema) {
         this.valueSchema.parse(value);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          const issues = error.issues
-            .map(issue => {
-              const path = issue.path.length > 0 ? `${issue.path.join('.')}` : 'root';
-              return `${path}: ${issue.message}`;
-            })
-            .join('; ');
-          throw new TypeError(`Value validation failed: ${issues}`);
+        return;
+      }
+
+      // Custom validator takes second precedence
+      if (this.valueValidator) {
+        if (!this.valueValidator(value)) {
+          throw new TypeError(
+            'Value validation failed: value does not match the expected type'
+          );
         }
-        throw error;
+        return;
       }
-      return;
-    }
 
-    // Custom validator takes second precedence
-    if (this.valueValidator) {
-      if (!this.valueValidator(value)) {
-        throw new TypeError(
-          'Value validation failed: value does not match the expected type'
-        );
+      // Default: Strict type inference (like Java's generics)
+      if (this.size() === 0) {
+        this.inferredValueType = this.getTypeString(value);
+      } else {
+        const valueType = this.getTypeString(value);
+        if (valueType !== this.inferredValueType) {
+          throw new TypeError(
+            `Value type mismatch: expected ${this.inferredValueType}, but got ${valueType}`
+          );
+        }
       }
-      return;
-    }
-
-    // Default: Strict type inference (like Java's generics)
-    if (this.size() === 0) {
-      this.inferredValueType = this.getTypeString(value);
-    } else {
-      const valueType = this.getTypeString(value);
-      if (valueType !== this.inferredValueType) {
-        throw new TypeError(
-          `Value type mismatch: expected ${this.inferredValueType}, but got ${valueType}`
-        );
-      }
+    } catch (error) {
+      throw new TypeError(
+        buildValidationMessage(
+          {
+            collectionName: this.constructor.name,
+            method,
+            failureLabel: "value validation failed",
+            value,
+            methodArgs: context?.methodArgs,
+          },
+          error
+        )
+      );
     }
   }
 

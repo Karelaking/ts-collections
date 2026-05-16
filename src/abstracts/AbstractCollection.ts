@@ -1,5 +1,6 @@
 import type { Iterator, Collection } from "../interfaces";
-import { z, type ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
+import { buildValidationMessage } from "../utils/validationMessage";
 
 /**
  * Options for runtime type validation in collections.
@@ -287,55 +288,53 @@ export abstract class AbstractCollection<E> implements Collection<E> {
    * @param element The element to validate
    * @throws {TypeError} If type validation fails
    */
-  protected validateElementType(element: unknown): void {
+  protected validateElementType(
+    element: unknown,
+    method: string = "add",
+    context?: {
+      index?: number;
+      methodArgs?: unknown[];
+    }
+  ): void {
     // Only validate if strict mode is enabled
     if (!this.strict) {
       return;
     }
 
-    // Zod schema takes highest precedence (for power users)
-    if (this.schema) {
-      try {
+    try {
+      // Zod schema takes highest precedence (for power users)
+      if (this.schema) {
         this.schema.parse(element);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          const issues = error.issues
-            .map(issue => {
-              const path = issue.path.length > 0 ? `${issue.path.join('.')}` : 'root';
-              return `${path}: ${issue.message}`;
-            })
-            .join('; ');
-          throw new TypeError(`Validation failed: ${issues}`);
+        return;
+      }
+
+      // Custom validator takes second precedence
+      if (this.typeValidator) {
+        if (!this.typeValidator(element)) {
+          throw new TypeError(
+            'Type validation failed: element does not match the expected type'
+          );
         }
-        throw error;
+        return;
       }
-      return;
-    }
 
-    // Custom validator takes second precedence
-    if (this.typeValidator) {
-      if (!this.typeValidator(element)) {
-        throw new TypeError(
-          'Type validation failed: element does not match the expected type'
-        );
+      // Default: Strict type inference (like Java's generics)
+      // Type is inferred from first element and enforced on all subsequent elements
+      const currentSize = this.size();
+      if (currentSize === 0) {
+        // First element: infer type
+        this.inferredType = this.getTypeString(element);
+      } else {
+        // Subsequent elements: must match inferred type
+        const elementType = this.getTypeString(element);
+        if (elementType !== this.inferredType) {
+          throw new TypeError(
+            `Type mismatch: expected ${this.inferredType}, but got ${elementType}`
+          );
+        }
       }
-      return;
-    }
-
-    // Default: Strict type inference (like Java's generics)
-    // Type is inferred from first element and enforced on all subsequent elements
-    const currentSize = this.size();
-    if (currentSize === 0) {
-      // First element: infer type
-      this.inferredType = this.getTypeString(element);
-    } else {
-      // Subsequent elements: must match inferred type
-      const elementType = this.getTypeString(element);
-      if (elementType !== this.inferredType) {
-        throw new TypeError(
-          `Type mismatch: expected ${this.inferredType}, but got ${elementType}`
-        );
-      }
+    } catch (error) {
+      throw this.createElementValidationError(method, element, error, context);
     }
   }
 
@@ -381,5 +380,30 @@ export abstract class AbstractCollection<E> implements Collection<E> {
       return 'Custom validator (power user mode)';
     }
     return 'Strict type inference (default - like Java)';
+  }
+
+  private createElementValidationError(
+    method: string,
+    element: unknown,
+    error: unknown,
+    context?: {
+      index?: number;
+      methodArgs?: unknown[];
+    }
+  ): TypeError {
+    const suffix = context?.index !== undefined ? ` at index ${context.index}` : "";
+    const message = buildValidationMessage(
+      {
+        collectionName: this.constructor.name,
+        method,
+        failureLabel: "validation failed",
+        value: element,
+        methodArgs: context?.methodArgs,
+        suffix,
+      },
+      error
+    );
+
+    return new TypeError(message);
   }
 }
