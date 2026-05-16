@@ -58,7 +58,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
    * @returns true if the element was added successfully
    */
   override add(element: T): boolean {
-    this.validateElementType(element);
+    this.validateElementType(element, "add", { index: this.elements.length });
     this.elements.push(element);
     return true;
   }
@@ -87,7 +87,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
    */
   override set(index: number, element: T): T {
     this.checkIndex(index);
-    this.validateElementType(element);
+    this.validateElementType(element, "set", { methodArgs: [index] });
     const oldElement = this.elements[index];
     if (oldElement === undefined) {
       throw new Error(`Element at index ${index} is undefined`);
@@ -107,7 +107,7 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
     if (index < 0 || index > this.elements.length) {
       throw new Error(`Index out of bounds: ${index}`);
     }
-    this.validateElementType(element);
+    this.validateElementType(element, "addAt", { methodArgs: [index] });
     this.elements.splice(index, 0, element);
   }
 

@@ -44,8 +44,8 @@ export class HashMap<K, V> extends AbstractMap<K, V> implements MapInterface<K, 
    * @returns The previous value associated with the key, or undefined if there was no mapping
    */
   override put(key: K, value: V): V | undefined {
-    this.validateKeyType(key);
-    this.validateValueType(value);
+    this.validateKeyType(key, "put", { methodArgs: [key] });
+    this.validateValueType(value, "put", { methodArgs: [key] });
     const oldValue = this.mapEntries.get(key);
     this.mapEntries.set(key, value);
     return oldValue;
