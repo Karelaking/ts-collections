@@ -138,7 +138,7 @@ describe("LinkedStack - Core Methods", () => {
   });
 
   describe("single element reset edge cases", () => {
-    it("should reset inferred type after popping the last element", () => {
+    it("should allow pushing different union type members after emptying the stack", () => {
       const flexibleStack = new LinkedStack<number | string>();
 
       flexibleStack.push(1);
