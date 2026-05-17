@@ -13,7 +13,7 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "docs": "typedoc",
-    "bench": "pnpm build && node bench/collections.bench.mjs",
+    "bench": "pnpm build && node bench/cli.mjs",
     "prepublishOnly": "pnpm build && pnpm test && pnpm lint",
     "publishConfig": "npm publish --access public",
     "clean": "rm -rf dist coverage",
