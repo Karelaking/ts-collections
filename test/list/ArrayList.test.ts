@@ -92,7 +92,7 @@ describe("ArrayList - Core Methods", () => {
         "ArrayList.add() validation failed",
       );
       expect((thrownError as Error).message).toContain(
-        "Expected number for element at index 0, but got string \"text\"",
+        'Expected number for element at index 0, but got string "text"',
       );
       expect((thrownError as Error).message).toContain(
         "size before operation: 0",
@@ -732,6 +732,32 @@ describe("ArrayList - Core Methods", () => {
       objList.add(obj2);
       expect(objList.get(0)).toBe(obj1);
       expect(objList.contains(obj2)).toBe(true);
+    });
+  });
+
+  describe("boundary value edge cases", () => {
+    it("should preserve JavaScript safe integer boundaries", () => {
+      list.add(Number.MAX_SAFE_INTEGER);
+      list.add(Number.MIN_SAFE_INTEGER);
+
+      expect(list.toArray()).toEqual([
+        Number.MAX_SAFE_INTEGER,
+        Number.MIN_SAFE_INTEGER,
+      ]);
+      expect(list.indexOf(Number.MAX_SAFE_INTEGER)).toBe(0);
+      expect(list.indexOf(Number.MIN_SAFE_INTEGER)).toBe(1);
+    });
+
+    it("should preserve empty and very long string elements", () => {
+      const stringList = new ArrayList<string>();
+      const longString = "x".repeat(10_000);
+
+      stringList.add("");
+      stringList.add(longString);
+
+      expect(stringList.size()).toBe(2);
+      expect(stringList.get(0)).toBe("");
+      expect(stringList.get(1)).toBe(longString);
     });
   });
 });

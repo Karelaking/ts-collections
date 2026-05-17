@@ -506,4 +506,31 @@ describe("HashMap - Core Methods", () => {
       expect(map.get("a")).toBe(10);
     });
   });
+
+  describe("boundary key edge cases", () => {
+    it("should follow Map semantics for 0 and -0 numeric keys", () => {
+      const numericMap = new HashMap<number, string>();
+
+      numericMap.put(0, "zero");
+      const previous = numericMap.put(-0, "negative zero");
+
+      expect(previous).toBe("zero");
+      expect(numericMap.size()).toBe(1);
+      expect(numericMap.get(0)).toBe("negative zero");
+      expect(numericMap.get(-0)).toBe("negative zero");
+    });
+
+    it("should keep distinct object references as distinct keys", () => {
+      const objectMap = new HashMap<{ id: number }, string>();
+      const first = { id: 1 };
+      const second = { id: 1 };
+
+      objectMap.put(first, "first");
+      objectMap.put(second, "second");
+
+      expect(objectMap.size()).toBe(2);
+      expect(objectMap.get(first)).toBe("first");
+      expect(objectMap.get(second)).toBe("second");
+    });
+  });
 });

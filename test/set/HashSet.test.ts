@@ -91,7 +91,7 @@ describe("HashSet - Core Methods", () => {
         "HashSet.add() validation failed",
       );
       expect((thrownError as Error).message).toContain(
-        "Expected number for set element, but got string \"text\"",
+        'Expected number for set element, but got string "text"',
       );
       expect((thrownError as Error).message).toContain(
         "size before operation: 0",
@@ -373,6 +373,21 @@ describe("HashSet - Core Methods", () => {
       expect(set.remove(1)).toBe(true);
       expect(set.remove(1)).toBe(false);
       expect(set.size()).toBe(0);
+    });
+  });
+
+  describe("object identity edge cases", () => {
+    it("should keep structurally equal object instances as distinct elements", () => {
+      const objectSet = new HashSet<{ id: number }>();
+      const first = { id: 1 };
+      const second = { id: 1 };
+
+      expect(objectSet.add(first)).toBe(true);
+      expect(objectSet.add(second)).toBe(true);
+
+      expect(objectSet.size()).toBe(2);
+      expect(objectSet.contains(first)).toBe(true);
+      expect(objectSet.contains(second)).toBe(true);
     });
   });
 

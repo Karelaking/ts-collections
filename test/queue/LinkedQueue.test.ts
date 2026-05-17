@@ -450,6 +450,30 @@ describe("LinkedQueue - Core Methods", () => {
     });
   });
 
+  describe("boundary value edge cases", () => {
+    it("should preserve FIFO order for safe integer boundaries", () => {
+      queue.offer(Number.MAX_SAFE_INTEGER);
+      queue.offer(Number.MIN_SAFE_INTEGER);
+
+      expect(queue.peek()).toBe(Number.MAX_SAFE_INTEGER);
+      expect(queue.dequeue()).toBe(Number.MAX_SAFE_INTEGER);
+      expect(queue.dequeue()).toBe(Number.MIN_SAFE_INTEGER);
+      expect(queue.isEmpty()).toBe(true);
+    });
+
+    it("should return to a reusable empty state after a single dequeue", () => {
+      queue.offer(42);
+
+      expect(queue.dequeue()).toBe(42);
+      expect(queue.isEmpty()).toBe(true);
+
+      queue.offer(99);
+
+      expect(queue.peek()).toBe(99);
+      expect(queue.size()).toBe(1);
+    });
+  });
+
   describe("different data types", () => {
     it("should work with string elements", () => {
       const strQueue = new LinkedQueue<string>();

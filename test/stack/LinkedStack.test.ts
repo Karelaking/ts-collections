@@ -136,4 +136,17 @@ describe("LinkedStack - Core Methods", () => {
       expect(objStack.peek()).toBe(first);
     });
   });
+
+  describe("single element reset edge cases", () => {
+    it("should reset inferred type after popping the last element", () => {
+      const flexibleStack = new LinkedStack<number | string>();
+
+      flexibleStack.push(1);
+      expect(flexibleStack.pop()).toBe(1);
+      expect(flexibleStack.isEmpty()).toBe(true);
+
+      expect(() => flexibleStack.push("after-empty")).not.toThrow();
+      expect(flexibleStack.peek()).toBe("after-empty");
+    });
+  });
 });
