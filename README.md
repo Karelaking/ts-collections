@@ -5,6 +5,8 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
   [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
+  [![npm downloads](https://img.shields.io/npm/dm/ts-collections.svg)](https://www.npmjs.com/package/ts-collections)
+  [![bundle size](https://img.shields.io/bundlephobia/minzip/ts-collections)](https://bundlephobia.com/package/ts-collections)
   [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
   ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
   
