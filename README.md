@@ -2,10 +2,12 @@
   <h1>ts-collections</h1>
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
-[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+[![Build Status](https://github.com/Karelaking/ts-collections/actions/workflows/build.yml/badge.svg?style=flat-square)](https://github.com/Karelaking/ts-collections/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.0.1-blue?style=flat-square)](https://github.com/Karelaking/ts-collections)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&style=flat-square)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest&style=flat-square)](https://vitest.dev/)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
 
   <p>
@@ -150,11 +152,8 @@ pnpm i @karelaking/ts-collections
 <summary>Other package managers</summary>
 
 ```bash
-# Using pnpm
-pnpm add ts-collections
-
 # Using yarn
-yarn add ts-collections
+yarn add @karelaking/ts-collections
 ```
 
 </details>
@@ -584,7 +583,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 ## 🔗 Links
 
 - **GitHub**: [Karelaking/ts-collections](https://github.com/Karelaking/ts-collections)
-- **npm**: [ts-collections](https://www.npmjs.com/package/ts-collections)
+- **npm**: [ts-collections](https://www.npmjs.com/package/@karelaking/ts-collections)
 - **Issues**: [Report a bug](https://github.com/Karelaking/ts-collections/issues)
 - **Discussions**: [Ask questions](https://github.com/Karelaking/ts-collections/discussions)
 
