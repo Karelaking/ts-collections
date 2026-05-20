@@ -2,8 +2,8 @@ import {
   AbstractMap,
   type MapTypeValidationOptions,
 } from "../abstracts/AbstractMap";
-import type { Collection } from "../interfaces/Collection";
 import type { Iterator } from "../interfaces/Iterator";
+import type { ReadOnlyCollection } from "../interfaces/ReadOnlyCollection";
 import type { Map as MapInterface } from "../interfaces/Map";
 import { formatValidationContextValue } from "../utils/validation";
 
@@ -191,7 +191,7 @@ export class HashMap<K, V>
    * Returns a collection view of the values contained in this map.
    * @returns A collection view of the values contained in this map
    */
-  override values(): Collection<V> {
+  override values(): ReadOnlyCollection<V> {
     const valueArray = Array.from(this.mapEntries.values());
     return {
       size: () => valueArray.length,
@@ -200,16 +200,6 @@ export class HashMap<K, V>
       },
       isEmpty: () => valueArray.length === 0,
       contains: (v: V) => valueArray.includes(v),
-      add: () => {
-        throw new Error("Unsupported operation");
-      },
-      remove: () => {
-        throw new Error("Unsupported operation");
-      },
-      clear: () => {
-        throw new Error("Unsupported operation");
-      },
-      toArray: () => valueArray,
       iterator: () => {
         let idx = 0;
         return {
@@ -226,18 +216,9 @@ export class HashMap<K, V>
           },
         };
       },
+      toArray: () => [...valueArray],
       containsAll: (other) => {
-        const otherArray = other.toArray();
-        return otherArray.every((v) => valueArray.includes(v));
-      },
-      addAll: () => {
-        throw new Error("Unsupported operation");
-      },
-      removeAll: () => {
-        throw new Error("Unsupported operation");
-      },
-      retainAll: () => {
-        throw new Error("Unsupported operation");
+        return other.toArray().every((v) => valueArray.includes(v));
       },
     };
   }

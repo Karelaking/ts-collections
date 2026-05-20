@@ -117,6 +117,7 @@ export type {
   Map,
   NavigableMap,
   NavigableSet,
+  ReadOnlyCollection,
   Queue,
   Set,
   SortedMap,

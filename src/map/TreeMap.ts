@@ -2,8 +2,8 @@ import {
   AbstractMap,
   type MapTypeValidationOptions,
 } from "../abstracts/AbstractMap";
-import type { Collection } from "../interfaces/Collection";
 import type { Iterator } from "../interfaces/Iterator";
+import type { ReadOnlyCollection } from "../interfaces/ReadOnlyCollection";
 import type { NavigableMap } from "../interfaces/NavigableMap";
 import { formatValidationContextValue } from "../utils/validation";
 
@@ -152,7 +152,7 @@ export class TreeMap<K, V>
     };
   }
 
-  override values(): Collection<V> {
+  override values(): ReadOnlyCollection<V> {
     const valueArray = this.orderedEntries.map(([, value]) => value);
 
     return {
@@ -162,15 +162,6 @@ export class TreeMap<K, V>
       },
       isEmpty: () => valueArray.length === 0,
       contains: (value: V) => valueArray.includes(value),
-      add: () => {
-        throw new Error("Unsupported operation");
-      },
-      remove: () => {
-        throw new Error("Unsupported operation");
-      },
-      clear: () => {
-        throw new Error("Unsupported operation");
-      },
       iterator: () => {
         let index = 0;
         return {
@@ -190,15 +181,6 @@ export class TreeMap<K, V>
       toArray: () => [...valueArray],
       containsAll: (other) => {
         return other.toArray().every((value) => valueArray.includes(value));
-      },
-      addAll: () => {
-        throw new Error("Unsupported operation");
-      },
-      removeAll: () => {
-        throw new Error("Unsupported operation");
-      },
-      retainAll: () => {
-        throw new Error("Unsupported operation");
       },
     };
   }

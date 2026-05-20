@@ -314,17 +314,21 @@ describe("HashMap - Core Methods", () => {
       map.put("c", 3);
 
       const values = map.values();
-      if (Array.isArray(values)) {
-        expect(values.length).toBe(3);
-        expect(values.sort()).toEqual([1, 2, 3]);
-      }
+      expect(values.toArray().sort()).toEqual([1, 2, 3]);
     });
 
     it("should return empty for empty map", () => {
       const values = map.values();
-      if (Array.isArray(values)) {
-        expect(values).toEqual([]);
-      }
+      expect(values.toArray()).toEqual([]);
+    });
+
+    it("should expose a read-only view", () => {
+      map.put("a", 1);
+
+      const values = map.values() as Record<string, unknown>;
+      expect(values.add).toBeUndefined();
+      expect(values.remove).toBeUndefined();
+      expect(values.clear).toBeUndefined();
     });
   });
 

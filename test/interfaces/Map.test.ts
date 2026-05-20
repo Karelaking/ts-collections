@@ -327,7 +327,7 @@ export function describeMap(
       });
     });
 
-    describe("values method (array)", () => {
+    describe("values method (read-only collection)", () => {
       beforeEach(() => {
         map.put("a", 1);
         map.put("b", 2);
@@ -336,15 +336,24 @@ export function describeMap(
 
       it("should return all values", () => {
         const values = map.values();
-        expect(values).toBeDefined();
+        expect(values.toArray()).toEqual([1, 2, 3]);
       });
 
       it("should return empty collection for empty map", () => {
         map.clear();
         const values = map.values();
-        if (Array.isArray(values)) {
-          expect(values).toEqual([]);
-        }
+        expect(values.toArray()).toEqual([]);
+      });
+
+      it("should not expose mutating collection operations", () => {
+        const values = map.values() as Record<string, unknown>;
+
+        expect(values.add).toBeUndefined();
+        expect(values.remove).toBeUndefined();
+        expect(values.clear).toBeUndefined();
+        expect(values.addAll).toBeUndefined();
+        expect(values.removeAll).toBeUndefined();
+        expect(values.retainAll).toBeUndefined();
       });
     });
 

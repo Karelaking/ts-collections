@@ -1,4 +1,4 @@
-import type { Collection } from "./Collection";
+import type { ReadOnlyCollection } from "./ReadOnlyCollection";
 import type { Iterator } from "./Iterator";
 
 /**
@@ -206,9 +206,9 @@ export interface Map<K, V> {
   valueIterator(): Iterator<V>;
 
   /**
-   * Returns a Collection view of the values contained in this map.
+   * Returns a read-only collection view of the values contained in this map.
    */
-  values(): Collection<V>;
+  values(): ReadOnlyCollection<V>;
 
   /**
    * Returns all keys in this map as an array.
