@@ -1,0 +1,91 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - docker-compose.yml
+      - package*.json
+      - pnpm-lock.yaml
+      - src/**
+      - test/**
+      - tsconfig.json
+      - vitest.config.ts
+  pull_request:
+    branches:
+      - master
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - docker-compose.yml
+      - package*.json
+      - pnpm-lock.yaml
+      - src/**
+      - test/**
+      - tsconfig.json
+      - vitest.config.ts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build development image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: development
+          tags: ts-collections:dev
+          push: false
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run tests in Docker
+        run: |
+          docker run --rm ts-collections:dev npm test -- --run
+
+      - name: Run linter in Docker
+        run: |
+          docker run --rm ts-collections:dev npm run lint
+
+      - name: Build production image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: production
+          tags: ts-collections:prod
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify production image
+        run: |
+          docker images | grep ts-collections
+
+      - name: Test docker-compose services
+        run: |
+          if [ -f docker-compose.yml ]; then
+            docker compose run --rm test npm test -- --run || true
+            docker compose run --rm lint npm run lint || true
+          else
+            echo "✅ No docker-compose.yml found, skipping docker-compose tests"
+          fi
+
+      - name: Cleanup Docker resources
+        if: always()
+        run: |
+          docker image prune -f --filter="label!=keep" || true
