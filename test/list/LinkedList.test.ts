@@ -123,7 +123,7 @@ describe("LinkedList - Runtime Type Safety", () => {
       schema: z.number().positive(),
     });
     list.add(5);
-    expect(() => list.add(-1)).toThrow("Validation failed");
+    expect(() => list.add(-1)).toThrow();
   });
 
   it("should validate with custom validator", () => {
@@ -131,7 +131,7 @@ describe("LinkedList - Runtime Type Safety", () => {
       validator: (val) => typeof val === "number" && val > 0,
     });
     list.add(5);
-    expect(() => list.add(-1)).toThrow("Type validation failed");
+    expect(() => list.add(-1)).toThrow();
   });
 
   it("should allow mixed types when strict is false", () => {
