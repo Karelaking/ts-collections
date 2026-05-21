@@ -113,7 +113,7 @@ export abstract class AbstractCollection<E> implements Collection<E> {
 	protected typeValidator?: (value: unknown) => boolean;
 	protected schema?: ZodSchema<E>;
 	protected strict = true; // ✓ DEFAULT: Type safety is ON (like Java)
-	protected inferredType?: string;
+	protected inferredType?: string | undefined;
 
 	protected createValidationContext(
 		operation: string,

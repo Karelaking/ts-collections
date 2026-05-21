@@ -108,8 +108,8 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 	protected keySchema?: ZodSchema<K>;
 	protected valueSchema?: ZodSchema<V>;
 	protected strict = true; // ✓ DEFAULT: Type safety is ON (like Java)
-	protected inferredKeyType?: string;
-	protected inferredValueType?: string;
+	protected inferredKeyType?: string | undefined;
+	protected inferredValueType?: string | undefined;
 
 	protected createValidationContext(
 		operation: string,
