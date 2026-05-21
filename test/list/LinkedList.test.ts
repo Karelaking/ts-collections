@@ -115,7 +115,7 @@ describe("LinkedList - Runtime Type Safety", () => {
   it("should enforce type consistency by default", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.add("text" as any)).toThrow("Type mismatch");
+    expect(() => list.add("text" as any)).toThrow("validation failed");
   });
 
   it("should validate with Zod schema", () => {
@@ -145,19 +145,19 @@ describe("LinkedList - Runtime Type Safety", () => {
   it("should validate on addFirst", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.addFirst("text" as any)).toThrow("Type mismatch");
+    expect(() => list.addFirst("text" as any)).toThrow("validation failed");
   });
 
   it("should validate on addLast", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.addLast("text" as any)).toThrow("Type mismatch");
+    expect(() => list.addLast("text" as any)).toThrow("validation failed");
   });
 
   it("should validate on set", () => {
     const list = new LinkedList<number>();
     list.add(1);
-    expect(() => list.set(0, "text" as any)).toThrow("Type mismatch");
+    expect(() => list.set(0, "text" as any)).toThrow("validation failed");
   });
 
   it("should reset type inference after clear", () => {
