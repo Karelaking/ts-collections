@@ -13,6 +13,8 @@ export default defineConfig({
       ".git",
       ".cache",
       "test/interfaces/**/*.test.ts",
+      "test/docker/**/*.test.ts",
+      "test/workflows/**/*.test.ts",
     ],
     coverage: {
       provider: "v8",
