@@ -1,10 +1,7 @@
 import type { Stack } from "../interfaces";
-import {
-  AbstractCollection,
-  type TypeValidationOptions,
-} from "./AbstractCollection";
+import { AbstractCollection } from "./AbstractCollection";
 
-export type { TypeValidationOptions };
+export type { TypeValidationOptions } from "./AbstractCollection";
 
 /**
  * Abstract base class for Stack implementations.
@@ -14,32 +11,28 @@ export type { TypeValidationOptions };
  * @template E The type of elements in this stack
  */
 export abstract class AbstractStack<E>
-  extends AbstractCollection<E>
-  implements Stack<E>
+	extends AbstractCollection<E>
+	implements Stack<E>
 {
-  constructor(options?: TypeValidationOptions<E>) {
-    super(options);
-  }
+	/**
+	 * Pushes an element onto the stack.
+	 */
+	abstract push(element: E): boolean;
 
-  /**
-   * Pushes an element onto the stack.
-   */
-  abstract push(element: E): boolean;
+	/**
+	 * Pops the top element from the stack.
+	 */
+	abstract pop(): E | undefined;
 
-  /**
-   * Pops the top element from the stack.
-   */
-  abstract pop(): E | undefined;
+	/**
+	 * Peeks at the top element without removing it.
+	 */
+	abstract peek(): E | undefined;
 
-  /**
-   * Peeks at the top element without removing it.
-   */
-  abstract peek(): E | undefined;
-
-  /**
-   * Collection.add alias that delegates to push for stack semantics.
-   */
-  override add(element: E): boolean {
-    return this.push(element);
-  }
+	/**
+	 * Collection.add alias that delegates to push for stack semantics.
+	 */
+	override add(element: E): boolean {
+		return this.push(element);
+	}
 }

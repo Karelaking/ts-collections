@@ -14,23 +14,22 @@ import type { Collection } from "./Collection";
  * stack.size(); // 1
  */
 export interface Stack<E> extends Collection<E> {
-  /**
-   * Pushes an element onto the top of the stack.
-   *
-   * @param element Element to push onto the stack
-   * @returns true if the element was pushed
-   */
-  push(element: E): boolean;
+	/**
+	 * Retrieves, but does not remove, the element at the top of the stack.
+	 * Returns undefined if the stack is empty.
+	 */
+	peek(): E | undefined;
 
-  /**
-   * Removes and returns the element at the top of the stack.
-   * Returns undefined if the stack is empty.
-   */
-  pop(): E | undefined;
-
-  /**
-   * Retrieves, but does not remove, the element at the top of the stack.
-   * Returns undefined if the stack is empty.
-   */
-  peek(): E | undefined;
+	/**
+	 * Removes and returns the element at the top of the stack.
+	 * Returns undefined if the stack is empty.
+	 */
+	pop(): E | undefined;
+	/**
+	 * Pushes an element onto the top of the stack.
+	 *
+	 * @param element Element to push onto the stack
+	 * @returns true if the element was pushed
+	 */
+	push(element: E): boolean;
 }

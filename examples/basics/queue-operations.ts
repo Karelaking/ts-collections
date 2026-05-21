@@ -12,5 +12,5 @@ queue.offer("Task 3");
 // Process the queue until it becomes empty
 // dequeue() removes and returns the front element (FIFO)
 while (!queue.isEmpty()) {
-  console.log(queue.dequeue());
+	console.log(queue.dequeue());
 }
