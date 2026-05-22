@@ -2,7 +2,6 @@ import type { ZodSchema } from "zod";
 import { ZodError } from "zod";
 import type { Collection, Iterator } from "../interfaces";
 import {
-	createCollectionValidationError,
 	describeValidationValue,
 	type ValidationContext,
 	toValidationIssues,

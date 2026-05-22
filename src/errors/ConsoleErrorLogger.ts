@@ -45,12 +45,14 @@ export class ConsoleErrorLogger implements IErrorLogger {
   info(message: string, context?: ErrorContext): void {
     const timestamp = this.getTimestamp();
     const contextStr = this.formatContext(context);
-    console.info(`[${timestamp}] INFO${contextStr}: ${message}`);
+    // eslint-disable-next-line no-console
+    console.warn(`[${timestamp}] INFO${contextStr}: ${message}`);
   }
 
   debug(message: string, context?: ErrorContext): void {
     const timestamp = this.getTimestamp();
     const contextStr = this.formatContext(context);
-    console.debug(`[${timestamp}] DEBUG${contextStr}: ${message}`);
+    // eslint-disable-next-line no-console
+    console.warn(`[${timestamp}] DEBUG${contextStr}: ${message}`);
   }
 }
