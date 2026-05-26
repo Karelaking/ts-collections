@@ -1,81 +1,81 @@
-import { z, ZodError, type ZodSchema } from "zod";
+import { ZodError, type ZodSchema, z } from "zod";
 
 /**
  * Result type for validation operations.
  * Represents either a successful validation or a validation error.
  */
 export type ValidationResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: ValidationError };
+	| { success: true; data: T }
+	| { success: false; error: ValidationError };
 
 /**
  * Context for a collection validation failure.
  */
 export interface ValidationContext {
-  collectionType: string;
-  operation: string;
-  targetDescription: string;
-  targetValue: unknown;
-  sizeBefore?: number;
+	collectionType: string;
+	operation: string;
+	sizeBefore?: number;
+	targetDescription: string;
+	targetValue: unknown;
 }
 
 /**
  * Structured validation error with detailed information.
  */
 export interface ValidationError {
-  message: string;
-  issues: ValidationIssue[];
-  rawError: Error;
+	issues: ValidationIssue[];
+	message: string;
+	rawError: Error;
 }
 
 /**
  * Individual validation issue.
  */
 export interface ValidationIssue {
-  path: string;
-  message: string;
-  code: string;
-  expected?: string;
-  received?: string;
+	code: string;
+	expected?: string;
+	message: string;
+	path: string;
+	received?: string;
 }
 
 function describeType(value: unknown): string {
-  if (value === null) {
-    return "null";
-  }
-  if (value === undefined) {
-    return "undefined";
-  }
-  if (Array.isArray(value)) {
-    return "array";
-  }
-  return typeof value;
+	if (value === null) {
+		return "null";
+	}
+	if (value === undefined) {
+		return "undefined";
+	}
+	if (Array.isArray(value)) {
+		return "array";
+	}
+	return typeof value;
 }
 
 function describeValue(value: unknown): string {
-  if (typeof value === "string") {
-    return `"${value}"`;
-  }
-  if (typeof value === "bigint") {
-    return `${value}n`;
-  }
-  if (typeof value === "symbol") {
-    return value.toString();
-  }
-  if (
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    value === null ||
-    value === undefined
-  ) {
-    return String(value);
-  }
+	if (typeof value === "string") {
+		return `"${value}"`;
+	}
+	if (typeof value === "bigint") {
+		return `${value}n`;
+	}
+	if (typeof value === "symbol") {
+		return value.toString();
+	}
+	if (
+		typeof value === "number" ||
+		typeof value === "boolean" ||
+		value === null ||
+		value === undefined
+	) {
+		return String(value);
+	}
 
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
+	try {
+		return JSON.stringify(value);
+	} catch {
+		return String(value);
+	}
 }
 
 /**
@@ -85,18 +85,18 @@ function describeValue(value: unknown): string {
  * @returns A readable representation without the runtime type prefix
  */
 export function formatValidationContextValue(value: unknown): string {
-  return describeValue(value);
+	return describeValue(value);
 }
 
 function describeValueWithType(value: unknown): string {
-  const type = describeType(value);
-  const renderedValue = describeValue(value);
+	const type = describeType(value);
+	const renderedValue = describeValue(value);
 
-  if (renderedValue === type) {
-    return type;
-  }
+	if (renderedValue === type) {
+		return type;
+	}
 
-  return `${type} ${renderedValue}`;
+	return `${type} ${renderedValue}`;
 }
 
 /**
@@ -106,17 +106,17 @@ function describeValueWithType(value: unknown): string {
  * @returns A type-aware description of the value
  */
 export function describeValidationValue(value: unknown): string {
-  return describeValueWithType(value);
+	return describeValueWithType(value);
 }
 
 function mapIssueDetails(issue: ZodError["issues"][number]): ValidationIssue {
-  return {
-    path: issue.path.join("."),
-    message: issue.message,
-    code: issue.code,
-    ...("expected" in issue ? { expected: String(issue.expected) } : {}),
-    ...("received" in issue ? { received: String(issue.received) } : {}),
-  };
+	return {
+		path: issue.path.join("."),
+		message: issue.message,
+		code: issue.code,
+		...("expected" in issue ? { expected: String(issue.expected) } : {}),
+		...("received" in issue ? { received: String(issue.received) } : {}),
+	};
 }
 
 /**
@@ -126,54 +126,54 @@ function mapIssueDetails(issue: ZodError["issues"][number]): ValidationIssue {
  * @returns A structured validation error representation
  */
 export function toValidationError(error: unknown): ValidationError {
-  if (error instanceof ZodError) {
-    return {
-      message: error.message,
-      issues: error.issues.map(mapIssueDetails),
-      rawError: error,
-    };
-  }
+	if (error instanceof ZodError) {
+		return {
+			message: error.message,
+			issues: error.issues.map(mapIssueDetails),
+			rawError: error,
+		};
+	}
 
-  return {
-    message: "Unknown validation error",
-    issues: [],
-    rawError: error instanceof Error ? error : new Error(String(error)),
-  };
+	return {
+		message: "Unknown validation error",
+		issues: [],
+		rawError: error instanceof Error ? error : new Error(String(error)),
+	};
 }
 
 function buildValidationHeader(context?: ValidationContext): string {
-  if (!context) {
-    return "Validation failed";
-  }
+	if (!context) {
+		return "Validation failed";
+	}
 
-  const sizeSuffix =
-    context.sizeBefore === undefined
-      ? ""
-      : ` (size before operation: ${context.sizeBefore})`;
+	const sizeSuffix =
+		context.sizeBefore === undefined
+			? ""
+			: ` (size before operation: ${context.sizeBefore})`;
 
-  return `${context.collectionType}.${context.operation}() validation failed${sizeSuffix}`;
+	return `${context.collectionType}.${context.operation}() validation failed${sizeSuffix}`;
 }
 
 function buildIssueMessage(
-  issue: ValidationIssue,
-  context?: ValidationContext,
+	issue: ValidationIssue,
+	context?: ValidationContext
 ): string {
-  if (!context) {
-    if (issue.path) {
-      return `${issue.path}: ${issue.message}`;
-    }
-    return issue.message;
-  }
+	if (!context) {
+		if (issue.path) {
+			return `${issue.path}: ${issue.message}`;
+		}
+		return issue.message;
+	}
 
-  if (issue.code === "invalid_type" && issue.expected) {
-    return `Expected ${issue.expected} for ${context.targetDescription}, but got ${describeValueWithType(context.targetValue)}`;
-  }
+	if (issue.code === "invalid_type" && issue.expected) {
+		return `Expected ${issue.expected} for ${context.targetDescription}, but got ${describeValueWithType(context.targetValue)}`;
+	}
 
-  if (issue.path) {
-    return `${context.targetDescription} (${issue.path}): ${issue.message}`;
-  }
+	if (issue.path) {
+		return `${context.targetDescription} (${issue.path}): ${issue.message}`;
+	}
 
-  return `${context.targetDescription}: ${issue.message}`;
+	return `${context.targetDescription}: ${issue.message}`;
 }
 
 /**
@@ -184,16 +184,18 @@ function buildIssueMessage(
  * @returns Formatted error message
  */
 export function formatValidationError(
-  error: ValidationError,
-  context?: ValidationContext,
+	error: ValidationError,
+	context?: ValidationContext
 ): string {
-  if (error.issues.length === 0) {
-    return context ? buildValidationHeader(context) : error.message;
-  }
+	if (error.issues.length === 0) {
+		return context ? buildValidationHeader(context) : error.message;
+	}
 
-  const issueMessages = error.issues.map((issue) => buildIssueMessage(issue, context)).join("; ");
+	const issueMessages = error.issues
+		.map((issue) => buildIssueMessage(issue, context))
+		.join("; ");
 
-  return `${buildValidationHeader(context)}: ${issueMessages}`;
+	return `${buildValidationHeader(context)}: ${issueMessages}`;
 }
 
 /**
@@ -204,12 +206,12 @@ export function formatValidationError(
  * @returns A TypeError that preserves the original raw error as the cause
  */
 export function createCollectionValidationError(
-  error: ValidationError,
-  context?: ValidationContext,
+	error: ValidationError,
+	context?: ValidationContext
 ): TypeError {
-  return new TypeError(formatValidationError(error, context), {
-    cause: error.rawError,
-  });
+	return new TypeError(formatValidationError(error, context), {
+		cause: error.rawError,
+	});
 }
 
 /**
@@ -220,18 +222,18 @@ export function createCollectionValidationError(
  * @returns A ValidationResult containing either the validated data or an error
  */
 export function validateSafe<T>(
-  schema: ZodSchema<T>,
-  data: unknown,
+	schema: ZodSchema<T>,
+	data: unknown
 ): ValidationResult<T> {
-  try {
-    const validated = schema.parse(data);
-    return { success: true, data: validated };
-  } catch (error) {
-    return {
-      success: false,
-      error: toValidationError(error),
-    };
-  }
+	try {
+		const validated = schema.parse(data);
+		return { success: true, data: validated };
+	} catch (error) {
+		return {
+			success: false,
+			error: toValidationError(error),
+		};
+	}
 }
 
 /**
@@ -242,19 +244,22 @@ export function validateSafe<T>(
  * @returns A validator function that throws on invalid data
  */
 export function createValidator<T>(
-  schema: ZodSchema<T>,
-  context?: ValidationContext,
+	schema: ZodSchema<T>,
+	context?: ValidationContext
 ): (value: unknown) => T {
-  return (value: unknown): T => {
-    try {
-      return schema.parse(value);
-    } catch (error) {
-      if (error instanceof ZodError) {
-        throw createCollectionValidationError(toValidationError(error), context);
-      }
-      throw error;
-    }
-  };
+	return (value: unknown): T => {
+		try {
+			return schema.parse(value);
+		} catch (error) {
+			if (error instanceof ZodError) {
+				throw createCollectionValidationError(
+					toValidationError(error),
+					context
+				);
+			}
+			throw error;
+		}
+	};
 }
 
 /**
@@ -265,11 +270,11 @@ export function createValidator<T>(
  * @returns A validator function that validates against any of the schemas
  */
 export function createUnionValidator<T>(
-  schemas: ZodSchema<T>[],
-  context?: ValidationContext,
+	schemas: ZodSchema<T>[],
+	context?: ValidationContext
 ): (value: unknown) => T {
-  const unionSchema = z.union(schemas as [ZodSchema<T>, ...ZodSchema<T>[]]);
-  return createValidator(unionSchema, context);
+	const unionSchema = z.union(schemas as [ZodSchema<T>, ...ZodSchema<T>[]]);
+	return createValidator(unionSchema, context);
 }
 
 /**
@@ -279,29 +284,31 @@ export function createUnionValidator<T>(
  * @returns A string description of the schema
  */
 export function getSchemaDescription(schema: ZodSchema<unknown>): string {
-  const schemaWithDef = schema as ZodSchema<unknown> & {
-    _def?: { typeName?: string };
-  };
-  if (schema instanceof z.ZodObject) {
-    const schemaObject = schema as ZodSchema<unknown> & {
-      _shape?: Record<string, unknown>;
-    };
-    const shape = schemaObject._shape;
-    if (!shape) return "object { }";
+	const schemaWithDef = schema as ZodSchema<unknown> & {
+		_def?: { typeName?: string };
+	};
+	if (schema instanceof z.ZodObject) {
+		const schemaObject = schema as ZodSchema<unknown> & {
+			_shape?: Record<string, unknown>;
+		};
+		const shape = schemaObject._shape;
+		if (!shape) {
+			return "object { }";
+		}
 
-    const fields = Object.entries(shape)
-      .map(([key, value]) => {
-        const fieldSchema = value as ZodSchema<unknown> & {
-          _def?: { typeName?: string };
-        };
-        return `${key}: ${fieldSchema._def?.typeName || "unknown"}`;
-      })
-      .join(", ");
-    return `object { ${fields} }`;
-  }
+		const fields = Object.entries(shape)
+			.map(([key, value]) => {
+				const fieldSchema = value as ZodSchema<unknown> & {
+					_def?: { typeName?: string };
+				};
+				return `${key}: ${fieldSchema._def?.typeName || "unknown"}`;
+			})
+			.join(", ");
+		return `object { ${fields} }`;
+	}
 
-  const def = schemaWithDef._def;
-  return def?.typeName || "unknown";
+	const def = schemaWithDef._def;
+	return def?.typeName || "unknown";
 }
 
 /**
@@ -312,8 +319,7 @@ export function getSchemaDescription(schema: ZodSchema<unknown>): string {
  * const userSchema = z.object({ name: z.string(), age: z.number() });
  * type User = z.infer<typeof userSchema>;
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SchemaType<T extends ZodSchema<any>> = z.infer<T>;
+export type SchemaType<T extends ZodSchema<unknown>> = z.infer<T>;
 
 /**
  * Create a composite validator for validating collections with transformation.
@@ -324,11 +330,11 @@ export type SchemaType<T extends ZodSchema<any>> = z.infer<T>;
  * @returns A validator that validates and optionally transforms
  */
 export function createTransformingValidator<T, U>(
-  schema: ZodSchema<T>,
-  transform?: (value: T) => U,
+	schema: ZodSchema<T>,
+	transform?: (value: T) => U
 ): (value: unknown) => U {
-  return (value: unknown): U => {
-    const validated = schema.parse(value) as T;
-    return transform ? transform(validated) : (validated as unknown as U);
-  };
+	return (value: unknown): U => {
+		const validated = schema.parse(value) as T;
+		return transform ? transform(validated) : (validated as unknown as U);
+	};
 }

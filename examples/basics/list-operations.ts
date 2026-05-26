@@ -1,4 +1,5 @@
 import { ArrayList } from "ts-collections";
+
 // Creating a list
 const list = new ArrayList<string>();
 
@@ -16,7 +17,7 @@ list.remove("banana");
 // Iterating
 const iterator = list.iterator();
 while (iterator.hasNext()) {
-  console.log("Item:", iterator.next());
+	console.log("Item:", iterator.next());
 }
 
 // Size check

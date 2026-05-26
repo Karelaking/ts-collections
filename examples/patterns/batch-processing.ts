@@ -1,10 +1,9 @@
-import { ArrayList } from "ts-collections";
-import { LinkedQueue } from "ts-collections";
+import { ArrayList, LinkedQueue } from "ts-collections";
 
 // Define the structure of a Task object
 interface Task {
-  id: number;
-  name: string;
+	id: number;
+	name: string;
 }
 
 // Create a queue to store tasks in FIFO order
@@ -12,7 +11,7 @@ const queue = new LinkedQueue<Task>();
 
 // Add 12 tasks into the queue
 for (let i = 1; i <= 12; i++) {
-  queue.offer({ id: i, name: `Task ${i}` });
+	queue.offer({ id: i, name: `Task ${i}` });
 }
 
 // Define batch size (number of tasks to process at once)
@@ -24,24 +23,29 @@ const batch = new ArrayList<Task>();
 let task: Task | undefined;
 
 // Dequeue tasks one by one and add them to batch
-while ((task = queue.dequeue()) !== undefined) {
-  batch.add(task);
+while (true) {
+	task = queue.dequeue();
+	if (task === undefined) {
+		break;
+	}
 
-  // When batch reaches required size, process it
-  if (batch.size() === batchSize) {
-    processBatch(batch);
+	batch.add(task);
 
-    // Clear batch after processing
-    batch.clear();
-  }
+	// When batch reaches required size, process it
+	if (batch.size() === batchSize) {
+		processBatch(batch);
+
+		// Clear batch after processing
+		batch.clear();
+	}
 }
 
 // Process remaining tasks that didn't fill a full batch
 if (!batch.isEmpty()) {
-  processBatch(batch);
+	processBatch(batch);
 }
 
 // Function to process a batch of tasks
 function processBatch(batch: ArrayList<Task>) {
-  console.log(`Processing ${batch.size()} tasks`);
+	console.log(`Processing ${batch.size()} tasks`);
 }

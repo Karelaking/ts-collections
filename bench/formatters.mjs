@@ -3,7 +3,7 @@
  * @param {Array<Object>} results
  */
 export function formatTable(results) {
-  console.table(results);
+	console.table(results);
 }
 
 /**
@@ -11,7 +11,7 @@ export function formatTable(results) {
  * @param {Array<Object>} results
  */
 export function formatJSON(results) {
-  console.log(JSON.stringify(results, null, 2));
+	console.log(JSON.stringify(results, null, 2));
 }
 
 /**
@@ -21,11 +21,11 @@ export function formatJSON(results) {
  * @returns {string}
  */
 function escapeCSV(value) {
-  const str = String(value);
-  if (str.includes('"') || str.includes(",") || str.includes("\n")) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
+	const str = String(value);
+	if (str.includes('"') || str.includes(",") || str.includes("\n")) {
+		return `"${str.replace(/"/g, '""')}"`;
+	}
+	return str;
 }
 
 /**
@@ -33,10 +33,10 @@ function escapeCSV(value) {
  * @param {Array<Object>} results
  */
 export function formatCSV(results) {
-  if (results.length === 0) return;
-  const headers = Object.keys(results[0]).map(escapeCSV).join(",");
-  const rows = results.map((r) =>
-    Object.values(r).map(escapeCSV).join(",")
-  );
-  console.log([headers, ...rows].join("\n"));
+	if (results.length === 0) {
+		return;
+	}
+	const headers = Object.keys(results[0]).map(escapeCSV).join(",");
+	const rows = results.map((r) => Object.values(r).map(escapeCSV).join(","));
+	console.log([headers, ...rows].join("\n"));
 }

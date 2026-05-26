@@ -16,125 +16,125 @@ import type { Queue } from "./Queue";
  * deque.pollFirst(); // 1 (removed)
  */
 export interface Deque<E> extends Queue<E> {
-  /**
-   * Inserts the specified element at the front of this deque.
-   *
-   * @param element Element to add at the front
-   */
-  addFirst(element: E): void;
+	/**
+	 * Inserts the specified element at the front of this deque.
+	 *
+	 * @param element Element to add at the front
+	 */
+	addFirst(element: E): void;
 
-  /**
-   * Inserts the specified element at the end of this deque.
-   *
-   * @param element Element to add at the end
-   */
-  addLast(element: E): void;
+	/**
+	 * Inserts the specified element at the end of this deque.
+	 *
+	 * @param element Element to add at the end
+	 */
+	addLast(element: E): void;
 
-  /**
-   * Inserts the specified element at the front of this deque.
-   *
-   * @param element Element to add at the front
-   * @returns true if the element was added
-   */
-  offerFirst(element: E): boolean;
+	/**
+	 * Returns an iterator over elements in reverse sequential order.
+	 */
+	descendingIterator(): Iterator<E>;
 
-  /**
-   * Inserts the specified element at the end of this deque.
-   *
-   * @param element Element to add at the end
-   * @returns true if the element was added
-   */
-  offerLast(element: E): boolean;
+	/**
+	 * Retrieves, but does not remove, the first element of this deque.
+	 *
+	 * @returns The first element
+	 * @throws Error if this deque is empty
+	 */
+	getFirst(): E;
 
-  /**
-   * Retrieves and removes the first element of this deque.
-   *
-   * @returns The first element
-   * @throws Error if this deque is empty
-   */
-  removeFirst(): E;
+	/**
+	 * Retrieves, but does not remove, the last element of this deque.
+	 *
+	 * @returns The last element
+	 * @throws Error if this deque is empty
+	 */
+	getLast(): E;
 
-  /**
-   * Retrieves and removes the last element of this deque.
-   *
-   * @returns The last element
-   * @throws Error if this deque is empty
-   */
-  removeLast(): E;
+	/**
+	 * Inserts the specified element at the front of this deque.
+	 *
+	 * @param element Element to add at the front
+	 * @returns true if the element was added
+	 */
+	offerFirst(element: E): boolean;
 
-  /**
-   * Retrieves and removes the first element of this deque,
-   * or returns undefined if this deque is empty.
-   */
-  pollFirst(): E | undefined;
+	/**
+	 * Inserts the specified element at the end of this deque.
+	 *
+	 * @param element Element to add at the end
+	 * @returns true if the element was added
+	 */
+	offerLast(element: E): boolean;
 
-  /**
-   * Retrieves and removes the last element of this deque,
-   * or returns undefined if this deque is empty.
-   */
-  pollLast(): E | undefined;
+	/**
+	 * Retrieves, but does not remove, the first element of this deque,
+	 * or returns undefined if this deque is empty.
+	 */
+	peekFirst(): E | undefined;
 
-  /**
-   * Retrieves, but does not remove, the first element of this deque.
-   *
-   * @returns The first element
-   * @throws Error if this deque is empty
-   */
-  getFirst(): E;
+	/**
+	 * Retrieves, but does not remove, the last element of this deque,
+	 * or returns undefined if this deque is empty.
+	 */
+	peekLast(): E | undefined;
 
-  /**
-   * Retrieves, but does not remove, the last element of this deque.
-   *
-   * @returns The last element
-   * @throws Error if this deque is empty
-   */
-  getLast(): E;
+	/**
+	 * Retrieves and removes the first element of this deque,
+	 * or returns undefined if this deque is empty.
+	 */
+	pollFirst(): E | undefined;
 
-  /**
-   * Retrieves, but does not remove, the first element of this deque,
-   * or returns undefined if this deque is empty.
-   */
-  peekFirst(): E | undefined;
+	/**
+	 * Retrieves and removes the last element of this deque,
+	 * or returns undefined if this deque is empty.
+	 */
+	pollLast(): E | undefined;
 
-  /**
-   * Retrieves, but does not remove, the last element of this deque,
-   * or returns undefined if this deque is empty.
-   */
-  peekLast(): E | undefined;
+	/**
+	 * Pops an element from the stack represented by this deque (front removal).
+	 *
+	 * @returns The popped element
+	 * @throws Error if this deque is empty
+	 */
+	pop(): E;
 
-  /**
-   * Removes the first occurrence of the specified element from this deque.
-   *
-   * @param element Element to remove
-   * @returns true if an element was removed
-   */
-  removeFirstOccurrence(element: E): boolean;
+	/**
+	 * Pushes an element onto the stack represented by this deque (front insertion).
+	 *
+	 * @param element Element to push
+	 */
+	push(element: E): void;
 
-  /**
-   * Removes the last occurrence of the specified element from this deque.
-   *
-   * @param element Element to remove
-   * @returns true if an element was removed
-   */
-  removeLastOccurrence(element: E): boolean;
+	/**
+	 * Retrieves and removes the first element of this deque.
+	 *
+	 * @returns The first element
+	 * @throws Error if this deque is empty
+	 */
+	removeFirst(): E;
 
-  /**
-   * Pushes an element onto the stack represented by this deque (front insertion).
-   *
-   * @param element Element to push
-   */
-  push(element: E): void;
+	/**
+	 * Removes the first occurrence of the specified element from this deque.
+	 *
+	 * @param element Element to remove
+	 * @returns true if an element was removed
+	 */
+	removeFirstOccurrence(element: E): boolean;
 
-  /**
-   * Pops an element from the stack represented by this deque (front removal).
-   *
-   * @returns The popped element
-   * @throws Error if this deque is empty
-   */
-  pop(): E;
+	/**
+	 * Retrieves and removes the last element of this deque.
+	 *
+	 * @returns The last element
+	 * @throws Error if this deque is empty
+	 */
+	removeLast(): E;
 
-  /**
-   * Returns an iterator over elements in reverse sequential order.
-   */
-  descendingIterator(): Iterator<E>;
+	/**
+	 * Removes the last occurrence of the specified element from this deque.
+	 *
+	 * @param element Element to remove
+	 * @returns true if an element was removed
+	 */
+	removeLastOccurrence(element: E): boolean;
 }

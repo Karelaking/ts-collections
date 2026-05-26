@@ -1,12 +1,13 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": true,
+    "includes": ["**/*", "!./node_modules", "!./dist", "!./build", "!./.agents"]
   },
   "formatter": {
     "enabled": true,
@@ -15,7 +16,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "performance": {
+        "noBarrelFile": "off"
+      },
+      "style": {
+        "useFilenamingConvention": "off"
+      }
     }
   },
   "javascript": {
@@ -30,5 +37,6 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "extends": ["ultracite/biome/core"]
 }
