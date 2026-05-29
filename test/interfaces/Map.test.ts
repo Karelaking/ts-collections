@@ -11,7 +11,7 @@ import type { Map as MapInterface } from "../../src/interfaces/Map";
  * ```
  */
 export function describeMap(
-  createMap: () => MapInterface<string, number>,
+	createMap: () => MapInterface<string, number>
 ): void {
   describe("Map Interface", () => {
     let map: MapInterface<string, number>;

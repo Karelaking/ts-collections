@@ -16,5 +16,5 @@ console.log(stack.peek()); // Output: 30
 // Pop elements from the stack until it becomes empty
 // pop() removes and returns the top element (LIFO order)
 while (!stack.isEmpty()) {
-  console.log(stack.pop());
+	console.log(stack.pop());
 }

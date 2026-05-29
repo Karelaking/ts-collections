@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { HashMap } from "../../src/map/HashMap";
 import { describeMap } from "../interfaces/Map";

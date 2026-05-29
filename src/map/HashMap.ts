@@ -1,6 +1,6 @@
 import {
-  AbstractMap,
-  type MapTypeValidationOptions,
+	AbstractMap,
+	type MapTypeValidationOptions,
 } from "../abstracts/AbstractMap";
 import type { Iterator } from "../interfaces/Iterator";
 import type { ReadOnlyCollection } from "../interfaces/ReadOnlyCollection";
@@ -33,159 +33,159 @@ import { formatValidationContextValue } from "../utils/validation";
  * ```
  */
 export class HashMap<K, V>
-  extends AbstractMap<K, V>
-  implements MapInterface<K, V>
+	extends AbstractMap<K, V>
+	implements MapInterface<K, V>
 {
-  private mapEntries: globalThis.Map<K, V>;
+	private readonly mapEntries: globalThis.Map<K, V>;
 
-  constructor(options?: MapTypeValidationOptions<K, V>) {
-    super(options);
-    this.mapEntries = new globalThis.Map<K, V>();
-  }
+	constructor(options?: MapTypeValidationOptions<K, V>) {
+		super(options);
+		this.mapEntries = new globalThis.Map<K, V>();
+	}
 
-  /**
-   * Associates the specified value with the specified key in this map.
-   * If the map previously contained a mapping for the key, the old value is replaced.
-   * @param key The key with which the specified value is to be associated
-   * @param value The value to be associated with the specified key
-   * @returns The previous value associated with the key, or undefined if there was no mapping
-   */
-  override put(key: K, value: V): V | undefined {
-    this.validateKeyType(
-      key,
-      this.createValidationContext(
-        "put",
-        `key ${formatValidationContextValue(key)}`,
-        key,
-        this.size(),
-      ),
-    );
-    this.validateValueType(
-      value,
-      this.createValidationContext(
-        "put",
-        `value for key ${formatValidationContextValue(key)}`,
-        value,
-        this.size(),
-      ),
-    );
-    const oldValue = this.mapEntries.get(key);
-    this.mapEntries.set(key, value);
-    return oldValue;
-  }
+	/**
+	 * Associates the specified value with the specified key in this map.
+	 * If the map previously contained a mapping for the key, the old value is replaced.
+	 * @param key The key with which the specified value is to be associated
+	 * @param value The value to be associated with the specified key
+	 * @returns The previous value associated with the key, or undefined if there was no mapping
+	 */
+	override put(key: K, value: V): V | undefined {
+		this.validateKeyType(
+			key,
+			this.createValidationContext(
+				"put",
+				`key ${formatValidationContextValue(key)}`,
+				key,
+				this.size()
+			)
+		);
+		this.validateValueType(
+			value,
+			this.createValidationContext(
+				"put",
+				`value for key ${formatValidationContextValue(key)}`,
+				value,
+				this.size()
+			)
+		);
+		const oldValue = this.mapEntries.get(key);
+		this.mapEntries.set(key, value);
+		return oldValue;
+	}
 
-  /**
-   * Returns the value to which the specified key is mapped, or undefined if this map contains no mapping for the key.
-   * @param key The key whose associated value is to be returned
-   * @returns The value to which the specified key is mapped, or undefined if no mapping exists
-   */
-  override get(key: K): V | undefined {
-    return this.mapEntries.get(key);
-  }
+	/**
+	 * Returns the value to which the specified key is mapped, or undefined if this map contains no mapping for the key.
+	 * @param key The key whose associated value is to be returned
+	 * @returns The value to which the specified key is mapped, or undefined if no mapping exists
+	 */
+	override get(key: K): V | undefined {
+		return this.mapEntries.get(key);
+	}
 
-  /**
-   * Removes the mapping for a key from this map if it is present.
-   * @param key The key whose mapping is to be removed from the map
-   * @returns The previous value associated with the key, or undefined if there was no mapping
-   */
-  override remove(key: K): V | undefined {
-    const value = this.mapEntries.get(key);
-    this.mapEntries.delete(key);
-    return value;
-  }
+	/**
+	 * Removes the mapping for a key from this map if it is present.
+	 * @param key The key whose mapping is to be removed from the map
+	 * @returns The previous value associated with the key, or undefined if there was no mapping
+	 */
+	override remove(key: K): V | undefined {
+		const value = this.mapEntries.get(key);
+		this.mapEntries.delete(key);
+		return value;
+	}
 
-  /**
-   * Returns true if this map contains a mapping for the specified key.
-   * @param key The key whose presence in this map is to be tested
-   * @returns true if this map contains a mapping for the specified key
-   */
-  override containsKey(key: K): boolean {
-    return this.mapEntries.has(key);
-  }
+	/**
+	 * Returns true if this map contains a mapping for the specified key.
+	 * @param key The key whose presence in this map is to be tested
+	 * @returns true if this map contains a mapping for the specified key
+	 */
+	override containsKey(key: K): boolean {
+		return this.mapEntries.has(key);
+	}
 
-  /**
-   * Returns true if this map maps one or more keys to the specified value.
-   * @param value The value whose presence in this map is to be tested
-   * @returns true if this map maps one or more keys to the specified value
-   */
-  override containsValue(value: V): boolean {
-    for (const v of this.mapEntries.values()) {
-      if (v === value) {
-        return true;
-      }
-    }
-    return false;
-  }
+	/**
+	 * Returns true if this map maps one or more keys to the specified value.
+	 * @param value The value whose presence in this map is to be tested
+	 * @returns true if this map maps one or more keys to the specified value
+	 */
+	override containsValue(value: V): boolean {
+		for (const v of this.mapEntries.values()) {
+			if (v === value) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  /**
-   * Returns the number of key-value mappings in this map.
-   * @returns The number of key-value mappings in this map
-   */
-  override size(): number {
-    return this.mapEntries.size;
-  }
+	/**
+	 * Returns the number of key-value mappings in this map.
+	 * @returns The number of key-value mappings in this map
+	 */
+	override size(): number {
+		return this.mapEntries.size;
+	}
 
-  /**
-   * Returns true if this map contains no key-value mappings.
-   * @returns true if this map contains no key-value mappings
-   */
-  override isEmpty(): boolean {
-    return this.mapEntries.size === 0;
-  }
+	/**
+	 * Returns true if this map contains no key-value mappings.
+	 * @returns true if this map contains no key-value mappings
+	 */
+	override isEmpty(): boolean {
+		return this.mapEntries.size === 0;
+	}
 
-  /**
-   * Removes all of the mappings from this map.
-   */
-  override clear(): void {
-    this.mapEntries.clear();
-    this.resetTypeInference();
-  }
+	/**
+	 * Removes all of the mappings from this map.
+	 */
+	override clear(): void {
+		this.mapEntries.clear();
+		this.resetTypeInference();
+	}
 
-  /**
-   * Returns an iterator over the keys in this map.
-   * @returns An iterator over the keys in this map
-   */
-  override keyIterator(): Iterator<K> {
-    const keys = Array.from(this.mapEntries.keys()) as K[];
-    let index = 0;
+	/**
+	 * Returns an iterator over the keys in this map.
+	 * @returns An iterator over the keys in this map
+	 */
+	override keyIterator(): Iterator<K> {
+		const keys = Array.from(this.mapEntries.keys()) as K[];
+		let index = 0;
 
-    return {
-      hasNext: () => index < keys.length,
-      next: () => {
-        if (index >= keys.length) {
-          throw new Error("No more elements");
-        }
-        const key = keys[index++];
-        if (key === undefined) {
-          throw new Error("No more elements");
-        }
-        return key;
-      },
-    };
-  }
+		return {
+			hasNext: () => index < keys.length,
+			next: () => {
+				if (index >= keys.length) {
+					throw new Error("No more elements");
+				}
+				const key = keys[index++];
+				if (key === undefined) {
+					throw new Error("No more elements");
+				}
+				return key;
+			},
+		};
+	}
 
-  /**
-   * Returns an iterator over the values in this map.
-   * @returns An iterator over the values in this map
-   */
-  override valueIterator(): Iterator<V> {
-    const values = Array.from(this.mapEntries.values()) as V[];
-    let index = 0;
+	/**
+	 * Returns an iterator over the values in this map.
+	 * @returns An iterator over the values in this map
+	 */
+	override valueIterator(): Iterator<V> {
+		const values = Array.from(this.mapEntries.values()) as V[];
+		let index = 0;
 
-    return {
-      hasNext: () => index < values.length,
-      next: () => {
-        if (index >= values.length) {
-          throw new Error("No more elements");
-        }
-        const value = values[index++];
-        if (value === undefined) {
-          throw new Error("No more elements");
-        }
-        return value;
-      },
-    };
-  }
+		return {
+			hasNext: () => index < values.length,
+			next: () => {
+				if (index >= values.length) {
+					throw new Error("No more elements");
+				}
+				const value = values[index++];
+				if (value === undefined) {
+					throw new Error("No more elements");
+				}
+				return value;
+			},
+		};
+	}
 
   /**
    * Returns a collection view of the values contained in this map.
@@ -223,19 +223,19 @@ export class HashMap<K, V>
     };
   }
 
-  /**
-   * Returns an array of the keys contained in this map.
-   * @returns An array of the keys contained in this map
-   */
-  override keys(): K[] {
-    return Array.from(this.mapEntries.keys());
-  }
+	/**
+	 * Returns an array of the keys contained in this map.
+	 * @returns An array of the keys contained in this map
+	 */
+	override keys(): K[] {
+		return Array.from(this.mapEntries.keys());
+	}
 
-  /**
-   * Returns an array of the key-value pairs contained in this map.
-   * @returns An array of the key-value pairs contained in this map
-   */
-  override entries(): Array<[K, V]> {
-    return Array.from(this.mapEntries.entries());
-  }
+	/**
+	 * Returns an array of the key-value pairs contained in this map.
+	 * @returns An array of the key-value pairs contained in this map
+	 */
+	override entries(): [K, V][] {
+		return Array.from(this.mapEntries.entries());
+	}
 }

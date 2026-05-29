@@ -10,7 +10,7 @@ console.log(set.contains(1));
 
 const it = set.iterator();
 while (it.hasNext()) {
-  console.log(it.next());
+	console.log(it.next());
 }
 
 set.remove(1);

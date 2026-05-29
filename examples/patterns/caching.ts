@@ -3,18 +3,22 @@ import { HashMap } from "ts-collections";
 const cache = new HashMap<string, number>();
 
 function expensiveComputation(n: number): number {
-  const key = n.toString();
+	const key = n.toString();
 
-  if (cache.containsKey(key)) {
-    console.log("Cache hit:", key);
-    return cache.get(key)!; // non-null assertion
-  }
-  console.log("Computing:", key);
+	if (cache.containsKey(key)) {
+		console.log("Cache hit:", key);
+		const cachedValue = cache.get(key);
+		if (cachedValue === undefined) {
+			throw new Error("Cache entry was expected but not found");
+		}
+		return cachedValue;
+	}
+	console.log("Computing:", key);
 
-  const result = n * n;
-  cache.put(key, result);
+	const result = n * n;
+	cache.put(key, result);
 
-  return result;
+	return result;
 }
 
 console.log(expensiveComputation(5));
