@@ -1,6 +1,6 @@
+import { CollectionEmptyError } from "../errors";
 import type { List } from "../interfaces";
 import { AbstractCollection } from "./AbstractCollection";
-import { CollectionEmptyError } from "../errors";
 
 export type { TypeValidationOptions } from "./AbstractCollection";
 

@@ -1,9 +1,9 @@
 import { ZodError, type ZodSchema, z } from "zod";
+import type { ErrorContext } from "../errors/ErrorContext";
 import {
 	ValidationError,
 	type ValidationIssue,
 } from "../errors/ValidationError";
-import type { ErrorContext } from "../errors/ErrorContext";
 
 /**
  * Result type for validation operations.

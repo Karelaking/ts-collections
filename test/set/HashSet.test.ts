@@ -88,7 +88,7 @@ describe("HashSet - Core Methods", () => {
 
 			// Should throw ValidationError (extends BaseCollectionError)
 			expect(thrownError).toBeInstanceOf(Error);
-			expect((thrownError as Error).name).toBe('ValidationError');
+			expect((thrownError as Error).name).toBe("ValidationError");
 			const { issues, originalError } = thrownError as any;
 			expect(issues).toBeDefined();
 			expect(issues.length).toBeGreaterThan(0);

@@ -10,58 +10,53 @@
  * @module types
  */
 
-// Core type system
-export {
-  TypeCode,
-  TypeCategory,
-  TypeInfo,
-  TypeDetector,
-  DetectionResult,
-  TYPE_CODE_TO_NAME,
-  TYPE_NAME_TO_CODE,
-  TypeSymbols,
-  DefaultDetectors,
-  GlobalTypeRegistry,
-  registerCustomType,
-  unregisterCustomType,
-  getRegisteredType,
-  getAllRegisteredTypes,
-  clearCustomTypeRegistry,
-} from "./TypeSystem";
-
-// Type detection
-export {
-  TypeDetector,
-  globalTypeDetector,
-  detectType,
-  getTypeName,
-  isType,
-  getTypeInfo,
-} from "./TypeDetector";
-
-// Type caching
-export {
-  TypeCache,
-  CacheStats,
-  globalTypeCache,
-  cachedGetType,
-  cachedTypeMatch,
-  cachedValidateType,
-} from "./TypeCache";
-
-// Type validation
-export {
-  TypeValidator,
-  ValidationMode,
-  TypeValidationConfig,
-  createStrictValidator,
-  createDisabledValidator,
-} from "./TypeValidator";
-
 // Collection validation adapter (bridges old and new)
 export {
-  CollectionValidationAdapter,
-  ValidationAdapterConfig,
-  createValidationAdapter,
+	CollectionValidationAdapter,
+	createValidationAdapter,
+	ValidationAdapterConfig,
 } from "./CollectionValidationAdapter";
-
+// Type caching
+export {
+	CacheStats,
+	cachedGetType,
+	cachedTypeMatch,
+	cachedValidateType,
+	globalTypeCache,
+	TypeCache,
+} from "./TypeCache";
+// Type detection
+export {
+	detectType,
+	getTypeInfo,
+	getTypeName,
+	globalTypeDetector,
+	isType,
+	TypeDetector,
+} from "./TypeDetector";
+// Core type system
+export {
+	clearCustomTypeRegistry,
+	DefaultDetectors,
+	DetectionResult,
+	GlobalTypeRegistry,
+	getAllRegisteredTypes,
+	getRegisteredType,
+	registerCustomType,
+	TYPE_CODE_TO_NAME,
+	TYPE_NAME_TO_CODE,
+	TypeCategory,
+	TypeCode,
+	TypeDetector,
+	TypeInfo,
+	TypeSymbols,
+	unregisterCustomType,
+} from "./TypeSystem";
+// Type validation
+export {
+	createDisabledValidator,
+	createStrictValidator,
+	TypeValidationConfig,
+	TypeValidator,
+	ValidationMode,
+} from "./TypeValidator";

@@ -1,7 +1,7 @@
 import { AbstractQueue } from "../abstracts/AbstractQueue";
+import { CollectionEmptyError } from "../errors";
 import type { Iterator } from "../interfaces/Iterator";
 import type { Queue } from "../interfaces/Queue";
-import { CollectionEmptyError } from "../errors";
 
 /**
  * A linked list-based Queue implementation.

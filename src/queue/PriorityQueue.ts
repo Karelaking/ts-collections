@@ -2,10 +2,10 @@ import {
 	AbstractQueue,
 	type TypeValidationOptions,
 } from "../abstracts/AbstractQueue";
+import { CollectionEmptyError } from "../errors";
 import type { Iterator } from "../interfaces/Iterator";
 import type { Queue } from "../interfaces/Queue";
 import { compareComparableValues } from "../utils/comparison";
-import { CollectionEmptyError } from "../errors";
 
 export interface PriorityQueueOptions<T> extends TypeValidationOptions<T> {
 	comparator?: (a: T, b: T) => number;

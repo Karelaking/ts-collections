@@ -1,12 +1,12 @@
 import type { ZodSchema } from "zod";
 import { ZodError } from "zod";
+import { TypeMismatchError, ValidationError } from "../errors";
 import type { Collection, Iterator, Map as MapInterface } from "../interfaces";
 import {
 	describeValidationValue,
-	type ValidationContext,
 	toValidationIssues,
+	type ValidationContext,
 } from "../utils/validation";
-import { ValidationError, TypeMismatchError } from "../errors";
 
 /**
  * Options for runtime type validation in maps.

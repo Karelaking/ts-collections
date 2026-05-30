@@ -11,6 +11,8 @@
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
     "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.6",
     "prettier": "^3.7.4",
     "tinybench": "^6.0.0",
     "tsup": "^8.5.1",
@@ -34,7 +36,8 @@
     "clean": "rm -rf dist coverage",
     "type-check": "tsc --noEmit",
     "check": "ultracite check",
-    "fix": "ultracite fix"
+    "fix": "ultracite fix",
+    "prepare": "husky"
   },
   "type": "module",
   "version": "0.0.2",
