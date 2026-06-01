@@ -1,4 +1,9 @@
 import { ZodError, type ZodSchema, z } from "zod";
+import type { ErrorContext } from "../errors/ErrorContext";
+import {
+	ValidationError,
+	type ValidationIssue,
+} from "../errors/ValidationError";
 
 /**
  * Result type for validation operations.
@@ -10,33 +15,12 @@ export type ValidationResult<T> =
 
 /**
  * Context for a collection validation failure.
+ * @deprecated Use ErrorContext from src/errors/ErrorContext instead
  */
-export interface ValidationContext {
-	collectionType: string;
-	operation: string;
+export interface ValidationContext extends ErrorContext {
 	sizeBefore?: number;
 	targetDescription: string;
 	targetValue: unknown;
-}
-
-/**
- * Structured validation error with detailed information.
- */
-export interface ValidationError {
-	issues: ValidationIssue[];
-	message: string;
-	rawError: Error;
-}
-
-/**
- * Individual validation issue.
- */
-export interface ValidationIssue {
-	code: string;
-	expected?: string;
-	message: string;
-	path: string;
-	received?: string;
 }
 
 function describeType(value: unknown): string {
@@ -116,7 +100,7 @@ export function describeValidationValue(value: unknown): string {
 
 function mapIssueDetails(issue: ZodError["issues"][number]): ValidationIssue {
 	return {
-		path: issue.path.join("."),
+		path: issue.path.join(".") || "root",
 		message: issue.message,
 		code: issue.code,
 		...("expected" in issue ? { expected: String(issue.expected) } : {}),
@@ -125,25 +109,16 @@ function mapIssueDetails(issue: ZodError["issues"][number]): ValidationIssue {
 }
 
 /**
- * Converts a thrown error into a structured validation error.
+ * Converts a thrown Zod error into validation issues.
  *
- * @param error The thrown error to normalize
- * @returns A structured validation error representation
+ * @param error The thrown error to extract issues from
+ * @returns An array of validation issues
  */
-export function toValidationError(error: unknown): ValidationError {
+export function toValidationIssues(error: unknown): ValidationIssue[] {
 	if (error instanceof ZodError) {
-		return {
-			message: error.message,
-			issues: error.issues.map(mapIssueDetails),
-			rawError: error,
-		};
+		return error.issues.map(mapIssueDetails);
 	}
-
-	return {
-		message: "Unknown validation error",
-		issues: [],
-		rawError: error instanceof Error ? error : new Error(String(error)),
-	};
+	return [];
 }
 
 function buildValidationHeader(context?: ValidationContext): string {
@@ -182,21 +157,21 @@ function buildIssueMessage(
 }
 
 /**
- * Format validation error as a readable message.
+ * Format validation issues as a readable message.
  *
- * @param error The validation error to format
+ * @param issues The validation issues to format
  * @param context Optional collection context
  * @returns Formatted error message
  */
 export function formatValidationError(
-	error: ValidationError,
+	issues: ValidationIssue[],
 	context?: ValidationContext
 ): string {
-	if (error.issues.length === 0) {
-		return context ? buildValidationHeader(context) : error.message;
+	if (issues.length === 0) {
+		return context ? buildValidationHeader(context) : "Validation failed";
 	}
 
-	const issueMessages = error.issues
+	const issueMessages = issues
 		.map((issue) => buildIssueMessage(issue, context))
 		.join("; ");
 
@@ -204,19 +179,23 @@ export function formatValidationError(
 }
 
 /**
- * Creates a TypeError with contextual collection validation details.
+ * Creates a ValidationError with contextual collection validation details.
  *
- * @param error The structured validation error to format
- * @param context Additional collection context to include in the message
- * @returns A TypeError that preserves the original raw error as the cause
+ * @param message The error message
+ * @param issues The validation issues
+ * @param context Collection context for the error
+ * @param received The value that failed validation
+ * @param originalError The underlying Zod error
+ * @returns A ValidationError instance
  */
 export function createCollectionValidationError(
-	error: ValidationError,
-	context?: ValidationContext
-): TypeError {
-	return new TypeError(formatValidationError(error, context), {
-		cause: error.rawError,
-	});
+	message: string,
+	issues: ValidationIssue[],
+	context: ErrorContext,
+	received?: unknown,
+	originalError?: Error
+): ValidationError {
+	return new ValidationError(message, issues, context, received, originalError);
 }
 
 /**
@@ -224,19 +203,30 @@ export function createCollectionValidationError(
  *
  * @param schema The Zod schema to validate against
  * @param data The data to validate
+ * @param context Optional collection context for error messages
  * @returns A ValidationResult containing either the validated data or an error
  */
 export function validateSafe<T>(
 	schema: ZodSchema<T>,
-	data: unknown
+	data: unknown,
+	context?: ErrorContext
 ): ValidationResult<T> {
 	try {
 		const validated = schema.parse(data);
 		return { success: true, data: validated };
 	} catch (error) {
+		const issues = toValidationIssues(error);
+		const message = formatValidationError(issues);
+		const validationError = new ValidationError(
+			message,
+			issues,
+			context || { collectionType: "Unknown", operation: "validate" },
+			data,
+			error instanceof Error ? error : undefined
+		);
 		return {
 			success: false,
-			error: toValidationError(error),
+			error: validationError,
 		};
 	}
 }
@@ -250,16 +240,21 @@ export function validateSafe<T>(
  */
 export function createValidator<T>(
 	schema: ZodSchema<T>,
-	context?: ValidationContext
+	context?: ErrorContext
 ): (value: unknown) => T {
 	return (value: unknown): T => {
 		try {
 			return schema.parse(value);
 		} catch (error) {
 			if (error instanceof ZodError) {
-				throw createCollectionValidationError(
-					toValidationError(error),
-					context
+				const issues = toValidationIssues(error);
+				const message = formatValidationError(issues);
+				throw new ValidationError(
+					message,
+					issues,
+					context || { collectionType: "Unknown", operation: "validate" },
+					value,
+					error
 				);
 			}
 			throw error;
@@ -272,11 +267,12 @@ export function createValidator<T>(
  * Validates that a value matches one of the provided schemas (e.g., for multi-type collections)
  *
  * @param schemas Array of Zod schemas (union type validation)
+ * @param context Optional collection context for error messages
  * @returns A validator function that validates against any of the schemas
  */
 export function createUnionValidator<T>(
 	schemas: ZodSchema<T>[],
-	context?: ValidationContext
+	context?: ErrorContext
 ): (value: unknown) => T {
 	const unionSchema = z.union(schemas as [ZodSchema<T>, ...ZodSchema<T>[]]);
 	return createValidator(unionSchema, context);
@@ -343,3 +339,7 @@ export function createTransformingValidator<T, U>(
 		return transform ? transform(validated) : (validated as unknown as U);
 	};
 }
+
+// Re-export error types for backward compatibility
+export type { ValidationIssue } from "../errors/ValidationError";
+export { ValidationError } from "../errors/ValidationError";

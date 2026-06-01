@@ -1,9 +1,10 @@
 import type { ZodSchema } from "zod";
+import { ZodError } from "zod";
+import { TypeMismatchError, ValidationError } from "../errors";
 import type { Collection, Iterator, Map as MapInterface } from "../interfaces";
 import {
-	createCollectionValidationError,
 	describeValidationValue,
-	toValidationError,
+	toValidationIssues,
 	type ValidationContext,
 } from "../utils/validation";
 
@@ -403,7 +404,9 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 	 * - No configuration needed! (Just like Java)
 	 *
 	 * @param key The key to validate
-	 * @throws {TypeError} If key validation fails
+	 * @throws {ValidationError} If Zod schema validation fails
+	 * @throws {TypeError} If custom validator fails
+	 * @throws {TypeMismatchError} If type inference fails
 	 */
 	protected validateKeyType(key: unknown, context?: ValidationContext): void {
 		// Only validate if strict mode is enabled
@@ -420,10 +423,18 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 			try {
 				this.keySchema.parse(key);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw createCollectionValidationError(
-						toValidationError(error),
-						validationContext
+				if (error instanceof ZodError) {
+					const issues = toValidationIssues(error);
+					const message = `${validationContext.collectionType}.${validationContext.operation}() key validation failed`;
+					throw new ValidationError(
+						message,
+						issues,
+						{
+							collectionType: validationContext.collectionType,
+							operation: validationContext.operation,
+						},
+						key,
+						error
 					);
 				}
 				throw error;
@@ -447,8 +458,13 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 		} else {
 			const keyType = this.getTypeString(key);
 			if (keyType !== this.inferredKeyType) {
-				throw new TypeError(
-					`${validationContext.collectionType}.${validationContext.operation}() validation failed: Expected ${this.inferredKeyType} for ${validationContext.targetDescription}, but got ${describeValidationValue(key)}`
+				throw new TypeMismatchError(
+					this.inferredKeyType || "unknown",
+					keyType,
+					{
+						collectionType: validationContext.collectionType,
+						operation: validationContext.operation,
+					}
 				);
 			}
 		}
@@ -464,7 +480,9 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 	 * - No configuration needed! (Just like Java)
 	 *
 	 * @param value The value to validate
-	 * @throws {TypeError} If value validation fails
+	 * @throws {ValidationError} If Zod schema validation fails
+	 * @throws {TypeError} If custom validator fails
+	 * @throws {TypeMismatchError} If type inference fails
 	 */
 	protected validateValueType(
 		value: unknown,
@@ -484,10 +502,18 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 			try {
 				this.valueSchema.parse(value);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw createCollectionValidationError(
-						toValidationError(error),
-						validationContext
+				if (error instanceof ZodError) {
+					const issues = toValidationIssues(error);
+					const message = `${validationContext.collectionType}.${validationContext.operation}() value validation failed`;
+					throw new ValidationError(
+						message,
+						issues,
+						{
+							collectionType: validationContext.collectionType,
+							operation: validationContext.operation,
+						},
+						value,
+						error
 					);
 				}
 				throw error;
@@ -511,8 +537,13 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 		} else {
 			const valueType = this.getTypeString(value);
 			if (valueType !== this.inferredValueType) {
-				throw new TypeError(
-					`${validationContext.collectionType}.${validationContext.operation}() validation failed: Expected ${this.inferredValueType} for ${validationContext.targetDescription}, but got ${describeValidationValue(value)}`
+				throw new TypeMismatchError(
+					this.inferredValueType || "unknown",
+					valueType,
+					{
+						collectionType: validationContext.collectionType,
+						operation: validationContext.operation,
+					}
 				);
 			}
 		}

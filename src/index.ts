@@ -108,7 +108,21 @@ export {
 // Type Validation Options (Zod-based)
 export type { TypeValidationOptions } from "./abstracts/AbstractCollection";
 export type { MapTypeValidationOptions } from "./abstracts/AbstractMap";
-
+// Error Handling
+export {
+	BaseCollectionError,
+	CollectionEmptyError,
+	ComparatorRequiredError,
+	ConsoleErrorLogger,
+	DuplicateKeyError,
+	type ErrorContext,
+	type ICollectionError,
+	type IErrorLogger,
+	IndexOutOfBoundsError,
+	InvalidOperationError,
+	TypeMismatchError,
+	ValidationError,
+} from "./errors";
 // Core Interfaces
 export type {
 	Collection,
@@ -124,7 +138,6 @@ export type {
 	SortedSet,
 	Stack,
 } from "./interfaces";
-
 // Concrete Implementations
 export { ArrayList } from "./list/ArrayList";
 export { LinkedList } from "./list/LinkedList";
@@ -136,7 +149,6 @@ export { PriorityQueue } from "./queue/PriorityQueue";
 export { HashSet } from "./set/HashSet";
 export { TreeSet } from "./set/TreeSet";
 export { LinkedStack } from "./stack/LinkedStack";
-
 // Validation Utilities
 export {
 	createTransformingValidator,
@@ -145,7 +157,6 @@ export {
 	formatValidationError,
 	getSchemaDescription,
 	type SchemaType,
-	type ValidationError,
 	type ValidationIssue,
 	type ValidationResult,
 	validateSafe,

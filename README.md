@@ -7,6 +7,9 @@
 [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
 [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+[![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+[![Linted with Biome](https://img.shields.io/badge/Linted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
+[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 
   <p>
     <a href="#-features">Features</a> •
@@ -534,42 +537,6 @@ All data structures document their performance characteristics:
 \* amortized time complexity
 
 Run benchmarks: `pnpm bench`
-
-## 🐳 Docker
-
-Run the project in consistent, isolated environments with Docker.
-
-### Docker services
-
-- `dev` - development container with source mounts and hot editing support
-- `test` - runs `npm test` in an isolated container
-- `lint` - runs `npm run lint` in an isolated container
-- `build` - runs `npm run build` in an isolated container
-- `prod` - production image using the final build output
-
-### Common commands
-
-```bash
-docker compose run --rm dev
-docker compose run --rm test
-docker compose run --rm lint
-docker compose run --rm build
-
-docker build --target development -t ts-collections:dev .
-docker build --target production -t ts-collections:prod .
-```
-
-### Benefits
-
-- Consistent environment across machines and CI/CD
-- Strong isolation from local machine differences
-- Reproducible development and test workflows
-- Smaller, production-focused runtime images
-
-### Image targets
-
-- `--target development` for local development workflows
-- `--target production` for lean deployable images
 
 ## 📄 License
 

@@ -4,7 +4,11 @@ import type { List } from "../interfaces/List";
 
 /**
  * Node in a doubly linked list.
- * Holds a value and pointers to previous and next nodes.
+ *
+ * Each node holds a value and maintains bidirectional pointers to its
+ * predecessor and successor nodes in the list.
+ *
+ * @typeParam T - Type of value stored in the node.
  */
 interface Node<T> {
 	next: Node<T> | null;
@@ -13,11 +17,34 @@ interface Node<T> {
 }
 
 /**
- * A doubly linked list implementation (Java-style LinkedList).
- * Provides O(1) insertion/deletion at both ends and bidirectional traversal.
- * Includes complete runtime type safety validation by default.
+ * A doubly linked list that supports efficient insertions and removals at both ends.
  *
- * @template T The type of elements in this list
+ * This list behaves like Java's `LinkedList`: it maintains bidirectional node
+ * pointers for forward and reverse traversal, and provides constant-time access
+ * to head and tail elements.
+ *
+ * ### Performance characteristics
+ * - Insert/remove at head or tail: $O(1)$
+ * - Insert/remove at arbitrary index: $O(n)$ due to traversal
+ * - Random access (`get`, `set`): $O(n)$ due to traversal
+ * - Search (`contains`, `indexOf`, `lastIndexOf`): $O(n)$
+ *
+ * ### Internal behavior
+ * - Maintains `head` and `tail` pointers to the first and last nodes.
+ * - Each `Node<T>` holds a value and pointers to its predecessor and successor.
+ * - The `getNode` method optimizes traversal by starting from the closer end
+ *   (head or tail) based on the target index.
+ * - When runtime type validation is enabled, each added or replaced element
+ *   is validated before insertion.
+ * - `subList` produces a snapshot copy, so changes to the original list do
+ *   not affect the returned list.
+ *
+ * ### Error behavior
+ * - Methods that access by index throw when the index is out of range.
+ * - `getFirst`, `getLast`, `removeFirst`, and `removeLast` throw when the list is empty.
+ * - Iterator `next()` throws when no elements remain.
+ *
+ * @typeParam T - The element type stored in the list.
  *
  * @example
  * ```typescript
@@ -37,7 +64,6 @@ interface Node<T> {
  *
  * const rev = list.reverseIterator();
  * while (rev.hasNext()) console.log(rev.next());
- * ```
  */
 export class LinkedList<T> extends AbstractList<T> implements List<T> {
 	/** First node in the list */

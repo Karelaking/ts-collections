@@ -86,19 +86,14 @@ describe("HashSet - Core Methods", () => {
 				thrownError = error;
 			}
 
-			expect(thrownError).toBeInstanceOf(TypeError);
-			expect((thrownError as Error).message).toContain(
-				"HashSet.add() validation failed"
-			);
-			expect((thrownError as Error).message).toContain(
-				'Expected number for set element, but got string "text"'
-			);
-			expect((thrownError as Error).message).toContain(
-				"size before operation: 0"
-			);
-			const cause = (thrownError as Error & { cause?: unknown }).cause;
-			expect(cause).toBeInstanceOf(Error);
-			expect((cause as Error).name).toBe("ZodError");
+			// Should throw ValidationError (extends BaseCollectionError)
+			expect(thrownError).toBeInstanceOf(Error);
+			expect((thrownError as Error).name).toBe("ValidationError");
+			const { issues, originalError } = thrownError as any;
+			expect(issues).toBeDefined();
+			expect(issues.length).toBeGreaterThan(0);
+			expect(originalError).toBeInstanceOf(Error);
+			expect((originalError as Error).name).toBe("ZodError");
 		});
 
 		it("should maintain uniqueness when adding many duplicates", () => {

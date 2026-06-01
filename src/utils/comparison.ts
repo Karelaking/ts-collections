@@ -1,3 +1,5 @@
+import { ComparatorRequiredError } from "../errors";
+
 function compareNullishValues(a: unknown, b: unknown): number | undefined {
 	if (a === null && b === null) {
 		return 0;
@@ -77,5 +79,11 @@ export function compareComparableValues<T>(
 		return a.getTime() - b.getTime();
 	}
 
-	throw new Error(`Comparator is required for non-primitive ${subject} types`);
+	throw new ComparatorRequiredError(
+		{
+			collectionType: "Comparable",
+			operation: "compare",
+		},
+		subject
+	);
 }

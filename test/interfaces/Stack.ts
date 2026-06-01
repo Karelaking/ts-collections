@@ -166,9 +166,7 @@ export function describeStack(createStack: () => Stack<number>): void {
 		describe("type validation", () => {
 			it("should enforce type consistency by default", () => {
 				stack.push(1);
-				expect(() => stack.push("text" as unknown as number)).toThrow(
-					TypeError
-				);
+				expect(() => stack.push("text" as unknown as number)).toThrow();
 			});
 		});
 	});

@@ -2,6 +2,7 @@ import {
 	AbstractQueue,
 	type TypeValidationOptions,
 } from "../abstracts/AbstractQueue";
+import { CollectionEmptyError } from "../errors";
 import type { Iterator } from "../interfaces/Iterator";
 import type { Queue } from "../interfaces/Queue";
 import { compareComparableValues } from "../utils/comparison";
@@ -69,7 +70,10 @@ export class PriorityQueue<T> extends AbstractQueue<T> implements Queue<T> {
 	override element(): T {
 		const value = this.peek();
 		if (value === undefined) {
-			throw new Error("Queue is empty");
+			throw new CollectionEmptyError("element", {
+				collectionType: "PriorityQueue",
+				operation: "element",
+			});
 		}
 		return value;
 	}

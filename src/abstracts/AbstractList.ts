@@ -1,3 +1,4 @@
+import { CollectionEmptyError } from "../errors";
 import type { List } from "../interfaces";
 import { AbstractCollection } from "./AbstractCollection";
 
@@ -49,28 +50,40 @@ export abstract class AbstractList<E>
 
 	getFirst(): E {
 		if (this.isEmpty()) {
-			throw new Error("List is empty");
+			throw new CollectionEmptyError("getFirst", {
+				collectionType: this.constructor.name,
+				operation: "getFirst",
+			});
 		}
 		return this.get(0);
 	}
 
 	getLast(): E {
 		if (this.isEmpty()) {
-			throw new Error("List is empty");
+			throw new CollectionEmptyError("getLast", {
+				collectionType: this.constructor.name,
+				operation: "getLast",
+			});
 		}
 		return this.get(this.size() - 1);
 	}
 
 	removeFirst(): E {
 		if (this.isEmpty()) {
-			throw new Error("List is empty");
+			throw new CollectionEmptyError("removeFirst", {
+				collectionType: this.constructor.name,
+				operation: "removeFirst",
+			});
 		}
 		return this.removeAt(0);
 	}
 
 	removeLast(): E {
 		if (this.isEmpty()) {
-			throw new Error("List is empty");
+			throw new CollectionEmptyError("removeLast", {
+				collectionType: this.constructor.name,
+				operation: "removeLast",
+			});
 		}
 		return this.removeAt(this.size() - 1);
 	}

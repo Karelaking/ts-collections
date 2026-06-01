@@ -1,4 +1,5 @@
 import { AbstractQueue } from "../abstracts/AbstractQueue";
+import { CollectionEmptyError } from "../errors";
 import type { Iterator } from "../interfaces/Iterator";
 import type { Queue } from "../interfaces/Queue";
 
@@ -11,8 +12,6 @@ import type { Queue } from "../interfaces/Queue";
  * @template T The type of elements in this queue
  *
  * @example
- * ```typescript
- * // Automatic type safety (enabled by default, like Java)
  * const queue = new LinkedQueue<number>();
  * queue.offer(1);
  * queue.offer(2);
@@ -106,7 +105,10 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
 	 */
 	override element(): T {
 		if (this.head === null) {
-			throw new Error("Queue is empty");
+			throw new CollectionEmptyError("element", {
+				collectionType: "LinkedQueue",
+				operation: "element",
+			});
 		}
 
 		return this.head.value;
@@ -230,8 +232,11 @@ export class LinkedQueue<T> extends AbstractQueue<T> implements Queue<T> {
 }
 
 /**
- * Internal node structure for the linked queue.
- * @template T The type of value stored in the node
+ * Node in a singly linked queue.
+ *
+ * Each node holds a value and maintains a pointer to the next node in the queue.
+ *
+ * @typeParam T - Type of value stored in the node.
  */
 interface Node<T> {
 	next: Node<T> | null;

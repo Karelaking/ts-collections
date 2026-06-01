@@ -11,7 +11,18 @@ import { LinkedList } from "../list/LinkedList";
  * Uses a doubly linked list internally for O(1) push and pop operations.
  * Includes automatic runtime type validation by default.
  *
- * @template T The type of elements in this stack
+ * ### Error behavior
+ * - `pop()` and `peek()` return `undefined` when the stack is empty.
+ * - Iterator `next()` throws when no elements remain.
+ *
+ * @typeParam T - The element type stored in the stack.
+ *
+ * @example
+ * const stack = new LinkedStack<number>();
+ * stack.push(1);
+ * stack.push(2);
+ * console.log(stack.pop()); // 2
+ * console.log(stack.peek()); // 1
  */
 export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
 	private readonly list: LinkedList<T>;

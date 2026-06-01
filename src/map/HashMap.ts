@@ -8,17 +8,34 @@ import type { Map as MapInterface } from "../interfaces/Map";
 import { formatValidationContextValue } from "../utils/validation";
 
 /**
- * A hash-based Map implementation using native JavaScript Map.
- * Provides O(1) average case for put, get, and remove operations.
- * Optimized for both TypeScript and JavaScript runtimes.
- * Includes automatic runtime type validation for both keys and values by default (like Java's type-safe maps).
+ * A hash-based map that stores key-value pairs with fast lookups.
  *
- * @template K The type of keys in this map
- * @template V The type of values in this map
+ * This map behaves like Java's `HashMap`: it uses hashing for key storage,
+ * supports null-safe operations, and provides constant-time performance for
+ * basic operations under typical conditions.
+ *
+ * ### Performance characteristics
+ * - `put`, `get`, `remove`: $O(1)$ average case
+ * - `containsKey`: $O(1)$ average case
+ * - `containsValue`: $O(n)$ due to full iteration
+ * - `size`, `isEmpty`: $O(1)$
+ *
+ * ### Internal behavior
+ * - Backed by the native JavaScript `Map` for efficient key-value storage.
+ * - When runtime type validation is enabled (via `AbstractMap` options),
+ *   each key and value is validated before insertion.
+ * - Key equality uses JavaScript's `===` operator (strict equality).
+ * - The `values()` method returns a snapshot collection view.
+ *
+ * ### Error behavior
+ * - `put` throws if the key or value type is invalid under validation rules.
+ * - Iterator `next()` throws when no elements remain.
+ * - Collection views returned by `values()` throw on mutating operations.
+ *
+ * @typeParam K - The type of keys maintained by this map.
+ * @typeParam V - The type of mapped values.
  *
  * @example
- * ```typescript
- * // Automatic type safety (enabled by default, like Java's HashMap<K,V>)
  * const map = new HashMap<string, number>();
  * map.put("a", 1);
  * map.put("b", 2);

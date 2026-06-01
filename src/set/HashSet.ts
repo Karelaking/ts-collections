@@ -4,16 +4,31 @@ import type { Iterator } from "../interfaces/Iterator";
 import type { Set as SetInterface } from "../interfaces/Set";
 
 /**
- * A hash-based Set implementation using native JavaScript Set.
- * Provides O(1) average case for add, remove, and contains operations.
- * Optimized for both TypeScript and JavaScript runtimes.
- * Includes automatic runtime type validation by default (like Java's type-safe collections).
+ * A hash-based set that stores unique elements with fast lookups.
  *
- * @template T The type of elements in this set
+ * This set behaves like Java's `HashSet`: it uses hashing for element storage,
+ * prevents duplicates, and provides constant-time performance for basic operations
+ * under typical conditions.
+ *
+ * ### Performance characteristics
+ * - `add`, `remove`, `contains`: $O(1)$ average case
+ * - `size`: $O(1)$
+ * - `removeAll`, `retainAll`: $O(n + m)$ where $n$ is this set's size and $m$ is the other collection's size
+ *
+ * ### Internal behavior
+ * - Backed by the native JavaScript `Set` for efficient element storage.
+ * - When runtime type validation is enabled (via `AbstractSet` options),
+ *   each added element is validated before insertion.
+ * - Element equality uses JavaScript's `===` operator (strict equality).
+ * - Duplicate elements are automatically rejected.
+ *
+ * ### Error behavior
+ * - `add` throws if the element type is invalid under validation rules.
+ * - Iterator `next()` throws when no elements remain.
+ *
+ * @typeParam T - The type of elements maintained by this set.
  *
  * @example
- * ```typescript
- * // Automatic type safety (enabled by default, like Java)
  * const set = new HashSet<number>();
  * set.add(1);
  * set.add(2);

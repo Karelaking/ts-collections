@@ -45,7 +45,7 @@ describe("PriorityQueue - Core Methods", () => {
 	});
 
 	it("should throw from element when empty", () => {
-		expect(() => queue.element()).toThrow("Queue is empty");
+		expect(() => queue.element()).toThrow();
 	});
 
 	it("should return undefined from poll/peek when empty", () => {
@@ -103,7 +103,7 @@ describe("PriorityQueue - Core Methods", () => {
 
 	it("should enforce runtime type validation by default", () => {
 		queue.offer(1);
-		expect(() => queue.offer("text" as unknown as number)).toThrow(TypeError);
+		expect(() => queue.offer("text" as unknown as number)).toThrow();
 	});
 
 	it("should require comparator for non-comparable object values", () => {
