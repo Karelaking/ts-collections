@@ -1,10 +1,12 @@
 <div align="center">
   <h1>ts-collections</h1>
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
-
+  
+[![Build Status](https://github.com/Karelaking/ts-collections/actions/workflows/build.yml/badge.svg?style=flat-square)](https://github.com/Karelaking/ts-collections/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
 [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&style=flat-square)](https://nodejs.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
