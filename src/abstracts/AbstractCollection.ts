@@ -277,19 +277,18 @@ export abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Removes all of this collection's elements that are also contained in the
-	 * specified collection.
+	 * specified collection or iterable.
 	 *
-	 * Default implementation: iterates through elements of this collection
-	 * and removes those that are in the specified collection.
+	 * Default implementation: snapshots the current elements and removes those
+	 * that are present in the provided collection/iterable.
 	 *
 	 * @returns true if this collection changed as a result of the call
 	 */
-	removeAll(elements: Collection<E>): boolean {
+	removeAll(elements: Collection<E> | Iterable<E>): boolean {
 		let modified = false;
-		const iterator = this.iterator();
-		while (iterator.hasNext()) {
-			if (elements.contains(iterator.next()) && iterator.remove) {
-				iterator.remove();
+		const elementsToRemove = new globalThis.Set(this.iterateElements(elements));
+		for (const element of this.toArray()) {
+			if (elementsToRemove.has(element) && this.remove(element)) {
 				modified = true;
 			}
 		}
@@ -298,19 +297,18 @@ export abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Retains only the elements in this collection that are contained in the
-	 * specified collection.
+	 * specified collection or iterable.
 	 *
-	 * Default implementation: iterates through elements of this collection
-	 * and removes those that are NOT in the specified collection.
+	 * Default implementation: snapshots the current elements and removes those
+	 * that are not present in the provided collection/iterable.
 	 *
 	 * @returns true if this collection changed as a result of the call
 	 */
-	retainAll(elements: Collection<E>): boolean {
+	retainAll(elements: Collection<E> | Iterable<E>): boolean {
 		let modified = false;
-		const iterator = this.iterator();
-		while (iterator.hasNext()) {
-			if (!elements.contains(iterator.next()) && iterator.remove) {
-				iterator.remove();
+		const elementsToKeep = new globalThis.Set(this.iterateElements(elements));
+		for (const element of this.toArray()) {
+			if (!elementsToKeep.has(element) && this.remove(element)) {
 				modified = true;
 			}
 		}
