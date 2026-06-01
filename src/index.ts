@@ -96,13 +96,13 @@
 
 // Abstract Base Classes
 export {
-	AbstractCollection,
-	AbstractDeque,
-	AbstractList,
-	AbstractMap,
-	AbstractQueue,
-	AbstractSet,
-	AbstractStack,
+  AbstractCollection,
+  AbstractDeque,
+  AbstractList,
+  AbstractMap,
+  AbstractQueue,
+  AbstractSet,
+  AbstractStack,
 } from "./abstracts";
 
 // Type Validation Options (Zod-based)
@@ -110,33 +110,33 @@ export type { TypeValidationOptions } from "./abstracts/AbstractCollection";
 export type { MapTypeValidationOptions } from "./abstracts/AbstractMap";
 // Error Handling
 export {
-	BaseCollectionError,
-	CollectionEmptyError,
-	ComparatorRequiredError,
-	ConsoleErrorLogger,
-	DuplicateKeyError,
-	type ErrorContext,
-	type ICollectionError,
-	type IErrorLogger,
-	IndexOutOfBoundsError,
-	InvalidOperationError,
-	TypeMismatchError,
-	ValidationError,
+  BaseCollectionError,
+  CollectionEmptyError,
+  ComparatorRequiredError,
+  ConsoleErrorLogger,
+  DuplicateKeyError,
+  type ErrorContext,
+  type ICollectionError,
+  type IErrorLogger,
+  IndexOutOfBoundsError,
+  InvalidOperationError,
+  TypeMismatchError,
+  ValidationError,
 } from "./errors";
 // Core Interfaces
 export type {
-	Collection,
-	Deque,
-	Iterator,
-	List,
-	Map,
-	NavigableMap,
-	NavigableSet,
-	Queue,
-	Set,
-	SortedMap,
-	SortedSet,
-	Stack,
+  Collection,
+  Deque,
+  Iterator,
+  List,
+  Map,
+  NavigableMap,
+  NavigableSet,
+  Queue,
+  Set,
+  SortedMap,
+  SortedSet,
+  Stack,
 } from "./interfaces";
 // Concrete Implementations
 export { ArrayList } from "./list/ArrayList";
@@ -148,16 +148,17 @@ export { LinkedQueue } from "./queue/LinkedQueue";
 export { PriorityQueue } from "./queue/PriorityQueue";
 export { HashSet } from "./set/HashSet";
 export { TreeSet } from "./set/TreeSet";
+export { ArrayStack } from "./stack/ArrayStack";
 export { LinkedStack } from "./stack/LinkedStack";
 // Validation Utilities
 export {
-	createTransformingValidator,
-	createUnionValidator,
-	createValidator,
-	formatValidationError,
-	getSchemaDescription,
-	type SchemaType,
-	type ValidationIssue,
-	type ValidationResult,
-	validateSafe,
+  createTransformingValidator,
+  createUnionValidator,
+  createValidator,
+  formatValidationError,
+  getSchemaDescription,
+  type SchemaType,
+  type ValidationIssue,
+  type ValidationResult,
+  validateSafe,
 } from "./utils/validation";

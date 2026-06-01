@@ -11,28 +11,33 @@ export type { TypeValidationOptions } from "./AbstractCollection";
  * @template E The type of elements in this stack
  */
 export abstract class AbstractStack<E>
-	extends AbstractCollection<E>
-	implements Stack<E>
+  extends AbstractCollection<E>
+  implements Stack<E>
 {
-	/**
-	 * Pushes an element onto the stack.
-	 */
-	abstract push(element: E): boolean;
+  /**
+   * Pushes an element onto the stack.
+   */
+  abstract push(element: E): boolean;
 
-	/**
-	 * Pops the top element from the stack.
-	 */
-	abstract pop(): E | undefined;
+  /**
+   * Pops the top element from the stack.
+   */
+  abstract pop(): E | undefined;
 
-	/**
-	 * Peeks at the top element without removing it.
-	 */
-	abstract peek(): E | undefined;
+  /**
+   * Peeks at the top element without removing it.
+   */
+  abstract peek(): E | undefined;
 
-	/**
-	 * Collection.add alias that delegates to push for stack semantics.
-	 */
-	override add(element: E): boolean {
-		return this.push(element);
-	}
+  /**
+   * Returns the 1-based position where an object is on this stack.
+   */
+  abstract search(element: E): number;
+
+  /**
+   * Collection.add alias that delegates to push for stack semantics.
+   */
+  override add(element: E): boolean {
+    return this.push(element);
+  }
 }

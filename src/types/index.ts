@@ -12,51 +12,51 @@
 
 // Collection validation adapter (bridges old and new)
 export {
-	CollectionValidationAdapter,
-	createValidationAdapter,
-	ValidationAdapterConfig,
+  CollectionValidationAdapter,
+  createValidationAdapter,
+  ValidationAdapterConfig,
 } from "./CollectionValidationAdapter";
 // Type caching
 export {
-	CacheStats,
-	cachedGetType,
-	cachedTypeMatch,
-	cachedValidateType,
-	globalTypeCache,
-	TypeCache,
+  CacheStats,
+  cachedGetType,
+  cachedTypeMatch,
+  cachedValidateType,
+  globalTypeCache,
+  TypeCache,
 } from "./TypeCache";
 // Type detection
 export {
-	detectType,
-	getTypeInfo,
-	getTypeName,
-	globalTypeDetector,
-	isType,
-	TypeDetector,
+  detectType,
+  getTypeInfo,
+  getTypeName,
+  globalTypeDetector,
+  isType,
+  TypeDetector,
 } from "./TypeDetector";
 // Core type system
 export {
-	clearCustomTypeRegistry,
-	DefaultDetectors,
-	DetectionResult,
-	GlobalTypeRegistry,
-	getAllRegisteredTypes,
-	getRegisteredType,
-	registerCustomType,
-	TYPE_CODE_TO_NAME,
-	TYPE_NAME_TO_CODE,
-	TypeCategory,
-	TypeCode,
-	TypeDetector,
-	TypeInfo,
-	TypeSymbols,
-	unregisterCustomType,
+  clearCustomTypeRegistry,
+  DefaultDetectors,
+  DetectionResult,
+  GlobalTypeRegistry,
+  getAllRegisteredTypes,
+  getRegisteredType,
+  registerCustomType,
+  TYPE_CODE_TO_NAME,
+  TYPE_NAME_TO_CODE,
+  TypeCategory,
+  TypeCode,
+  TypeDetector,
+  TypeInfo,
+  TypeSymbols,
+  unregisterCustomType,
 } from "./TypeSystem";
 // Type validation
 export {
-	createDisabledValidator,
-	createStrictValidator,
-	TypeValidationConfig,
-	TypeValidator,
-	ValidationMode,
+  createDisabledValidator,
+  createStrictValidator,
+  TypeValidationConfig,
+  TypeValidator,
+  ValidationMode,
 } from "./TypeValidator";

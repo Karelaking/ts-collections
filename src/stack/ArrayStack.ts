@@ -4,11 +4,11 @@ import {
 } from "../abstracts/AbstractStack";
 import type { Iterator } from "../interfaces/Iterator";
 import type { Stack } from "../interfaces/Stack";
-import { LinkedList } from "../list/LinkedList";
+import { ArrayList } from "../list/ArrayList";
 
 /**
- * A linked list-based Stack implementation with LIFO semantics.
- * Uses a doubly linked list internally for O(1) push and pop operations.
+ * An array-based Stack implementation with LIFO semantics.
+ * Uses an ArrayList internally for efficient operations at the end of the list.
  * Includes automatic runtime type validation by default.
  *
  * ### Error behavior
@@ -18,18 +18,18 @@ import { LinkedList } from "../list/LinkedList";
  * @typeParam T - The element type stored in the stack.
  *
  * @example
- * const stack = new LinkedStack<number>();
+ * const stack = new ArrayStack<number>();
  * stack.push(1);
  * stack.push(2);
  * console.log(stack.pop()); // 2
  * console.log(stack.peek()); // 1
  */
-export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
-  private readonly list: LinkedList<T>;
+export class ArrayStack<T> extends AbstractStack<T> implements Stack<T> {
+  private readonly list: ArrayList<T>;
 
   constructor(options?: TypeValidationOptions<T>) {
     super(options);
-    this.list = new LinkedList<T>(options);
+    this.list = new ArrayList<T>(options);
   }
 
   /**
@@ -46,7 +46,7 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
         this.list.size(),
       ),
     );
-    this.list.addFirst(element);
+    this.list.add(element);
     return true;
   }
 
@@ -59,7 +59,7 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
       return;
     }
 
-    const value = this.list.removeFirst();
+    const value = this.list.removeAt(this.list.size() - 1);
 
     if (this.list.isEmpty()) {
       this.resetTypeInference();
@@ -76,7 +76,7 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
     if (this.list.isEmpty()) {
       return;
     }
-    return this.list.getFirst();
+    return this.list.get(this.list.size() - 1);
   }
 
   /**
@@ -84,8 +84,8 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
    * @returns The 1-based position from the top of the stack, or -1 if not found
    */
   override search(element: T): number {
-    const index = this.list.indexOf(element);
-    return index >= 0 ? index + 1 : -1;
+    const index = this.list.lastIndexOf(element);
+    return index >= 0 ? this.list.size() - index : -1;
   }
 
   /**
@@ -126,13 +126,24 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
    * Returns an iterator over the stack elements from top to bottom.
    */
   override iterator(): Iterator<T> {
-    return this.list.iterator();
+    let index = this.list.size() - 1;
+    return {
+      hasNext: () => index >= 0,
+      next: () => {
+        if (index < 0) {
+          throw new Error("No more elements");
+        }
+        const value = this.list.get(index);
+        index--;
+        return value;
+      },
+    };
   }
 
   /**
    * Returns an array containing all stack elements from top to bottom.
    */
   override toArray(): T[] {
-    return this.list.toArray();
+    return this.list.toArray().reverse();
   }
 }
