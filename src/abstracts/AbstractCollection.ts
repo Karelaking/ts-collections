@@ -39,19 +39,50 @@ export interface TypeValidationOptions<T> {
 	 */
 	schema?: ZodSchema<T>;
 	/**
-	 * If false, disables automatic type checking.
-	 * Default: true (type safety is ON by default, like Java)
+	 * If false, disables automatic runtime type checking.
+	 * Default: true (type safety is ON by default, like Java generics).
+	 *
+	 * **⚠️ Warning:** Setting `strict: false` removes the runtime safety net that prevents
+	 * mixed-type collections. TypeScript's compile-time types will still appear correct,
+	 * but the collection will silently accept values of any type at runtime. This can lead
+	 * to subtle bugs that are hard to trace — for example, a `number[]` collection that
+	 * quietly contains strings, causing unexpected NaN results in arithmetic operations.
+	 *
+	 * **When `strict: false` is appropriate:**
+	 * - Migrating legacy JavaScript code that stores mixed types temporarily
+	 * - Interoperating with untyped external data sources (e.g., raw JSON) where you own
+	 *   the validation externally
+	 * - Performance-critical hot paths where you have already validated types upstream
+	 *   and the per-element overhead of runtime checking is measurable
+	 *
+	 * **What breaks when you disable strict mode:**
+	 * - Runtime type mismatch errors are silenced — mixed-type collections are allowed
+	 * - IDE autocompletion and type inference remain correct at the TypeScript level,
+	 *   but runtime values may not match the declared generic type `<T>`
+	 * - Downstream code that assumes type homogeneity (e.g., `list.get(0) * 2`) can
+	 *   produce `NaN`, `undefined`, or thrown exceptions unexpectedly
+	 * - Debugging mixed-type bugs is significantly harder since errors surface far from
+	 *   the point of insertion
+	 *
+	 * **Performance note:** Strict mode adds a small per-`add` overhead for type inference
+	 * on the first element and type comparison on subsequent elements. In most applications
+	 * this is negligible. Only disable strict mode for performance if you have profiling
+	 * data confirming it is a bottleneck.
+	 *
+	 * @default true
 	 *
 	 * @example
 	 * ```typescript
-	 * // Type safety enabled by default
+	 * // Default — type safety on (recommended for all new code)
 	 * const list = new ArrayList<number>();
-	 * list.add(1);        // ✓ OK
-	 * list.add("text");   // ✗ TypeError: Type mismatch
+	 * list.add(1);          // ✓ OK
+	 * list.add("text");     // ✗ TypeError: type mismatch (caught at runtime)
 	 *
-	 * // Disable if needed (not recommended)
+	 * // strict: false — use only when you own the type guarantee externally
 	 * const list = new ArrayList<number>({ strict: false });
-	 * list.add("text");   // ✓ Now allowed (not type-safe)
+	 * list.add(1);          // ✓ OK
+	 * list.add("text");     // ✓ Silently accepted — runtime type is now mixed
+	 * list.get(1) * 2;      // NaN — "text" * 2 fails silently at runtime
 	 * ```
 	 */
 	strict?: boolean;
