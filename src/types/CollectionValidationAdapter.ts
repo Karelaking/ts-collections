@@ -44,7 +44,7 @@ export class CollectionValidationAdapter {
    * Create validation adapter
    * @param config Configuration
    */
-  constructor(config: ValidationAdapterConfig<unknown> = {}) {
+  constructor(config: ValidationAdapterConfig = {}) {
     // Convert old-style strict: boolean to new ValidationMode
     const mode = this.normalizeMode(config.strict);
 
