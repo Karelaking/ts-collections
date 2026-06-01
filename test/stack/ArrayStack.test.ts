@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { LinkedStack } from "../../src/stack/LinkedStack";
+import { ArrayStack } from "../../src/stack/ArrayStack";
 import { describeStack } from "../interfaces/Stack";
 
 // Run shared Stack interface tests
-describeStack(() => new LinkedStack<number>());
+describeStack(() => new ArrayStack<number>());
 
 /**
- * Test suite for LinkedStack implementation
+ * Test suite for ArrayStack implementation
  */
-describe("LinkedStack - Core Methods", () => {
-  let stack: LinkedStack<number>;
+describe("ArrayStack - Core Methods", () => {
+  let stack: ArrayStack<number>;
 
   beforeEach(() => {
-    stack = new LinkedStack<number>();
+    stack = new ArrayStack<number>();
   });
 
   describe("push and pop", () => {
@@ -116,7 +116,7 @@ describe("LinkedStack - Core Methods", () => {
 
   describe("different data types", () => {
     it("should work with string elements", () => {
-      const strStack = new LinkedStack<string>();
+      const strStack = new ArrayStack<string>();
       strStack.push("a");
       strStack.push("b");
       expect(strStack.pop()).toBe("b");
@@ -124,7 +124,7 @@ describe("LinkedStack - Core Methods", () => {
     });
 
     it("should work with object elements", () => {
-      const objStack = new LinkedStack<{ id: number; name: string }>();
+      const objStack = new ArrayStack<{ id: number; name: string }>();
       const first = { id: 1, name: "Alice" };
       const second = { id: 2, name: "Bob" };
 

@@ -112,6 +112,7 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 | **Set\<E>**        | Unique elements, no duplicates     | Inherits Collection with uniqueness            |
 | **Map\<K,V>**      | Key-value associations             | `put()`, `get()`, `containsKey()`, `entries()` |
 | **Queue\<E>**      | FIFO processing                    | `offer()`, `poll()`, `peek()`                  |
+| **Stack\<E>**      | LIFO processing                    | `push()`, `pop()`, `peek()`, `search()`        |
 
 ### Available Implementations
 
@@ -126,6 +127,8 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 | **Queue** | `LinkedQueue<E>`   | Linked list, FIFO operations O(1)           |
 | **Queue** | `PriorityQueue<E>` | Heap-based priority ordering                |
 | **Deque** | `LinkedDeque<E>`   | Double-ended queue, add/remove at both ends |
+| **Stack** | `ArrayStack<E>`    | Array-backed LIFO operations                |
+| **Stack** | `LinkedStack<E>`   | Linked list-backed LIFO operations          |
 
 ### Architecture
 
@@ -134,11 +137,14 @@ graph TD
     A[Collection Interface] --> B[List]
     A --> C[Set]
     A --> D[Queue]
+    A --> K[Stack]
     E[Map Interface] --> F[HashMap]
     B --> G[ArrayList]
     B --> H[LinkedList]
     C --> I[HashSet]
     D --> J[LinkedQueue]
+    K --> L[ArrayStack]
+    K --> M[LinkedStack]
 ```
 
 ## 📦 Installation
