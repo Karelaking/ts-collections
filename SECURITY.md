@@ -47,6 +47,7 @@ We actively monitor our dependencies for known vulnerabilities. Our dependencies
 - **path** - Path utilities
 
 All dependencies are:
+
 - Actively maintained
 - Regularly updated
 - Checked for known vulnerabilities
@@ -55,7 +56,7 @@ All dependencies are:
 ## Supported Versions
 
 | Version | Status | Security Updates |
-|---------|--------|------------------|
+| ------- | ------ | ---------------- |
 | 1.x     | Active | Yes              |
 
 ## Secrets and Credentials
@@ -81,6 +82,7 @@ When using ts-collections:
 ## CVE Disclosures
 
 Any CVEs related to ts-collections will be published at:
+
 - [CVE Database](https://cve.mitre.org/)
 - GitHub Security Advisory
 

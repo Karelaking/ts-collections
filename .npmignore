@@ -10,7 +10,6 @@ wiki/
 .agents/
 .git/
 .gitignore
-.dockerignore
 .npmrc
 eslint.config.js
 tsconfig.json
@@ -18,8 +17,7 @@ tsup.config.ts
 vitest.config.ts
 vitest-report.json
 biome.json
-docker-compose.yml
-Dockerfile
+ 
 
 # Documentation for development
 PROJECT_SETUP.md

@@ -12,16 +12,16 @@ Whether you're building a complex data-intensive application or need reliable, w
 
 ### 🌟 Core Features
 
-| Feature | Description |
-|---------|-------------|
-| 🔒 **Full TypeScript Support** | Strict generics, no `any` types, complete type inference |
-| ✅ **Runtime Type Validation** | Optional Zod schemas or custom validators for bulletproof safety |
-| 🎓 **Java-Inspired API** | Familiar patterns for developers from Java backgrounds |
-| 📦 **Zero Required Dependencies** | Zod is optional—use it when you need advanced validation |
-| ⚙️ **Industry-Grade Quality** | SOLID principles, >80% test coverage, comprehensive edge cases |
-| 🌳 **Tree-Shakeable ESM** | Dead code elimination, minimal bundle footprint |
-| ⚡ **High Performance** | Optimized algorithms with clear time complexity guarantees |
-| 📖 **Well Documented** | Complete API docs, examples, and architectural guides |
+| Feature                           | Description                                                      |
+| --------------------------------- | ---------------------------------------------------------------- |
+| 🔒 **Full TypeScript Support**    | Strict generics, no `any` types, complete type inference         |
+| ✅ **Runtime Type Validation**    | Optional Zod schemas or custom validators for bulletproof safety |
+| 🎓 **Java-Inspired API**          | Familiar patterns for developers from Java backgrounds           |
+| 📦 **Zero Required Dependencies** | Zod is optional—use it when you need advanced validation         |
+| ⚙️ **Industry-Grade Quality**     | SOLID principles, >80% test coverage, comprehensive edge cases   |
+| 🌳 **Tree-Shakeable ESM**         | Dead code elimination, minimal bundle footprint                  |
+| ⚡ **High Performance**           | Optimized algorithms with clear time complexity guarantees       |
+| 📖 **Well Documented**            | Complete API docs, examples, and architectural guides            |
 
 ---
 
@@ -53,10 +53,10 @@ pnpm add zod  # Install alongside ts-collections
 ### Verify Installation
 
 ```typescript
-import { ArrayList, LinkedStack, HashMap } from 'ts-collections';
+import { ArrayList, LinkedStack, HashMap } from "ts-collections";
 
 const list = new ArrayList<number>();
-console.log('✅ Installation successful!');
+console.log("✅ Installation successful!");
 ```
 
 ---
@@ -68,31 +68,32 @@ console.log('✅ Installation successful!');
 **Use when:** You need to maintain element order and access by index.
 
 ```typescript
-import { ArrayList, LinkedList } from 'ts-collections';
+import { ArrayList, LinkedList } from "ts-collections";
 
 // ⚡ ArrayList: Fast random access (array-backed)
 const list = new ArrayList<number>();
 list.add(10);
 list.add(20);
-list.addAt(1, 15);  // Insert at index 1
-list.set(0, 5);     // Replace element at index 0
-console.log(list.get(1));      // 15
-console.log(list.toArray());   // [5, 15, 20]
+list.addAt(1, 15); // Insert at index 1
+list.set(0, 5); // Replace element at index 0
+console.log(list.get(1)); // 15
+console.log(list.toArray()); // [5, 15, 20]
 
 // 🔗 LinkedList: Fast insertion at ends (doubly-linked)
 const linked = new LinkedList<string>();
-linked.addFirst("start");      // O(1) - efficient
-linked.addLast("end");         // O(1) - efficient
-linked.removeFirst();          // Returns "start"
+linked.addFirst("start"); // O(1) - efficient
+linked.addLast("end"); // O(1) - efficient
+linked.removeFirst(); // Returns "start"
 
 // Iterate with reverse support
 const iterator = linked.reverseIterator();
 while (iterator.hasNext()) {
-  console.log(iterator.next());  // "end"
+  console.log(iterator.next()); // "end"
 }
 ```
 
 **When to use:**
+
 - **ArrayList**: Random access, append-heavy workloads, moderate inserts
 - **LinkedList**: Frequent insertion/deletion at both ends, bidirectional traversal
 
@@ -103,29 +104,30 @@ while (iterator.hasNext()) {
 **Use when:** You need to ensure no duplicates and fast membership testing.
 
 ```typescript
-import { HashSet } from 'ts-collections';
+import { HashSet } from "ts-collections";
 
 const set = new HashSet<string>();
 set.add("apple");
 set.add("banana");
-set.add("apple");      // Duplicate ignored
+set.add("apple"); // Duplicate ignored
 set.add("orange");
 
-console.log(set.size());        // 3 (not 4)
-console.log(set.contains("banana"));  // true
+console.log(set.size()); // 3 (not 4)
+console.log(set.contains("banana")); // true
 
 // Iterate through unique values
 for (const item of set.iterator()) {
-  console.log(item);  // "apple", "banana", "orange" (order not guaranteed)
+  console.log(item); // "apple", "banana", "orange" (order not guaranteed)
 }
 
 // Check subset relationships
 const otherSet = new HashSet<string>();
 otherSet.add("apple");
-console.log(set.containsAll(otherSet));  // true
+console.log(set.containsAll(otherSet)); // true
 ```
 
 **Perfect for:**
+
 - Deduplication
 - Membership testing
 - Set operations (intersection, union)
@@ -138,22 +140,22 @@ console.log(set.containsAll(otherSet));  // true
 **Use when:** You need fast lookups by key.
 
 ```typescript
-import { HashMap } from 'ts-collections';
+import { HashMap } from "ts-collections";
 
 const map = new HashMap<string, number>();
 map.put("age", 25);
 map.put("count", 100);
 map.put("score", 95);
 
-console.log(map.get("age"));         // 25
+console.log(map.get("age")); // 25
 console.log(map.containsKey("age")); // true
-console.log(map.size());             // 3
+console.log(map.size()); // 3
 
-map.remove("count");                 // Remove entry
-console.log(map.size());             // 2
+map.remove("count"); // Remove entry
+console.log(map.size()); // 2
 
 // Get all keys and values
-const keys = map.keys();     // Collection<string>
+const keys = map.keys(); // Collection<string>
 const values = map.values(); // Collection<number>
 
 // Iterate entries
@@ -163,6 +165,7 @@ for (const key of keys.iterator()) {
 ```
 
 **Ideal for:**
+
 - Config/settings storage
 - Caching
 - Lookup tables
@@ -175,7 +178,7 @@ for (const key of keys.iterator()) {
 **Use when:** You need First-In-First-Out processing (event loops, task queues).
 
 ```typescript
-import { LinkedQueue } from 'ts-collections';
+import { LinkedQueue } from "ts-collections";
 
 const queue = new LinkedQueue<string>();
 
@@ -184,22 +187,23 @@ queue.offer("task1");
 queue.offer("task2");
 queue.offer("task3");
 
-console.log(queue.peek());  // "task1" (inspect head)
-console.log(queue.size());  // 3 (unchanged)
+console.log(queue.peek()); // "task1" (inspect head)
+console.log(queue.size()); // 3 (unchanged)
 
 // Process queue
 while (!queue.isEmpty()) {
-  const task = queue.poll();  // Dequeue
+  const task = queue.poll(); // Dequeue
   console.log(`Processing: ${task}`);
   // Output: Processing: task1, Processing: task2, Processing: task3
 }
 
 // Alternative API
 queue.offer("urgent");
-const item = queue.dequeue();  // Alias for poll()
+const item = queue.dequeue(); // Alias for poll()
 ```
 
 **Use cases:**
+
 - Event queues
 - Job processors
 - Request handling (web servers)
@@ -212,7 +216,7 @@ const item = queue.dequeue();  // Alias for poll()
 **Use when:** You need Last-In-First-Out processing (undo/redo, call stacks).
 
 ```typescript
-import { LinkedStack } from 'ts-collections';
+import { LinkedStack } from "ts-collections";
 
 const stack = new LinkedStack<string>();
 
@@ -222,10 +226,10 @@ stack.push("page2");
 stack.push("page3");
 
 // Browser back navigation
-console.log(stack.peek());  // "page3" (inspect top)
-console.log(stack.pop());   // "page3" (remove and return)
-console.log(stack.pop());   // "page2"
-console.log(stack.pop());   // "page1"
+console.log(stack.peek()); // "page3" (inspect top)
+console.log(stack.pop()); // "page3" (remove and return)
+console.log(stack.pop()); // "page2"
+console.log(stack.pop()); // "page1"
 
 // Undo/Redo pattern
 const edits = new LinkedStack<string>();
@@ -233,11 +237,12 @@ edits.push("typed 'hello'");
 edits.push("added '!'");
 
 // Undo
-const lastEdit = edits.pop();  // "added '!'"
+const lastEdit = edits.pop(); // "added '!'"
 console.log(`Undid: ${lastEdit}`);
 ```
 
 **Perfect for:**
+
 - Browser history (back button)
 - Undo/redo functionality
 - Expression parsing
@@ -254,14 +259,14 @@ Collections enforce type consistency automatically—**no configuration needed**
 
 ```typescript
 const list = new ArrayList<number>();
-list.add(1);           // ✅ OK
-list.add(2);           // ✅ OK
-list.add("text");      // ❌ TypeError: type mismatch (automatic!)
-                       // Expected: number, but got: string
+list.add(1); // ✅ OK
+list.add(2); // ✅ OK
+list.add("text"); // ❌ TypeError: type mismatch (automatic!)
+// Expected: number, but got: string
 
 const set = new HashSet<string>();
-set.add("hello");      // ✅ OK
-set.add(42);           // ❌ TypeError: type mismatch
+set.add("hello"); // ✅ OK
+set.add(42); // ❌ TypeError: type mismatch
 ```
 
 ### Why This Matters
@@ -278,8 +283,8 @@ data.push({ id: 5 });
 
 // With ts-collections (safe by default)
 const safeData = new ArrayList<number>();
-safeData.add(10);      // ✅ OK
-safeData.add("oops");  // ❌ Caught immediately!
+safeData.add(10); // ✅ OK
+safeData.add("oops"); // ❌ Caught immediately!
 ```
 
 ### Zero Setup
@@ -287,14 +292,14 @@ safeData.add("oops");  // ❌ Caught immediately!
 Unlike many validation libraries, you don't need to write schemas or validators. It just works:
 
 ```typescript
-import { LinkedQueue } from 'ts-collections';
+import { LinkedQueue } from "ts-collections";
 
 // Type safety—instant. No boilerplate.
-const queue = new LinkedQueue<{id: number; name: string}>();
-queue.offer({ id: 1, name: "Alice" });      // ✅ OK
-queue.offer({ id: 2, name: "Bob" });        // ✅ OK
-queue.offer({ id: 3, name: "Charlie" });    // ✅ OK
-queue.offer({ id: 4 });                     // ❌ Error: missing "name"
+const queue = new LinkedQueue<{ id: number; name: string }>();
+queue.offer({ id: 1, name: "Alice" }); // ✅ OK
+queue.offer({ id: 2, name: "Bob" }); // ✅ OK
+queue.offer({ id: 3, name: "Charlie" }); // ✅ OK
+queue.offer({ id: 4 }); // ❌ Error: missing "name"
 ```
 
 ---
@@ -308,34 +313,34 @@ Beyond the default type checking, ts-collections supports **Zod schemas** and **
 Perfect for validating complex constraints:
 
 ```typescript
-import { ArrayList } from 'ts-collections';
-import { z } from 'zod';
+import { ArrayList } from "ts-collections";
+import { z } from "zod";
 
 // ✨ Define precise validation rules
 const positiveInt = z.number().int().positive();
 
 const numbers = new ArrayList<number>({
-  schema: positiveInt
+  schema: positiveInt,
 });
 
-numbers.add(42);       // ✅ Valid
-numbers.add(-1);       // ❌ Validation failed: Number must be greater than 0
-numbers.add(3.14);     // ❌ Validation failed: Expected integer
+numbers.add(42); // ✅ Valid
+numbers.add(-1); // ❌ Validation failed: Number must be greater than 0
+numbers.add(3.14); // ❌ Validation failed: Expected integer
 
 // Complex objects
 const userSchema = z.object({
   id: z.number().positive(),
   email: z.string().email(),
-  age: z.number().min(18).max(120)
+  age: z.number().min(18).max(120),
 });
 
 const users = new ArrayList<z.infer<typeof userSchema>>({
-  schema: userSchema
+  schema: userSchema,
 });
 
-users.add({ id: 1, email: "alice@example.com", age: 25 });  // ✅ OK
-users.add({ id: 2, email: "invalid", age: 25 });             // ❌ Invalid email
-users.add({ id: 3, email: "bob@example.com", age: 16 });     // ❌ Age too young
+users.add({ id: 1, email: "alice@example.com", age: 25 }); // ✅ OK
+users.add({ id: 2, email: "invalid", age: 25 }); // ❌ Invalid email
+users.add({ id: 3, email: "bob@example.com", age: 16 }); // ❌ Age too young
 ```
 
 ### Custom Validator Functions
@@ -345,14 +350,14 @@ For lightweight, inline validation:
 ```typescript
 const emails = new HashSet<string>({
   validator: (val) => {
-    if (typeof val !== 'string') return false;
-    return val.includes('@') && val.includes('.');
-  }
+    if (typeof val !== "string") return false;
+    return val.includes("@") && val.includes(".");
+  },
 });
 
-emails.add("user@example.com");  // ✅ Valid
-emails.add("invalid");            // ❌ Custom validation failed
-emails.add("test@domain");        // ❌ Missing TLD
+emails.add("user@example.com"); // ✅ Valid
+emails.add("invalid"); // ❌ Custom validation failed
+emails.add("test@domain"); // ❌ Missing TLD
 ```
 
 ### Combining Multiple Validators
@@ -361,9 +366,9 @@ Zod takes precedence, then custom validators:
 
 ```typescript
 const phoneSet = new HashSet<string>({
-  schema: z.string().min(10),              // 1. Try Zod first
-  validator: (val) => /^\d+$/.test(val),  // 2. Then custom
-  strict: true                              // 3. Always enforce
+  schema: z.string().min(10), // 1. Try Zod first
+  validator: (val) => /^\d+$/.test(val), // 2. Then custom
+  strict: true, // 3. Always enforce
 });
 ```
 
@@ -375,7 +380,7 @@ For performance-critical code where you control all inputs:
 const unsafeList = new ArrayList<any>({ strict: false });
 unsafeList.add(1);
 unsafeList.add("text");
-unsafeList.add({ mixed: true });  // All allowed when strict: false
+unsafeList.add({ mixed: true }); // All allowed when strict: false
 ```
 
 > ⚠️ **Warning:** Disabling validation trades safety for speed. Only use when you're absolutely certain about your data sources.
@@ -386,48 +391,54 @@ unsafeList.add({ mixed: true });  // All allowed when strict: false
 
 ### Comparison Table
 
-| Collection | Backing | Get | Add | Remove | Best For |
-|-----------|---------|:---:|:---:|:------:|----------|
-| **ArrayList** | Dynamic Array | **O(1)** | O(1) amortized | O(n) | Fast random access, append-heavy |
-| **LinkedList** | Doubly-Linked | O(n) | **O(1)** at ends | **O(1)** at ends | Frequent insertion at ends |
-| **HashSet** | Hash Table | - | **O(1)** avg | **O(1)** avg | Uniqueness, membership tests |
-| **HashMap** | Hash Table | **O(1)** avg | **O(1)** avg | **O(1)** avg | Key-value lookups |
-| **LinkedQueue** | Linked List | - | **O(1)** | **O(1)** | FIFO task processing |
-| **LinkedStack** | Linked List | - | **O(1)** | **O(1)** | LIFO processing, undo/redo |
+| Collection      | Backing       |     Get      |       Add        |      Remove      | Best For                         |
+| --------------- | ------------- | :----------: | :--------------: | :--------------: | -------------------------------- |
+| **ArrayList**   | Dynamic Array |   **O(1)**   |  O(1) amortized  |       O(n)       | Fast random access, append-heavy |
+| **LinkedList**  | Doubly-Linked |     O(n)     | **O(1)** at ends | **O(1)** at ends | Frequent insertion at ends       |
+| **HashSet**     | Hash Table    |      -       |   **O(1)** avg   |   **O(1)** avg   | Uniqueness, membership tests     |
+| **HashMap**     | Hash Table    | **O(1)** avg |   **O(1)** avg   |   **O(1)** avg   | Key-value lookups                |
+| **LinkedQueue** | Linked List   |      -       |     **O(1)**     |     **O(1)**     | FIFO task processing             |
+| **LinkedStack** | Linked List   |      -       |     **O(1)**     |     **O(1)**     | LIFO processing, undo/redo       |
 
 ### Detailed Characteristics
 
 #### ArrayList
+
 - **Strengths**: O(1) indexed access, cache-friendly contiguous memory
 - **Weaknesses**: O(n) insertion/deletion in middle, dynamic resizing overhead
 - **Memory**: Dense packing, minimal overhead
 - **Best for**: Read-heavy, append-heavy workloads
 
 #### LinkedList
+
 - **Strengths**: O(1) insertion/deletion at both ends, no resizing
 - **Weaknesses**: O(n) indexed access, pointer overhead per node
 - **Memory**: ~24 bytes overhead per node (pointers)
 - **Best for**: Bidirectional access, queue/stack simulation
 
 #### HashSet
+
 - **Strengths**: O(1) average add/remove, exact duplicate detection
 - **Weaknesses**: Unordered, O(n) worst case if poor hash function
 - **Memory**: Load factor management, hash collisions
 - **Best for**: Fast membership testing, deduplication
 
 #### HashMap
+
 - **Strengths**: O(1) average lookup, flexible key types
 - **Weaknesses**: Unordered, memory overhead for load factor
 - **Memory**: ~56 bytes base + load factor overhead
 - **Best for**: Config storage, caching, lookup tables
 
 #### LinkedQueue
+
 - **Strengths**: O(1) offer/poll, true FIFO semantics
 - **Weaknesses**: Not random accessible
 - **Memory**: Pointer overhead like LinkedList
 - **Best for**: Job queues, event processing, message handling
 
 #### LinkedStack
+
 - **Strengths**: O(1) push/pop, clean LIFO semantics
 - **Weaknesses**: Not random accessible
 - **Memory**: Pointer overhead
@@ -461,8 +472,8 @@ Collection<E> (base)
 Don't repeat yourself—extend abstract bases for custom implementations:
 
 ```typescript
-import { AbstractList } from 'ts-collections';
-import type { Iterator } from 'ts-collections';
+import { AbstractList } from "ts-collections";
+import type { Iterator } from "ts-collections";
 
 class CustomList<T> extends AbstractList<T> {
   private items: T[] = [];
@@ -513,7 +524,7 @@ class CustomList<T> extends AbstractList<T> {
     let index = 0;
     return {
       hasNext: () => index < this.items.length,
-      next: () => this.items[index++]
+      next: () => this.items[index++],
     };
   }
 
@@ -540,7 +551,7 @@ list.add(3);
 const iterator = list.iterator();
 while (iterator.hasNext()) {
   const value = iterator.next();
-  console.log(value);  // 1, 2, 3
+  console.log(value); // 1, 2, 3
 }
 
 // Or with for loop (via toArray)
@@ -556,7 +567,7 @@ linked.add("c");
 
 const reverse = linked.reverseIterator();
 while (reverse.hasNext()) {
-  console.log(reverse.next());  // c, b, a
+  console.log(reverse.next()); // c, b, a
 }
 ```
 
@@ -571,7 +582,7 @@ list1.add(2);
 const list2 = new ArrayList<number>();
 list2.add(3);
 list2.add(4);
-list2.addAll(list1);  // Now: [3, 4, 1, 2]
+list2.addAll(list1); // Now: [3, 4, 1, 2]
 
 // Check if contains all elements
 const set = new HashSet<string>();
@@ -582,17 +593,17 @@ set.add("orange");
 const required = new HashSet<string>();
 required.add("apple");
 required.add("banana");
-console.log(set.containsAll(required));  // true
+console.log(set.containsAll(required)); // true
 
 // Remove collection of elements
-set.removeAll(required);  // Now only "orange"
+set.removeAll(required); // Now only "orange"
 
 // Retain only specific elements
 const keep = new HashSet<string>();
 keep.add("apple");
 set.add("apple");
 set.add("orange");
-set.retainAll(keep);  // Now only "apple"
+set.retainAll(keep); // Now only "apple"
 ```
 
 ---
@@ -670,32 +681,34 @@ HashMap<string, number>
 ### Performance Tips
 
 ✨ **Optimize ArrayList:**
+
 ```typescript
 // ❌ Avoid: Frequent middle inserts
 const list = new ArrayList<number>();
 for (let i = 0; i < 1000; i++) {
-  list.addAt(0, i);  // O(n) each time = O(n²) overall
+  list.addAt(0, i); // O(n) each time = O(n²) overall
 }
 
 // ✅ Better: Use LinkedList for frequent inserts
 const list = new LinkedList<number>();
 for (let i = 0; i < 1000; i++) {
-  list.addFirst(i);  // O(1) each time = O(n) overall
+  list.addFirst(i); // O(1) each time = O(n) overall
 }
 
 // ✅ Or: Build array, then convert
 const arr = [];
 for (let i = 999; i >= 0; i--) arr.push(i);
 const list = new ArrayList<number>();
-arr.forEach(x => list.add(x));
+arr.forEach((x) => list.add(x));
 ```
 
 ⚡ **Optimize HashSet/HashMap:**
+
 ```typescript
 // ❌ Avoid: Hash collisions with poor keys
 const badMap = new HashMap<any, number>();
 badMap.put({}, 1);
-badMap.put({}, 2);  // Creates new entry (not same key)
+badMap.put({}, 2); // Creates new entry (not same key)
 
 // ✅ Better: Use immutable, well-hashing keys
 const goodMap = new HashMap<string, number>();
@@ -710,16 +723,17 @@ for (let i = 0; i < 1000000; i++) {
 ```
 
 🎯 **Optimize Queue/Stack:**
+
 ```typescript
 // ✨ Already O(1)—just use appropriately
 const queue = new LinkedQueue<Task>();
 for (const task of tasks) {
-  queue.offer(task);  // Always O(1)
+  queue.offer(task); // Always O(1)
 }
 
 // Process FIFO
 while (!queue.isEmpty()) {
-  const task = queue.poll();  // Always O(1)
+  const task = queue.poll(); // Always O(1)
   processTask(task);
 }
 ```
@@ -755,17 +769,17 @@ pnpm test --coverage
 ### Example Test
 
 ```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { LinkedStack } from 'ts-collections';
+import { describe, it, expect, beforeEach } from "vitest";
+import { LinkedStack } from "ts-collections";
 
-describe('LinkedStack', () => {
+describe("LinkedStack", () => {
   let stack: LinkedStack<number>;
 
   beforeEach(() => {
     stack = new LinkedStack<number>();
   });
 
-  it('should push and pop in LIFO order', () => {
+  it("should push and pop in LIFO order", () => {
     stack.push(1);
     stack.push(2);
     stack.push(3);
@@ -775,7 +789,7 @@ describe('LinkedStack', () => {
     expect(stack.pop()).toBe(1);
   });
 
-  it('should enforce type safety', () => {
+  it("should enforce type safety", () => {
     stack.push(1);
     expect(() => stack.push("string" as any)).toThrow(TypeError);
   });
@@ -793,25 +807,25 @@ Base interface implemented by all collections.
 ```typescript
 interface Collection<E> {
   // Core operations
-  size(): number;              // Number of elements
-  length: number;              // Alias for size() (JS-friendly)
-  isEmpty(): boolean;          // True if size is 0
-  
+  size(): number; // Number of elements
+  length: number; // Alias for size() (JS-friendly)
+  isEmpty(): boolean; // True if size is 0
+
   // Element operations
-  add(element: E): boolean;           // Add element
-  remove(element: E): boolean;        // Remove first occurrence
-  contains(element: E): boolean;      // Check membership
-  clear(): void;                      // Remove all elements
-  
+  add(element: E): boolean; // Add element
+  remove(element: E): boolean; // Remove first occurrence
+  contains(element: E): boolean; // Check membership
+  clear(): void; // Remove all elements
+
   // Bulk operations
-  addAll(elements: Collection<E>): boolean;       // Add all from another collection
-  removeAll(elements: Collection<E>): boolean;    // Remove all matching
-  retainAll(elements: Collection<E>): boolean;    // Keep only matching
-  containsAll(elements: Collection<E>): boolean;  // Check if contains all
-  
+  addAll(elements: Collection<E>): boolean; // Add all from another collection
+  removeAll(elements: Collection<E>): boolean; // Remove all matching
+  retainAll(elements: Collection<E>): boolean; // Keep only matching
+  containsAll(elements: Collection<E>): boolean; // Check if contains all
+
   // Iteration
-  iterator(): Iterator<E>;    // Iterate from beginning
-  toArray(): E[];            // Convert to array
+  iterator(): Iterator<E>; // Iterate from beginning
+  toArray(): E[]; // Convert to array
 }
 ```
 
@@ -822,17 +836,17 @@ Ordered collections with indexed access.
 ```typescript
 interface List<E> extends Collection<E> {
   // Indexed access
-  get(index: number): E;                      // Get by index
-  set(index: number, element: E): E;          // Replace at index
-  indexOf(element: E): number;                // First occurrence index (-1 if not found)
-  lastIndexOf(element: E): number;            // Last occurrence index
-  
+  get(index: number): E; // Get by index
+  set(index: number, element: E): E; // Replace at index
+  indexOf(element: E): number; // First occurrence index (-1 if not found)
+  lastIndexOf(element: E): number; // Last occurrence index
+
   // Indexed modification
-  addAt(index: number, element: E): void;     // Insert at index
-  removeAt(index: number): E;                 // Remove and return element
-  
+  addAt(index: number, element: E): void; // Insert at index
+  removeAt(index: number): E; // Remove and return element
+
   // Range operations
-  subList(fromIndex: number, toIndex: number): List<E>;  // Get slice
+  subList(fromIndex: number, toIndex: number): List<E>; // Get slice
 }
 ```
 
@@ -854,15 +868,15 @@ Key-value storage with fast lookups.
 ```typescript
 interface Map<K, V> extends Collection<V> {
   // Key-value operations
-  put(key: K, value: V): V | undefined;    // Store or update
-  get(key: K): V | undefined;              // Retrieve by key
-  remove(key: K): V | undefined;           // Remove and return value
-  containsKey(key: K): boolean;            // Check key existence
-  
+  put(key: K, value: V): V | undefined; // Store or update
+  get(key: K): V | undefined; // Retrieve by key
+  remove(key: K): V | undefined; // Remove and return value
+  containsKey(key: K): boolean; // Check key existence
+
   // Key/value collections
-  keys(): Collection<K>;                   // All keys
-  values(): Collection<V>;                 // All values
-  entries(): Collection<[K, V]>;           // All key-value pairs
+  keys(): Collection<K>; // All keys
+  values(): Collection<V>; // All values
+  entries(): Collection<[K, V]>; // All key-value pairs
 }
 ```
 
@@ -873,11 +887,11 @@ FIFO (First-In-First-Out) collections.
 ```typescript
 interface Queue<E> extends Collection<E> {
   // FIFO operations
-  offer(element: E): boolean;    // Add to back
-  poll(): E | undefined;         // Remove and return front (safe)
-  dequeue(): E | undefined;      // Alias for poll()
-  peek(): E | undefined;         // Inspect front (safe)
-  element(): E;                  // Inspect front (throws if empty)
+  offer(element: E): boolean; // Add to back
+  poll(): E | undefined; // Remove and return front (safe)
+  dequeue(): E | undefined; // Alias for poll()
+  peek(): E | undefined; // Inspect front (safe)
+  element(): E; // Inspect front (throws if empty)
 }
 ```
 
@@ -888,9 +902,9 @@ LIFO (Last-In-First-Out) collections.
 ```typescript
 interface Stack<E> extends Collection<E> {
   // LIFO operations
-  push(element: E): boolean;     // Add to top
-  pop(): E | undefined;          // Remove and return top (safe)
-  peek(): E | undefined;         // Inspect top (safe)
+  push(element: E): boolean; // Add to top
+  pop(): E | undefined; // Remove and return top (safe)
+  peek(): E | undefined; // Inspect top (safe)
 }
 ```
 
@@ -900,9 +914,9 @@ For traversing collections.
 
 ```typescript
 interface Iterator<E> {
-  hasNext(): boolean;     // Check if more elements
-  next(): E;              // Get next element (throws if none)
-  remove?(): void;        // Optional: remove last returned element
+  hasNext(): boolean; // Check if more elements
+  next(): E; // Get next element (throws if none)
+  remove?(): void; // Optional: remove last returned element
 }
 ```
 
@@ -932,32 +946,32 @@ interface TypeValidationOptions<T> {
 ```typescript
 // 🔒 Default: Strict type safety (recommended)
 const list = new ArrayList<number>();
-list.add(1);        // ✅ OK
-list.add("text");   // ❌ Error
+list.add(1); // ✅ OK
+list.add("text"); // ❌ Error
 
 // 🛡️ With Zod schema validation
-import { z } from 'zod';
+import { z } from "zod";
 
 const positiveNumbers = new ArrayList<number>({
   strict: true,
-  schema: z.number().positive()
+  schema: z.number().positive(),
 });
 
-positiveNumbers.add(42);   // ✅ OK
-positiveNumbers.add(-5);   // ❌ Error
+positiveNumbers.add(42); // ✅ OK
+positiveNumbers.add(-5); // ❌ Error
 
 // 🎯 Custom validator
 const evenNumbers = new HashSet<number>({
-  validator: (val) => typeof val === 'number' && val % 2 === 0
+  validator: (val) => typeof val === "number" && val % 2 === 0,
 });
 
-evenNumbers.add(4);   // ✅ OK
-evenNumbers.add(3);   // ❌ Error
+evenNumbers.add(4); // ✅ OK
+evenNumbers.add(3); // ❌ Error
 
 // ⚠️ No validation (not recommended)
 const unsafe = new LinkedQueue<any>({ strict: false });
 unsafe.offer(1);
-unsafe.offer("mixed");      // ✅ Allowed
+unsafe.offer("mixed"); // ✅ Allowed
 unsafe.offer({ any: true }); // ✅ Allowed
 ```
 
@@ -968,6 +982,7 @@ unsafe.offer({ any: true }); // ✅ Allowed
 ### ✅ Do's
 
 **1. Use Type-Safe Collections by Default**
+
 ```typescript
 // ✅ Good: Type safety enabled
 const numbers = new ArrayList<number>();
@@ -979,6 +994,7 @@ const unsafe = new ArrayList<number>({ strict: false });
 ```
 
 **2. Choose the Right Collection**
+
 ```typescript
 // ✅ Good: ArrayList for indexed access
 const data = new ArrayList<Record>();
@@ -987,11 +1003,12 @@ const record = data.get(index);
 // ❌ Avoid: Using ArrayList for frequent inserts
 const stack = new ArrayList<number>();
 for (let i = 0; i < 1000; i++) {
-  stack.addAt(0, i);  // O(n) each time!
+  stack.addAt(0, i); // O(n) each time!
 }
 ```
 
 **3. Leverage Type System**
+
 ```typescript
 // ✅ Good: Strong typing
 function processNumbers(collection: Collection<number>) {
@@ -1007,14 +1024,15 @@ function process(collection: Collection<any>) {
 ```
 
 **4. Use Zod for Complex Validation**
+
 ```typescript
 // ✅ Good: Comprehensive validation
 const users = new ArrayList<User>({
   schema: z.object({
     id: z.number().positive(),
     email: z.string().email(),
-    age: z.number().min(18)
-  })
+    age: z.number().min(18),
+  }),
 });
 
 // ❌ Avoid: No validation for complex data
@@ -1022,11 +1040,12 @@ const users = new ArrayList<User>();
 ```
 
 **5. Clear Collections When Reusing**
+
 ```typescript
 // ✅ Good: Explicit cleanup
 const buffer = new ArrayList<number>();
 // ... use buffer ...
-buffer.clear();  // Ready for reuse
+buffer.clear(); // Ready for reuse
 
 // ❌ Avoid: Leaving stale data
 const buffer = new ArrayList<number>();
@@ -1037,16 +1056,18 @@ const buffer = new ArrayList<number>();
 ### ❌ Don'ts
 
 **1. Don't Disable Strict Mode Without Reason**
+
 ```typescript
 // ❌ Bad: Sacrificing safety
 const list = new ArrayList<number>({ strict: false });
-list.add("oops");  // Caught too late!
+list.add("oops"); // Caught too late!
 
 // ✅ Good: Keep strict mode
 const list = new ArrayList<number>();
 ```
 
 **2. Don't Modify Collections During Iteration**
+
 ```typescript
 // ❌ Bad: Concurrent modification
 const list = new ArrayList<number>();
@@ -1055,7 +1076,7 @@ list.add(2);
 list.add(3);
 
 for (const item of list.toArray()) {
-  if (item === 2) list.remove(2);  // ⚠️ May cause issues
+  if (item === 2) list.remove(2); // ⚠️ May cause issues
 }
 
 // ✅ Good: Collect removals, then remove
@@ -1063,38 +1084,41 @@ const toRemove = [];
 for (const item of list.toArray()) {
   if (item === 2) toRemove.push(item);
 }
-toRemove.forEach(item => list.remove(item));
+toRemove.forEach((item) => list.remove(item));
 ```
 
 **3. Don't Mix Type Checking Levels**
+
 ```typescript
 // ❌ Bad: Inconsistent validation
 const list1 = new ArrayList<number>();
 const list2 = new ArrayList<number>({ strict: false });
-list1.addAll(list2);  // Type safety violated
+list1.addAll(list2); // Type safety violated
 
 // ✅ Good: Consistent strategy
 const list1 = new ArrayList<number>();
 const list2 = new ArrayList<number>();
-list1.addAll(list2);  // Both strict
+list1.addAll(list2); // Both strict
 ```
 
 **4. Don't Ignore Test Failures**
+
 ```typescript
 // ❌ Bad: Skipping failing tests
-test.skip('should validate email', () => {
+test.skip("should validate email", () => {
   // Test failure ignored
 });
 
 // ✅ Good: Fix or properly mark as todo
-test.todo('should validate email once API is ready');
+test.todo("should validate email once API is ready");
 
-test('should validate email', () => {
+test("should validate email", () => {
   // Fix and ensure passes
 });
 ```
 
 **5. Don't Use Collections for One-Off Data**
+
 ```typescript
 // ❌ Overkill: Using collection for single check
 const config = new HashMap<string, string>();
@@ -1118,12 +1142,14 @@ cache.remove(expiredKey);
 ### Getting Started
 
 1. **Fork & Clone**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/ts-collections.git
    cd ts-collections
    ```
 
 2. **Install Dependencies**
+
    ```bash
    pnpm install
    ```
@@ -1163,22 +1189,22 @@ git commit -m "feat: add amazing feature"
 
 ### Code Style & Conventions
 
-```typescript
+````typescript
 // 🏷️ Naming conventions
-const variableName = 1;           // camelCase for variables
-function functionName() {}         // camelCase for functions
-class ClassName {}                 // PascalCase for classes
-interface InterfaceName {}         // PascalCase for interfaces
-const CONSTANT_VALUE = 100;        // UPPER_SNAKE_CASE for constants
+const variableName = 1; // camelCase for variables
+function functionName() {} // camelCase for functions
+class ClassName {} // PascalCase for classes
+interface InterfaceName {} // PascalCase for interfaces
+const CONSTANT_VALUE = 100; // UPPER_SNAKE_CASE for constants
 
 // 📝 Comments & Documentation
 /**
  * Performs important operation.
- * 
+ *
  * @param input The input value
  * @returns The result
  * @throws {Error} If input is invalid
- * 
+ *
  * @example
  * ```typescript
  * const result = importantFunction(42);
@@ -1192,21 +1218,21 @@ function importantFunction(input: number): number {
 
 // 🗂️ Import ordering
 // 1. Type imports
-import type { MyType } from './types';
-import type { OtherType } from '../shared';
+import type { MyType } from "./types";
+import type { OtherType } from "../shared";
 
 // 2. Concrete imports
-import { MyClass } from './impl';
-import { utility } from '../utils';
+import { MyClass } from "./impl";
+import { utility } from "../utils";
 
 // 3. Relative imports
-import { helper } from './helper';
-```
+import { helper } from "./helper";
+````
 
 ### Testing Guidelines
 
 ```typescript
-describe('MyFeature', () => {
+describe("MyFeature", () => {
   let instance: MyFeature;
 
   beforeEach(() => {
@@ -1214,22 +1240,22 @@ describe('MyFeature', () => {
   });
 
   // ✅ Descriptive test names
-  describe('constructor', () => {
-    it('should initialize with empty state', () => {
+  describe("constructor", () => {
+    it("should initialize with empty state", () => {
       expect(instance.size()).toBe(0);
       expect(instance.isEmpty()).toBe(true);
     });
   });
 
   // ✅ Test happy path
-  describe('add operation', () => {
-    it('should add single element', () => {
+  describe("add operation", () => {
+    it("should add single element", () => {
       const result = instance.add(1);
       expect(result).toBe(true);
       expect(instance.size()).toBe(1);
     });
 
-    it('should add multiple elements', () => {
+    it("should add multiple elements", () => {
       instance.add(1);
       instance.add(2);
       instance.add(3);
@@ -1238,21 +1264,21 @@ describe('MyFeature', () => {
   });
 
   // ✅ Test error cases
-  describe('type validation', () => {
-    it('should enforce type safety', () => {
+  describe("type validation", () => {
+    it("should enforce type safety", () => {
       instance.add(1);
       expect(() => instance.add("text" as any)).toThrow(TypeError);
     });
   });
 
   // ✅ Test edge cases
-  describe('edge cases', () => {
-    it('should handle empty collection', () => {
+  describe("edge cases", () => {
+    it("should handle empty collection", () => {
       expect(instance.isEmpty()).toBe(true);
       expect(() => instance.remove(1)).not.toThrow();
     });
 
-    it('should handle large datasets', () => {
+    it("should handle large datasets", () => {
       for (let i = 0; i < 10000; i++) {
         instance.add(i);
       }
@@ -1265,11 +1291,13 @@ describe('MyFeature', () => {
 ### Pull Request Process
 
 1. **Ensure all tests pass**
+
    ```bash
    pnpm test
    ```
 
 2. **Check lint/type safety**
+
    ```bash
    pnpm lint
    pnpm build
@@ -1281,9 +1309,10 @@ describe('MyFeature', () => {
    - Include examples if adding features
 
 4. **Write clear commit messages**
+
    ```
    feat: add stack implementation using linked list
-   
+
    - Implements LinkedStack<T> extending AbstractStack<T>
    - Provides O(1) push/pop operations
    - Includes full test coverage
@@ -1325,18 +1354,21 @@ ts-collections/
 ### Common Issues & Solutions
 
 **ESLint errors for new files:**
+
 ```bash
 # Files are auto-included if they match tsconfig patterns
 # No additional setup needed for test/** and src/**
 ```
 
 **Test file not running:**
+
 ```bash
 # Check tsconfig.json includes pattern:
 # "**/*.{test,spec}.?(c|m)[jt]s?(x)"
 ```
 
 **Type errors in IDE:**
+
 ```bash
 # Rebuild TypeScript cache:
 pnpm run build
@@ -1350,6 +1382,7 @@ pnpm run build
 ## 🗺️ Roadmap
 
 **Planned Features:**
+
 - [ ] Bounded queues with capacity limits
 - [ ] Priority queues
 - [ ] Tree-based maps and sets (TreeMap, TreeSet)
@@ -1359,6 +1392,7 @@ pnpm run build
 - [ ] Immutable collection variants
 
 **Improvements:**
+
 - [ ] Better error messages
 - [ ] Performance optimizations
 - [ ] Extended documentation and examples

@@ -3,10 +3,10 @@
  * These classes provide common functionality and default implementations.
  */
 
-export { AbstractCollection } from "./AbstractCollection";
-export { AbstractDeque } from "./AbstractDeque";
-export { AbstractList } from "./AbstractList";
-export { AbstractMap } from "./AbstractMap";
-export { AbstractQueue } from "./AbstractQueue";
-export { AbstractSet } from "./AbstractSet";
-export { AbstractStack } from "./AbstractStack";
+export { AbstractCollection } from "./AbstractCollection.js";
+export { AbstractDeque } from "./AbstractDeque.js";
+export { AbstractList } from "./AbstractList.js";
+export { AbstractMap } from "./AbstractMap.js";
+export { AbstractQueue } from "./AbstractQueue.js";
+export { AbstractSet } from "./AbstractSet.js";
+export { AbstractStack } from "./AbstractStack.js";

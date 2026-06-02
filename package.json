@@ -1,85 +1,100 @@
 {
-	"name": "@karelaking/ts-collections",
-	"version": "0.0.1",
-	"description": "A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and performance transparency. Designed for education, large-scale applications, and library-level reuse, with clean abstractions, extensible contracts, and tree-shakable ESM builds",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"module": "dist/index.js",
-	"scripts": {
-		"build": "tsup",
-		"test": "vitest",
-		"test:coverage": "vitest --coverage",
-		"lint": "eslint src",
-		"lint:fix": "eslint src --fix",
-		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-		"docs": "typedoc",
-		"bench": "pnpm build && node bench/collections.bench.mjs",
-		"prepublishOnly": "pnpm build && pnpm test && pnpm lint",
-		"publishConfig": "npm publish --access public",
-		"clean": "rm -rf dist coverage",
-		"type-check": "tsc --noEmit"
-	},
-	"keywords": [
-		"map",
-		"set",
-		"list",
-		"queue",
-		"library",
-		"iterator",
-		"framework",
-		"algorithms",
-		"typescript",
-		"collections",
-		"data-structures",
-		"java-collections"
-	],
-	"author": {
-		"name": "Karel King",
-		"email": "karelaking@example.com",
-		"url": "https://github.com/Karelaking"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Karelaking/ts-collections.git"
-	},
-	"bugs": {
-		"url": "https://github.com/Karelaking/ts-collections/issues"
-	},
-	"homepage": "https://github.com/Karelaking/ts-collections#readme",
-	"packageManager": "pnpm@10.18.1",
-	"type": "module",
-	"sideEffects": false,
-	"engines": {
-		"node": ">=18.0.0",
-		"npm": ">=9.0.0",
-		"pnpm": ">=8.0.0"
-	},
-	"files": [
-		"dist",
-		"README.md",
-		"LICENSE",
-		"CHANGELOG.md",
-		"CODE_OF_CONDUCT.md",
-		"SECURITY.md"
-	],
-	"license": "MIT",
-	"devDependencies": {
-		"@biomejs/biome": "2.4.12",
-		"@eslint/js": "^9.39.2",
-		"@types/node": "^25.0.9",
-		"@typescript-eslint/eslint-plugin": "^8.53.0",
-		"@typescript-eslint/parser": "^8.53.0",
-		"eslint": "^9.39.2",
-		"prettier": "^3.7.4",
-		"tinybench": "^6.0.0",
-		"tsup": "^8.5.1",
-		"typedoc": "^0.28.16",
-		"typescript": "^5.9.3",
-		"vitest": "^4.0.17"
-	},
-	"dependencies": {
-		"path": "^0.12.7",
-		"yaml": "^2.8.3",
-		"zod": "^4.3.5"
-	}
+  "name": "ts-collections",
+  "version": "1.0.0",
+  "description": "A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and performance transparency. Designed for education, large-scale applications, and library-level reuse, with clean abstractions, extensible contracts, and tree-shakable ESM builds",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "clean": "rm -rf dist coverage",
+    "type-check": "tsc --noEmit",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "lint": "eslint src test bench eslint.config.js tsup.config.ts vitest.config.ts",
+    "docs": "typedoc",
+    "bench": "pnpm build && node bench/collections.bench.mjs",
+    "prepublishOnly": "pnpm build",
+    "prepare": "node .husky/install.mjs"
+  },
+  "keywords": [
+    "map",
+    "set",
+    "list",
+    "queue",
+    "library",
+    "iterator",
+    "framework",
+    "algorithms",
+    "typescript",
+    "collections",
+    "data-structures",
+    "java-collections"
+  ],
+  "author": {
+    "name": "Karel King",
+    "email": "karelaking277@gmail.com",
+    "url": "https://github.com/Karelaking"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Karelaking/ts-collections.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Karelaking/ts-collections/issues"
+  },
+  "homepage": "https://github.com/Karelaking/ts-collections#readme",
+  "packageManager": "pnpm@10.18.1",
+  "type": "module",
+  "sideEffects": false,
+  "dependencies": {
+    "path": "^0.12.7",
+    "yaml": "^2.8.3",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^25.0.9",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.6",
+    "prettier": "^3.7.4",
+    "tinybench": "^6.0.0",
+    "tsup": "^8.5.1",
+    "typedoc": "^0.28.16",
+    "typescript": "^5.9.3",
+    "ultracite": "7.7.0",
+    "vitest": "^4.0.17"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md"
+  ],
+  "license": "MIT"
 }

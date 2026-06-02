@@ -1,12 +1,17 @@
 <div align="center">
   <h1>ts-collections</h1>
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
-
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-  [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
-  [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
-  ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+  
+[![Build Status](https://github.com/Karelaking/ts-collections/actions/workflows/build.yml/badge.svg?style=flat-square)](https://github.com/Karelaking/ts-collections/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
+[![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&style=flat-square)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+[![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+[![Linted with Biome](https://img.shields.io/badge/Linted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
+[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 
   <p>
     <a href="#-features">Features</a> •
@@ -24,11 +29,11 @@
 **ts-collections** is a Java-inspired collections framework and library that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.
 
 ```typescript
-import { ArrayList, HashMap, HashSet } from 'ts-collections';
+import { ArrayList, HashMap, HashSet } from "ts-collections";
 
 // Automatic type safety - no configuration needed!
 const list = new ArrayList<number>();
-list.add(42);           // ✅ Works
+list.add(42); // ✅ Works
 list.add("text" as any); // ❌ Runtime error (caught automatically)
 
 // Familiar Java-style APIs
@@ -48,24 +53,30 @@ set.add("unique");
 <td width="50%">
 
 ### 🔒 Automatic Type Safety
+
 Runtime type checking enabled by default - no configuration needed. Works just like Java's type-safe collections.
 
 ### 🎯 Zero Configuration
+
 Type safety works out of the box. No need to learn validation libraries or configure schemas.
 
 ### ☕ Java-Friendly
+
 Familiar Collections interface for Java developers. If you know Java Collections, you already know ts-collections.
 
 </td>
 <td width="50%">
 
 ### 🏗️ Extensible Architecture
+
 Easy to create custom implementations through abstract base classes and clear interfaces.
 
 ### 📊 Performance Transparency
+
 All operations documented with time/space complexity (O-notation).
 
 ### ✅ Battle-Tested
+
 332/332 tests passing. Comprehensive test coverage for all implementations.
 
 </td>
@@ -94,27 +105,27 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 
 ### Core Interfaces
 
-| Interface | Description | Key Methods |
-|-----------|-------------|-------------|
-| **Collection\<E>** | Base interface for all collections | `add()`, `remove()`, `size()`, `contains()` |
-| **List\<E>** | Ordered, indexed collection | `get()`, `set()`, `indexOf()`, `subList()` |
-| **Set\<E>** | Unique elements, no duplicates | Inherits Collection with uniqueness |
-| **Map\<K,V>** | Key-value associations | `put()`, `get()`, `containsKey()`, `entries()` |
-| **Queue\<E>** | FIFO processing | `offer()`, `poll()`, `peek()` |
+| Interface          | Description                        | Key Methods                                    |
+| ------------------ | ---------------------------------- | ---------------------------------------------- |
+| **Collection\<E>** | Base interface for all collections | `add()`, `remove()`, `size()`, `contains()`    |
+| **List\<E>**       | Ordered, indexed collection        | `get()`, `set()`, `indexOf()`, `subList()`     |
+| **Set\<E>**        | Unique elements, no duplicates     | Inherits Collection with uniqueness            |
+| **Map\<K,V>**      | Key-value associations             | `put()`, `get()`, `containsKey()`, `entries()` |
+| **Queue\<E>**      | FIFO processing                    | `offer()`, `poll()`, `peek()`                  |
 
 ### Available Implementations
 
-| Type | Implementation | Characteristics |
-|------|----------------|-----------------|
-| **List** | `ArrayList<E>` | Dynamic array, fast random access O(1) |
-| **List** | `LinkedList<E>` | Doubly-linked, fast insertion/deletion |
-| **Set** | `HashSet<E>` | Hash table, fast lookup O(1) average |
-| **Set** | `TreeSet<E>` | Sorted set, comparator-based ordering |
-| **Map** | `HashMap<K,V>` | Hash table, fast key lookup O(1) average |
-| **Map** | `TreeMap<K,V>` | Sorted map, comparator-based ordering |
-| **Queue** | `LinkedQueue<E>` | Linked list, FIFO operations O(1) |
-| **Queue** | `PriorityQueue<E>` | Heap-based priority ordering |
-| **Deque** | `LinkedDeque<E>` | Double-ended queue, add/remove at both ends |
+| Type      | Implementation     | Characteristics                             |
+| --------- | ------------------ | ------------------------------------------- |
+| **List**  | `ArrayList<E>`     | Dynamic array, fast random access O(1)      |
+| **List**  | `LinkedList<E>`    | Doubly-linked, fast insertion/deletion      |
+| **Set**   | `HashSet<E>`       | Hash table, fast lookup O(1) average        |
+| **Set**   | `TreeSet<E>`       | Sorted set, comparator-based ordering       |
+| **Map**   | `HashMap<K,V>`     | Hash table, fast key lookup O(1) average    |
+| **Map**   | `TreeMap<K,V>`     | Sorted map, comparator-based ordering       |
+| **Queue** | `LinkedQueue<E>`   | Linked list, FIFO operations O(1)           |
+| **Queue** | `PriorityQueue<E>` | Heap-based priority ordering                |
+| **Deque** | `LinkedDeque<E>`   | Double-ended queue, add/remove at both ends |
 
 ### Architecture
 
@@ -150,6 +161,7 @@ pnpm add ts-collections
 # Using yarn
 yarn add ts-collections
 ```
+
 </details>
 
 ## 🚀 Quick Start
@@ -157,62 +169,62 @@ yarn add ts-collections
 ### Lists - Ordered Collections
 
 ```typescript
-import { ArrayList } from 'ts-collections';
+import { ArrayList } from "ts-collections";
 
 const list = new ArrayList<number>();
 list.add(10);
 list.add(20);
 list.add(30);
 
-console.log(list.get(0));     // 10
-console.log(list.size());     // 3
-list.removeAt(1);             // [10, 30]
+console.log(list.get(0)); // 10
+console.log(list.size()); // 3
+list.removeAt(1); // [10, 30]
 ```
 
 ### Sets - Unique Elements
 
 ```typescript
-import { HashSet } from 'ts-collections';
+import { HashSet } from "ts-collections";
 
 const set = new HashSet<string>();
 set.add("apple");
 set.add("banana");
-set.add("apple");  // Duplicate ignored
+set.add("apple"); // Duplicate ignored
 
-console.log(set.size());           // 2
+console.log(set.size()); // 2
 console.log(set.contains("apple")); // true
 ```
 
 ### Maps - Key-Value Pairs
 
 ```typescript
-import { HashMap } from 'ts-collections';
+import { HashMap } from "ts-collections";
 
 const map = new HashMap<string, number>();
 map.put("Alice", 25);
 map.put("Bob", 30);
 
-console.log(map.get("Alice"));        // 25
-console.log(map.containsKey("Bob"));  // true
+console.log(map.get("Alice")); // 25
+console.log(map.containsKey("Bob")); // true
 ```
 
 ### Queues - FIFO Processing
 
 ```typescript
-import { LinkedQueue } from 'ts-collections';
+import { LinkedQueue } from "ts-collections";
 
 const queue = new LinkedQueue<string>();
 queue.offer("Task 1");
 queue.offer("Task 2");
 
-console.log(queue.poll());  // "Task 1"
-console.log(queue.peek());  // "Task 2"
+console.log(queue.poll()); // "Task 1"
+console.log(queue.peek()); // "Task 2"
 ```
 
 ### Iterators - Traverse Elements
 
 ```typescript
-import { ArrayList } from 'ts-collections';
+import { ArrayList } from "ts-collections";
 
 const list = new ArrayList<number>();
 list.add(1);
@@ -228,7 +240,7 @@ while (iterator.hasNext()) {
 ### Priority Queues - Sorted Processing
 
 ```typescript
-import { PriorityQueue } from 'ts-collections';
+import { PriorityQueue } from "ts-collections";
 
 const priorities = new PriorityQueue<number>();
 priorities.offer(5);
@@ -242,7 +254,7 @@ console.log(priorities.peek()); // 3
 ### Tree Maps - Sorted Key Order
 
 ```typescript
-import { TreeMap } from 'ts-collections';
+import { TreeMap } from "ts-collections";
 
 const sortedMap = new TreeMap<string, number>();
 sortedMap.put("c", 3);
@@ -255,7 +267,7 @@ console.log(sortedMap.keys()); // ["a", "b", "c"]
 ### Tree Sets - Sorted Unique Values
 
 ```typescript
-import { TreeSet } from 'ts-collections';
+import { TreeSet } from "ts-collections";
 
 const sortedSet = new TreeSet<number>();
 sortedSet.add(3);
@@ -268,7 +280,7 @@ console.log(sortedSet.toArray()); // [1, 2, 3]
 ### Double-Ended Queues - Front and Back Operations
 
 ```typescript
-import { LinkedDeque } from 'ts-collections';
+import { LinkedDeque } from "ts-collections";
 
 const deque = new LinkedDeque<string>();
 deque.addFirst("middle");
@@ -276,7 +288,7 @@ deque.addFirst("front");
 deque.addLast("back");
 
 console.log(deque.pollFirst()); // "front"
-console.log(deque.pollLast());  // "back"
+console.log(deque.pollLast()); // "back"
 ```
 
 ## 💡 Common Use Cases
@@ -285,7 +297,7 @@ console.log(deque.pollLast());  // "back"
 <summary><strong>Shopping Cart Example</strong></summary>
 
 ```typescript
-import { ArrayList } from 'ts-collections';
+import { ArrayList } from "ts-collections";
 
 interface Product {
   id: string;
@@ -309,13 +321,14 @@ const cart = new ShoppingCart();
 cart.addItem({ id: "1", name: "Laptop", price: 999 });
 console.log(cart.getTotalPrice()); // 999
 ```
+
 </details>
 
 <details>
 <summary><strong>Session Management with Maps</strong></summary>
 
 ```typescript
-import { HashMap } from 'ts-collections';
+import { HashMap } from "ts-collections";
 
 interface Session {
   userId: string;
@@ -336,13 +349,14 @@ class SessionManager {
   }
 }
 ```
+
 </details>
 
 <details>
 <summary><strong>Task Queue Processing</strong></summary>
 
 ```typescript
-import { LinkedQueue } from 'ts-collections';
+import { LinkedQueue } from "ts-collections";
 
 const taskQueue = new LinkedQueue<string>();
 
@@ -357,13 +371,14 @@ while (taskQueue.size() > 0) {
   console.log(`Processing: ${task}`);
 }
 ```
+
 </details>
 
 <details>
 <summary><strong>Unique Tags with Sets</strong></summary>
 
 ```typescript
-import { HashSet } from 'ts-collections';
+import { HashSet } from "ts-collections";
 
 class TagManager {
   private tags = new HashSet<string>();
@@ -383,22 +398,23 @@ tags.addTag("TypeScript");
 tags.addTag("javascript"); // Duplicate ignored
 console.log(tags.getTags()); // ["javascript", "typescript"]
 ```
+
 </details>
 
 ### Advanced: Custom Validation with Zod (Optional)
 
 ```typescript
-import { ArrayList } from 'ts-collections';
-import { z } from 'zod';
+import { ArrayList } from "ts-collections";
+import { z } from "zod";
 
 // Advanced validation for power users
 const strictNumbers = new ArrayList<number>({
-    schema: z.number().positive().int()
+  schema: z.number().positive().int(),
 });
 
-strictNumbers.add(5);      // ✅ OK
-strictNumbers.add(-1 as any);    // ❌ ERROR: must be positive
-strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
+strictNumbers.add(5); // ✅ OK
+strictNumbers.add(-1 as any); // ❌ ERROR: must be positive
+strictNumbers.add(3.14 as any); // ❌ ERROR: must be integer
 ```
 
 > **Note:** Zod is optional - basic type safety works automatically without it!
@@ -418,7 +434,7 @@ strictNumbers.add(3.14 as any);  // ❌ ERROR: must be integer
 Extend abstract base classes to create your own data structures:
 
 ```typescript
-import { AbstractList } from 'ts-collections';
+import { AbstractList } from "ts-collections";
 
 class CustomList<E> extends AbstractList<E> {
   private elements: E[] = [];
@@ -429,7 +445,7 @@ class CustomList<E> extends AbstractList<E> {
 
   get(index: number): E {
     if (index < 0 || index >= this.size()) {
-      throw new Error('Index out of bounds');
+      throw new Error("Index out of bounds");
     }
     return this.elements[index];
   }
@@ -504,57 +520,25 @@ pnpm docs          # Generate documentation
 
 For detailed guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Examples
+
+Check out runnable examples in the [examples folder](./examples/README.md).
+
 ## 📊 Performance
 
 All data structures document their performance characteristics:
 
 | Operation | ArrayList | HashSet | HashMap | LinkedQueue |
-|-----------|-----------|---------|---------|-------------|
-| Add/Put | O(1)* | O(1)* | O(1)* | O(1) |
-| Get | O(1) | - | O(1)* | - |
-| Remove | O(n) | O(1)* | O(1)* | O(1) |
-| Contains | O(n) | O(1)* | O(1)* | O(n) |
-| Size | O(1) | O(1) | O(1) | O(1) |
+| --------- | --------- | ------- | ------- | ----------- |
+| Add/Put   | O(1)\*    | O(1)\*  | O(1)\*  | O(1)        |
+| Get       | O(1)      | -       | O(1)\*  | -           |
+| Remove    | O(n)      | O(1)\*  | O(1)\*  | O(1)        |
+| Contains  | O(n)      | O(1)\*  | O(1)\*  | O(n)        |
+| Size      | O(1)      | O(1)    | O(1)    | O(1)        |
 
 \* amortized time complexity
 
 Run benchmarks: `pnpm bench`
-
-## 🐳 Docker
-
-Run the project in consistent, isolated environments with Docker.
-
-### Docker services
-
-- `dev` - development container with source mounts and hot editing support
-- `test` - runs `npm test` in an isolated container
-- `lint` - runs `npm run lint` in an isolated container
-- `build` - runs `npm run build` in an isolated container
-- `prod` - production image using the final build output
-
-### Common commands
-
-```bash
-docker compose run --rm dev
-docker compose run --rm test
-docker compose run --rm lint
-docker compose run --rm build
-
-docker build --target development -t ts-collections:dev .
-docker build --target production -t ts-collections:prod .
-```
-
-### Benefits
-
-- Consistent environment across machines and CI/CD
-- Strong isolation from local machine differences
-- Reproducible development and test workflows
-- Smaller, production-focused runtime images
-
-### Image targets
-
-- `--target development` for local development workflows
-- `--target production` for lean deployable images
 
 ## 📄 License
 
