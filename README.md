@@ -127,6 +127,20 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 | **Queue** | `PriorityQueue<E>` | Heap-based priority ordering                |
 | **Deque** | `LinkedDeque<E>`   | Double-ended queue, add/remove at both ends |
 
+### Native JavaScript Equivalents
+
+This table helps developers quickly map ts-collections data structures to familiar native JavaScript alternatives.
+
+| ts-collections | Native JavaScript Equivalent |
+| -------------- | ---------------------------- |
+| `ArrayList`    | `Array`                      |
+| `HashMap`      | `Map`                        |
+| `HashSet`      | `Set`                        |
+| `LinkedQueue`  | `Array` (queue pattern)      |
+| `PriorityQueue`| No direct equivalent         |
+| `TreeMap`      | No direct equivalent         |
+| `TreeSet`      | No direct equivalent         |
+
 ### Architecture
 
 ```mermaid
