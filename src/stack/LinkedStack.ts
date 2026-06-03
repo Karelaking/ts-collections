@@ -120,6 +120,9 @@ export class LinkedStack<T> extends AbstractStack<T> implements Stack<T> {
 		return this.list.iterator();
 	}
 
+	override get length(): number {
+		return this.size();
+	}
 	/**
 	 * Returns an array containing all stack elements from top to bottom.
 	 */
