@@ -1,6 +1,7 @@
 <div align="center">
   <h1>ts-collections</h1>
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
+  <p>**ts-collections** is a Java-inspired collections framework and library that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.</p>
   
 [![Build Status](https://github.com/Karelaking/ts-collections/actions/workflows/build.yml/badge.svg?style=flat-square)](https://github.com/Karelaking/ts-collections/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -143,7 +144,7 @@ graph TD
 
 ## 📦 Installation
 
-```bash
+```copy
 npm i @karelaking/ts-collections
 ```
 
