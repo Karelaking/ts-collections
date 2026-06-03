@@ -128,6 +128,20 @@ list.add("text" as any); // ❌ Runtime error (automatic!)
 | **Queue** | `PriorityQueue<E>` | Heap-based priority ordering                |
 | **Deque** | `LinkedDeque<E>`   | Double-ended queue, add/remove at both ends |
 
+### Native JavaScript Equivalents
+
+This table helps developers quickly map ts-collections data structures to familiar native JavaScript alternatives.
+
+| ts-collections | Native JavaScript Equivalent |
+| -------------- | ---------------------------- |
+| `ArrayList`    | `Array`                      |
+| `HashMap`      | `Map`                        |
+| `HashSet`      | `Set`                        |
+| `LinkedQueue`  | `Array` (queue pattern)      |
+| `PriorityQueue`| No direct equivalent         |
+| `TreeMap`      | No direct equivalent         |
+| `TreeSet`      | No direct equivalent         |
+
 ### Architecture
 
 ```mermaid
@@ -291,6 +305,23 @@ deque.addLast("back");
 console.log(deque.pollFirst()); // "front"
 console.log(deque.pollLast()); // "back"
 ```
+
+## FAQ
+
+### Why use ts-collections instead of native JavaScript collections?
+ts-collections provides a broader set of data structures and stronger collection APIs than native arrays, maps, and sets. It adds type-safe behavior, consistent method names, and specialized implementations like priority queues and sorted trees.
+
+### Does runtime validation affect performance?
+Runtime validation can add a small cost on inserts, but it helps catch invalid values early and keeps collections reliable. The library is designed so this overhead is minimal for most typical use cases.
+
+### Can runtime validation be customized or disabled?
+Yes — runtime validation can be customized with a Zod schema or a custom validator, and it can be disabled by setting `strict: false`. This makes it easy to choose either the safety of runtime checks or the speed of unchecked collections.
+
+### Which collection should I choose for my use case?
+Use `ArrayList` for ordered lists and frequent iteration, `HashMap` for key-value lookups, and `HashSet` for unique values. Choose `LinkedQueue` for FIFO queues, `PriorityQueue` for priority-based processing, and `TreeMap`/`TreeSet` when you need sorted data and ordered traversal.
+
+### Is the library inspired by Java Collections Framework?
+Yes, the library follows Java-style collection interfaces and naming patterns while remaining idiomatic to TypeScript. It combines familiar Java concepts with TypeScript runtime safety and native JavaScript interop.
 
 ## 💡 Common Use Cases
 
