@@ -1,6 +1,7 @@
 import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractList";
 import type { Iterator } from "../interfaces/Iterator";
 import type { List } from "../interfaces/List";
+import util from "util";
 
 /**
  * A resizable, ordered list backed by a native array.
@@ -30,9 +31,67 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
 		return true;
 	}
 
+	override addAll(elements: Iterable<T>): boolean {
+		let modified = false;
+		for (const element of elements) {
+			this.validateElementType(
+				element,
+				this.createValidationContext(
+					"addAll",
+					`element at index ${this.elements.length}`,
+					element,
+					this.elements.length
+				)
+			);
+			this.elements.push(element);
+			modified = true;
+		}
+		return modified;
+	}
+
+	override addFirst(element: T): void {
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"addFirst",
+				"first element",
+				element,
+				this.elements.length
+			)
+		);
+		this.elements.unshift(element);
+	}
+
+	override addLast(element: T): void {
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"addLast",
+				`element at index ${this.elements.length}`,
+				element,
+				this.elements.length
+			)
+		);
+		this.elements.push(element);
+	}
+
 	override get(index: number): T {
 		this.checkIndex(index);
 		return this.elements[index] as T;
+	}
+
+	override getFirst(): T {
+		if (this.isEmpty()) {
+			throw new Error("List is empty");
+		}
+		return this.elements[0] as T;
+	}
+
+	override getLast(): T {
+		if (this.isEmpty()) {
+			throw new Error("List is empty");
+		}
+		return this.elements[this.elements.length - 1] as T;
 	}
 
 	override set(index: number, element: T): T {
@@ -67,10 +126,33 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
 		this.elements.splice(index, 0, element);
 	}
 
+	override remove(element: T): boolean {
+		const index = this.elements.indexOf(element);
+		if (index === -1) {
+			return false;
+		}
+		this.elements.splice(index, 1);
+		return true;
+	}
+
 	override removeAt(index: number): T {
 		this.checkIndex(index);
 		const [removed] = this.elements.splice(index, 1);
 		return removed as T;
+	}
+
+	override removeFirst(): T {
+		if (this.isEmpty()) {
+			throw new Error("List is empty");
+		}
+		return this.elements.shift() as T;
+	}
+
+	override removeLast(): T {
+		if (this.isEmpty()) {
+			throw new Error("List is empty");
+		}
+		return this.elements.pop() as T;
 	}
 
 	override indexOf(element: T): number {
@@ -131,6 +213,14 @@ export class ArrayList<T> extends AbstractList<T> implements List<T> {
 
 	override toArray(): T[] {
 		return [...this.elements];
+	}
+
+	override isEmpty(): boolean {
+		return this.elements.length === 0;
+	}
+
+	override toString(): string {
+		return `[${this.elements.map((e) => String(e)).join(", ")}]`;
 	}
 
 	private checkIndex(index: number): void {
