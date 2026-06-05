@@ -7,6 +7,7 @@ export type { Deque } from "./Deque";
 export type { Iterator } from "./Iterator";
 export type { List } from "./List";
 export type { Map } from "./Map";
+export type { ReadOnlyCollection } from "./ReadOnlyCollection";
 export type { NavigableMap } from "./NavigableMap";
 export type { NavigableSet } from "./NavigableSet";
 export type { Queue } from "./Queue";
