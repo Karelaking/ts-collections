@@ -69,6 +69,17 @@ describe("HashMap - Core Methods", () => {
 			expect(map.get("key")).toBe(2);
 		});
 
+		it("should update the same entry for zero and negative zero keys", () => {
+			const numberMap = new HashMap<number, string>();
+
+			expect(numberMap.put(0, "zero")).toBeUndefined();
+			expect(numberMap.put(-0, "negative-zero")).toBe("zero");
+
+			expect(numberMap.size()).toBe(1);
+			expect(numberMap.get(0)).toBe("negative-zero");
+			expect(numberMap.get(-0)).toBe("negative-zero");
+		});
+
 		it("should allow null/zero values", () => {
 			map.put("key", 0);
 			expect(map.get("key")).toBe(0);
@@ -90,6 +101,19 @@ describe("HashMap - Core Methods", () => {
 			map.put("a", 100);
 			expect(map.get("a")).toBe(100);
 			expect(map.size()).toBe(1);
+		});
+
+		it("should treat object keys by reference", () => {
+			const firstKey = { id: 1 };
+			const secondKey = { id: 1 };
+			const objectMap = new HashMap<object, string>();
+
+			objectMap.put(firstKey, "first");
+			objectMap.put(secondKey, "second");
+
+			expect(objectMap.size()).toBe(2);
+			expect(objectMap.get(firstKey)).toBe("first");
+			expect(objectMap.get(secondKey)).toBe("second");
 		});
 
 		it("should report contextual validation failures with the original Zod cause", () => {

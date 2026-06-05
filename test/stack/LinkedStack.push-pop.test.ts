@@ -20,6 +20,17 @@ describe("LinkedStack - push and pop", () => {
     expect(stack.pop()).toBeUndefined();
   });
 
+  it("should push another union member after becoming empty", () => {
+    const mixedStack = new LinkedStack<number | string>();
+
+    mixedStack.push(1);
+    expect(mixedStack.pop()).toBe(1);
+    expect(mixedStack.isEmpty()).toBe(true);
+
+    expect(mixedStack.push("after-empty")).toBe(true);
+    expect(mixedStack.peek()).toBe("after-empty");
+  });
+
   it("should handle a large-ish number of operations", () => {
     // Reduced iterations so tests run reliably in CI/local environments
     const N = 10000;
