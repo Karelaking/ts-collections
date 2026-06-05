@@ -156,6 +156,24 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 		this.elementCount++;
 	}
 
+	override addAll(elements: Iterable<T>): boolean {
+		let modified = false;
+		for (const element of elements) {
+			this.validateElementType(
+				element,
+				this.createValidationContext(
+					"addAll",
+					`element at index ${this.elementCount}`,
+					element,
+					this.elementCount
+				)
+			);
+			this.addLast(element);
+			modified = true;
+		}
+		return modified;
+	}
+
 	/**
 	 * Gets the element at the specified index.
 	 * @param index Index to retrieve.
@@ -251,6 +269,33 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 		}
 
 		return value;
+	}
+
+	override remove(element: T): boolean {
+		let current = this.head;
+		while (current !== null) {
+			if (current.value === element) {
+				if (current.previous !== null) {
+					current.previous.next = current.next;
+				} else {
+					// Removing head
+					this.head = current.next;
+				}
+				if (current.next !== null) {
+					current.next.previous = current.previous;
+				} else {
+					// Removing tail
+					this.tail = current.previous;
+				}
+				this.elementCount--;
+				if (this.elementCount === 0) {
+					this.resetTypeInference();
+				}
+				return true;
+			}
+			current = current.next;
+		}
+		return false;
 	}
 
 	/**
@@ -508,6 +553,20 @@ export class LinkedList<T> extends AbstractList<T> implements List<T> {
 		}
 
 		return array;
+	}
+
+	override isEmpty(): boolean {
+		return this.elementCount === 0;
+	}
+
+	override toString(): string {
+		const elements: string[] = [];
+		let current = this.head;
+		while (current !== null) {
+			elements.push(String(current.value));
+			current = current.next;
+		}
+		return `[${elements.join(", ")}]`;
 	}
 
 	/**

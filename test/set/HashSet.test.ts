@@ -73,6 +73,19 @@ describe("HashSet - Core Methods", () => {
 			expect(set.size()).toBe(3);
 		});
 
+		it("should treat object values by reference", () => {
+			const firstValue = { id: 1 };
+			const secondValue = { id: 1 };
+			const objectSet = new HashSet<object>();
+
+			expect(objectSet.add(firstValue)).toBe(true);
+			expect(objectSet.add(secondValue)).toBe(true);
+
+			expect(objectSet.size()).toBe(2);
+			expect(objectSet.contains(firstValue)).toBe(true);
+			expect(objectSet.contains(secondValue)).toBe(true);
+		});
+
 		it("should report contextual validation failures with the original Zod cause", () => {
 			const strictSet = new HashSet<number>({
 				schema: z.number().int(),
