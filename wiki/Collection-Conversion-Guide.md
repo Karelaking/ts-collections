@@ -58,34 +58,16 @@ nativeMap.forEach((value, key) => {
 ```ts
 const value = hashMap.get("A");
 ```
+## HashMap → Map
+
+Example conversion from a HashMap back to a native JavaScript Map.
+
+The exact implementation depends on the traversal APIs provided by HashMap and may vary based on the collection version.
 
 ## Iterating Collections
 
-### ArrayList
-
-```ts
-for (const item of list) {
-  console.log(item);
-}
-```
-
-### HashSet
-
-```ts
-for (const item of hashSet) {
-  console.log(item);
-}
-```
-
-## Using the Spread Operator
-
-```ts
-const arrayFromList = [...list];
-const arrayFromSet = [...hashSet];
-```
-
 ## Notes
 
-- Use `Array.from()` when converting iterable collections to arrays.
+
 - Use collection APIs such as `add()` and `put()` when populating ts-collections structures.
 - Choose the collection type that best fits your use case.
