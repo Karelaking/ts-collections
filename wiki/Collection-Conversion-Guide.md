@@ -15,9 +15,9 @@ numbers.forEach(num => list.add(num));
 
 ## ArrayList → Array
 
-```ts
-const numbersArray = Array.from(list);
-```
+The exact conversion method depends on the APIs provided by `ArrayList`.
+
+Refer to the collection's traversal or conversion methods (such as `toArray()` if available) for converting an `ArrayList` back to a native JavaScript array.
 
 ## Set → HashSet
 
@@ -32,9 +32,9 @@ nativeSet.forEach(item => hashSet.add(item));
 
 ## HashSet → Array
 
-```ts
-const items = Array.from(hashSet);
-```
+The exact conversion method depends on the APIs provided by `HashSet`.
+
+Refer to the collection's traversal or conversion methods (such as `toArray()` or iterator-based traversal if available) for converting a `HashSet` back to a native JavaScript array.
 
 ## Map → HashMap
 
@@ -58,16 +58,18 @@ nativeMap.forEach((value, key) => {
 ```ts
 const value = hashMap.get("A");
 ```
+
 ## HashMap → Map
 
-Example conversion from a HashMap back to a native JavaScript Map.
+```ts
+const nativeMap = new Map<string, number>();
 
-The exact implementation depends on the traversal APIs provided by HashMap and may vary based on the collection version.
-
-## Iterating Collections
+for (const [key, value] of hashMap.entries()) {
+  nativeMap.set(key, value);
+}
+```
 
 ## Notes
-
 
 - Use collection APIs such as `add()` and `put()` when populating ts-collections structures.
 - Choose the collection type that best fits your use case.
