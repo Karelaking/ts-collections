@@ -3,17 +3,14 @@
   <p><strong>A robust, type-safe collections framework for TypeScript</strong></p>
   <p>**ts-collections** is a Java-inspired collections framework and library that brings enterprise-grade data structures to TypeScript. Built with modern TypeScript features, it provides automatic type safety, familiar APIs for Java developers, and zero-configuration setup.</p>
   
-[![Build Status](https://github.com/Karelaking/ts-collections/actions/workflows/build.yml/badge.svg?style=flat-square)](https://github.com/Karelaking/ts-collections/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&style=flat-square)](https://nodejs.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
-![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
-[![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
-[![Linted with Biome](https://img.shields.io/badge/Linted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
-[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
-
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![npm version](https://img.shields.io/npm/v/ts-collections.svg?style=flat)](https://www.npmjs.com/package/ts-collections)
+  [![npm downloads](https://img.shields.io/npm/dm/ts-collections.svg)](https://www.npmjs.com/package/ts-collections)
+  [![bundle size](https://img.shields.io/bundlephobia/minzip/ts-collections)](https://bundlephobia.com/package/ts-collections)
+  [![Vitest](https://img.shields.io/badge/Vitest-tested-6E9F18?logo=vitest)](https://vitest.dev/)
+  ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Karelaking.ts-collections)
+  
   <p>
     <a href="#-features">Features</a> •
     <a href="#-quick-start">Quick Start</a> •
