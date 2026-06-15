@@ -1,0 +1,65 @@
+# Development files
+src/
+test/
+bench/
+wiki/
+
+# Configuration and tooling
+.vscode/
+.github/
+.agents/
+.git/
+.gitignore
+.npmrc
+eslint.config.js
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+vitest-report.json
+biome.json
+ 
+
+# Documentation for development
+PROJECT_SETUP.md
+PROJECT_SUMMARY.md
+IMPLEMENTATION_ROADMAP.md
+BEHAVIOR_CONSISTENCY_MATRIX.md
+ARCHITECTURE.md
+QUICKSTART.md
+QUICK_REFERENCE.md
+AGENTS.md
+PRD.md
+CONTRIBUTING.md
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+
+# Development and build artifacts
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+*.tsbuildinfo
+graphify-out/
+ts-collections-*.tgz
+run-tests.js
+
+# IDE and OS files
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.cache/
+.env.local
+
+# NPM cache
+npm-debug.log
+yarn-error.log
+
+# Test and coverage
+coverage/
+.nyc_output/
+junit.xml
+
+# Skills lock
+skills-lock.json

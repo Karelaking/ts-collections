@@ -1,7 +1,8 @@
+import { CollectionEmptyError } from "../errors";
 import type { List } from "../interfaces";
-import { AbstractCollection, type TypeValidationOptions } from "./AbstractCollection";
+import { AbstractCollection } from "./AbstractCollection";
 
-export type { TypeValidationOptions };
+export type { TypeValidationOptions } from "./AbstractCollection";
 
 /**
  * Abstract base class for List implementations.
@@ -11,72 +12,123 @@ export type { TypeValidationOptions };
  *
  * @template E The type of elements in this list
  */
-export abstract class AbstractList<E> extends AbstractCollection<E> implements List<E> {
-  /**
-   * Returns the element at the specified position in this list.
-   * Must be implemented by subclasses.
-   */
-  abstract get(index: number): E;
+export abstract class AbstractList<E>
+	extends AbstractCollection<E>
+	implements List<E>
+{
+	/**
+	 * Returns the element at the specified position in this list.
+	 * Must be implemented by subclasses.
+	 */
+	abstract get(index: number): E;
 
-  /**
-   * Replaces the element at the specified position in this list.
-   * Must be implemented by subclasses.
-   */
-  abstract set(index: number, element: E): E;
+	/**
+	 * Replaces the element at the specified position in this list.
+	 * Must be implemented by subclasses.
+	 */
+	abstract set(index: number, element: E): E;
 
-  /**
-   * Inserts the specified element at the specified position in this list.
-   * Must be implemented by subclasses.
-   */
-  abstract addAt(index: number, element: E): void;
+	/**
+	 * Inserts the specified element at the specified position in this list.
+	 * Must be implemented by subclasses.
+	 */
+	abstract addAt(index: number, element: E): void;
 
-  /**
-   * Removes the element at the specified position in this list.
-   * Must be implemented by subclasses.
-   */
-  abstract removeAt(index: number): E;
+	addFirst(element: E): void {
+		this.addAt(0, element);
+	}
 
-  /**
-   * Returns the index of the first occurrence of the specified element.
-   * Must be implemented by subclasses.
-   */
-  abstract indexOf(element: E): number;
+	addLast(element: E): void {
+		this.add(element);
+	}
 
-  /**
-   * Returns the index of the last occurrence of the specified element.
-   * Must be implemented by subclasses.
-   */
-  abstract lastIndexOf(element: E): number;
+	/**
+	 * Removes the element at the specified position in this list.
+	 * Must be implemented by subclasses.
+	 */
+	abstract removeAt(index: number): E;
 
-  /**
-   * Returns a view of the portion of this list between fromIndex and toIndex.
-   * Must be implemented by subclasses.
-   */
-  abstract subList(fromIndex: number, toIndex: number): List<E>;
+	getFirst(): E {
+		if (this.isEmpty()) {
+			throw new CollectionEmptyError("getFirst", {
+				collectionType: this.constructor.name,
+				operation: "getFirst",
+			});
+		}
+		return this.get(0);
+	}
 
-  /**
-   * Appends the specified element to the end of this list.
-   * Default implementation: delegates to addAt(index, element) with index = size()
-   *
-   * @returns true if the element was appended successfully
-   */
-  add(element: E): boolean {
-    this.addAt(this.size(), element);
-    return true;
-  }
+	getLast(): E {
+		if (this.isEmpty()) {
+			throw new CollectionEmptyError("getLast", {
+				collectionType: this.constructor.name,
+				operation: "getLast",
+			});
+		}
+		return this.get(this.size() - 1);
+	}
 
-  /**
-   * Removes the first occurrence of the specified element from this list.
-   * Default implementation: finds the index of the element and removes it.
-   *
-   * @returns true if an element was removed
-   */
-  override remove(element: E): boolean {
-    const index = this.indexOf(element);
-    if (index === -1) {
-      return false;
-    }
-    this.removeAt(index);
-    return true;
-  }
+	removeFirst(): E {
+		if (this.isEmpty()) {
+			throw new CollectionEmptyError("removeFirst", {
+				collectionType: this.constructor.name,
+				operation: "removeFirst",
+			});
+		}
+		return this.removeAt(0);
+	}
+
+	removeLast(): E {
+		if (this.isEmpty()) {
+			throw new CollectionEmptyError("removeLast", {
+				collectionType: this.constructor.name,
+				operation: "removeLast",
+			});
+		}
+		return this.removeAt(this.size() - 1);
+	}
+
+	/**
+	 * Returns the index of the first occurrence of the specified element.
+	 * Must be implemented by subclasses.
+	 */
+	abstract indexOf(element: E): number;
+
+	/**
+	 * Returns the index of the last occurrence of the specified element.
+	 * Must be implemented by subclasses.
+	 */
+	abstract lastIndexOf(element: E): number;
+
+	/**
+	 * Returns a view of the portion of this list between fromIndex and toIndex.
+	 * Must be implemented by subclasses.
+	 */
+	abstract subList(fromIndex: number, toIndex: number): List<E>;
+
+	/**
+	 * Appends the specified element to the end of this list.
+	 * Default implementation: delegates to addAt(index, element) with index = size()
+	 *
+	 * @returns true if the element was appended successfully
+	 */
+	add(element: E): boolean {
+		this.addAt(this.size(), element);
+		return true;
+	}
+
+	/**
+	 * Removes the first occurrence of the specified element from this list.
+	 * Default implementation: finds the index of the element and removes it.
+	 *
+	 * @returns true if an element was removed
+	 */
+	override remove(element: E): boolean {
+		const index = this.indexOf(element);
+		if (index === -1) {
+			return false;
+		}
+		this.removeAt(index);
+		return true;
+	}
 }

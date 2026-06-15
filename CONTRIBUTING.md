@@ -30,6 +30,7 @@ Thank you for your interest in contributing to **ts-collections**! We're excited
 ### 💝 Why Your Contributions Matter
 
 We believe in the power of community-driven development. Your contributions—whether code, documentation, bug reports, or feature suggestions—help us:
+
 - Improve code quality and reliability
 - Expand functionality and usability
 - Build a more inclusive and welcoming community
@@ -38,6 +39,7 @@ We believe in the power of community-driven development. Your contributions—wh
 ### 👥 Who This Guide Is For
 
 This guide is for **everyone** interested in contributing:
+
 - **First-time contributors**: We welcome you! See [Finding Issues to Work On](#finding-issues-to-work-on) for beginner-friendly tasks.
 - **Experienced developers**: Feel free to tackle complex features and refactorings.
 - **Documentation writers**: Help us improve guides and API documentation.
@@ -54,6 +56,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 ### 🚫 Zero-Tolerance Policy
 
 We have **zero tolerance** for:
+
 - Harassment, discrimination, or bullying
 - Disrespectful or offensive language
 - Exclusionary behavior
@@ -89,6 +92,7 @@ git fetch upstream
 ### Step 4️⃣: Set Up Development Environment
 
 **Requirements:**
+
 - Node.js 18+ or higher
 - pnpm 10.18+ (or npm/yarn)
 - TypeScript 5.9+
@@ -126,21 +130,22 @@ pnpm bench
 
 ### 🏷️ Issue Labels Explained
 
-| Label | Meaning | Good For |
-|-------|---------|----------|
-| `good first issue` | Perfect for first-time contributors | Beginners, onboarding |
-| `help wanted` | Maintainers need assistance | Anyone, any skill level |
-| `bug` | Something isn't working | Bug fixes |
-| `feature` | New functionality request | Feature implementations |
-| `documentation` | Needs docs or docs improvements | Documentation writers |
-| `enhancement` | Improve existing functionality | Refactoring, optimization |
-| `discussion` | Needs community input | Design decisions |
+| Label              | Meaning                             | Good For                  |
+| ------------------ | ----------------------------------- | ------------------------- |
+| `good first issue` | Perfect for first-time contributors | Beginners, onboarding     |
+| `help wanted`      | Maintainers need assistance         | Anyone, any skill level   |
+| `bug`              | Something isn't working             | Bug fixes                 |
+| `feature`          | New functionality request           | Feature implementations   |
+| `documentation`    | Needs docs or docs improvements     | Documentation writers     |
+| `enhancement`      | Improve existing functionality      | Refactoring, optimization |
+| `discussion`       | Needs community input               | Design decisions          |
 
 ### 🌱 For Beginners
 
 Start with issues labeled **`good first issue`** or **`help wanted`**. These are carefully scoped and well-documented.
 
 **Steps:**
+
 1. Find an issue you're interested in on [GitHub Issues](https://github.com/Karelaking/ts-collections/issues)
 2. Comment "I'd like to work on this" to claim it
 3. Ask questions if anything is unclear
@@ -149,6 +154,7 @@ Start with issues labeled **`good first issue`** or **`help wanted`**. These are
 ### ⭐ For Experienced Contributors
 
 Feel free to:
+
 - Tackle **`feature`** and **`enhancement`** issues
 - Refactor and optimize existing code
 - Review pull requests from other contributors
@@ -169,7 +175,8 @@ Open an issue if you've found a **bug**, want to request a **feature**, or have 
 **Title:** `[Bug] Short, descriptive title`
 
 **Description:**
-```
+
+````
 ## Description
 Brief summary of the problem.
 
@@ -192,10 +199,12 @@ What actually happens?
 ## Code Example
 ```typescript
 // Minimal code to reproduce the issue
-```
+````
 
 ## Additional Context
+
 Screenshots, logs, or other relevant information.
+
 ```
 
 #### ✨ Feature Request Template
@@ -204,22 +213,29 @@ Screenshots, logs, or other relevant information.
 
 **Description:**
 ```
+
 ## Description
+
 What feature would you like to see?
 
 ## Use Case
+
 Why do you need this? What problem does it solve?
 
 ## Proposed Solution
+
 How should it work?
 
 ## Example
+
 ```typescript
 // How would users use this?
 ```
 
 ## Alternatives Considered
+
 Other approaches or solutions?
+
 ```
 
 ### 💡 Pro Tips
@@ -246,8 +262,10 @@ Other approaches or solutions?
 Use descriptive branch names following this format:
 
 ```
+
 <type>/<description>
-```
+
+````
 
 **Types:**
 - `feature/` — New feature
@@ -270,7 +288,7 @@ Before submitting a PR, sync with the upstream main branch:
 ```bash
 git fetch upstream
 git rebase upstream/master
-```
+````
 
 ---
 
@@ -323,6 +341,7 @@ Related to #789
 ### 📚 Examples
 
 ✅ **Good:**
+
 ```
 feat: add LinkedQueue collection type
 
@@ -333,6 +352,7 @@ Fixes #45
 ```
 
 ✅ **Good:**
+
 ```
 fix: prevent ArrayList index out of bounds
 
@@ -357,6 +377,7 @@ Check bounds before accessing elements in get() and set() methods.
 **Always link your PR to related issues:**
 
 In the PR description, use:
+
 ```
 Fixes #123
 Closes #456
@@ -372,6 +393,7 @@ Follow this format:
 ```
 
 **Examples:**
+
 - `Add: LinkedQueue collection type`
 - `Fix: ArrayList out of bounds check`
 - `Update: API reference documentation`
@@ -380,6 +402,7 @@ Follow this format:
 ### ⭐ PR Best Practices
 
 ✅ **DO:**
+
 - Keep PRs **focused and single-purpose**
 - Link to related issues
 - Write descriptive PR descriptions
@@ -389,6 +412,7 @@ Follow this format:
 - Be open to suggestions
 
 ❌ **DON'T:**
+
 - Submit large, unfocused PRs
 - Forget to add tests
 - Ignore review comments
@@ -424,6 +448,7 @@ During review, we assess:
 ### 🎯 Code Review Etiquette
 
 ✅ **DO:**
+
 - Be respectful and professional
 - Assume good intent
 - Ask questions, don't demand
@@ -461,31 +486,49 @@ If your PR decreases coverage, it will not be accepted.
 Use **Vitest** (our testing framework).
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { ArrayList } from '../src';
+import { describe, it, expect } from "vitest";
+import { ArrayList } from "../src";
 
-describe('ArrayList', () => {
-  describe('add', () => {
-    it('should add element to the list', () => {
+describe("ArrayList", () => {
+  describe("add", () => {
+    it("should add element to the list", () => {
       const list = new ArrayList<number>();
       list.add(1);
       expect(list.get(0)).toBe(1);
     });
 
-    it('should throw when adding undefined', () => {
+    it("should throw when adding undefined", () => {
       const list = new ArrayList<string>();
       expect(() => list.add(undefined as any)).toThrow();
     });
   });
 
-  describe('get', () => {
-    it('should throw when index is out of bounds', () => {
+  describe("get", () => {
+    it("should throw when index is out of bounds", () => {
       const list = new ArrayList<number>();
       expect(() => list.get(0)).toThrow();
     });
   });
 });
 ```
+
+### ⚠️ Do Not Use `strict: false` in Tests
+
+Avoid disabling strict mode in test suites unless the test is **specifically testing the `strict: false` behaviour itself**.
+
+```typescript
+// ❌ Wrong — hides real type-safety bugs
+const list = new ArrayList<number>({ strict: false });
+list.add("not a number"); // passes silently, masking a potential issue
+
+// ✅ Correct — tests run with the same safety guarantees as production code
+const list = new ArrayList<number>();
+list.add(1); // type-safe
+```
+
+Using `strict: false` in general tests defeats the purpose of the runtime type guarantees this library provides. A test suite that passes only because strict mode is disabled gives a false sense of correctness — the same code in production (with strict mode on by default) may throw errors.
+
+The only valid reason to use `strict: false` in a test file is when you are writing a dedicated test case that verifies the collection correctly accepts mixed types when strict mode is explicitly disabled by the user.
 
 ### ✔️ Test Coverage Checklist
 
@@ -499,6 +542,7 @@ For new features/fixes, include tests for:
 ### 🤖 CI Requirements
 
 All tests must pass in CI before merging:
+
 - ✅ Unit tests (Vitest)
 - ✅ Linting (ESLint)
 - ✅ Type checking (TypeScript)
@@ -511,6 +555,7 @@ All tests must pass in CI before merging:
 ### 📅 When to Update Documentation
 
 Update docs when:
+
 - [ ] Adding a new feature
 - [ ] Changing existing API
 - [ ] Fixing a bug (if docs were misleading)
@@ -518,12 +563,12 @@ Update docs when:
 
 ### 📂 Where to Add Documentation
 
-| Type | Location |
-|------|----------|
+| Type          | Location                              |
+| ------------- | ------------------------------------- |
 | API reference | Inline JSDoc comments in source files |
-| Guides | `wiki/` directory |
-| Architecture | `ARCHITECTURE.md` |
-| Quick start | `QUICKSTART.md` |
+| Guides        | `wiki/` directory                     |
+| Architecture  | `ARCHITECTURE.md`                     |
+| Quick start   | `QUICKSTART.md`                       |
 
 ### 💬 JSDoc Comments
 
@@ -550,6 +595,7 @@ add(element: E): void {
 If you discover a **security vulnerability**, please do **NOT** open a public issue.
 
 Contact maintainers privately with:
+
 - Description of vulnerability
 - Steps to reproduce
 - Potential impact
@@ -622,4 +668,4 @@ We appreciate your interest in contributing to **ts-collections**. Your efforts 
 
 **Happy contributing!** 🚀
 
-*Last updated: January 2026*
+_Last updated: January 2026_

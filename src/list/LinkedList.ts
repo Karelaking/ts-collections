@@ -1,28 +1,55 @@
+import { AbstractList } from "../abstracts/AbstractList";
 import type { Iterator } from "../interfaces/Iterator";
 import type { List } from "../interfaces/List";
-import { AbstractList, type TypeValidationOptions } from "../abstracts/AbstractList";
 
 /**
  * Node in a doubly linked list.
- * Holds a value and pointers to previous and next nodes.
+ *
+ * Each node holds a value and maintains bidirectional pointers to its
+ * predecessor and successor nodes in the list.
+ *
+ * @typeParam T - Type of value stored in the node.
  */
 interface Node<T> {
-  value: T;
-  previous: Node<T> | null;
-  next: Node<T> | null;
+	next: Node<T> | null;
+	previous: Node<T> | null;
+	value: T;
 }
 
 /**
- * A doubly linked list implementation (Java-style LinkedList).
- * Provides O(1) insertion/deletion at both ends and bidirectional traversal.
- * Includes complete runtime type safety validation by default.
+ * A doubly linked list that supports efficient insertions and removals at both ends.
  *
- * @template T The type of elements in this list
+ * This list behaves like Java's `LinkedList`: it maintains bidirectional node
+ * pointers for forward and reverse traversal, and provides constant-time access
+ * to head and tail elements.
+ *
+ * ### Performance characteristics
+ * - Insert/remove at head or tail: $O(1)$
+ * - Insert/remove at arbitrary index: $O(n)$ due to traversal
+ * - Random access (`get`, `set`): $O(n)$ due to traversal
+ * - Search (`contains`, `indexOf`, `lastIndexOf`): $O(n)$
+ *
+ * ### Internal behavior
+ * - Maintains `head` and `tail` pointers to the first and last nodes.
+ * - Each `Node<T>` holds a value and pointers to its predecessor and successor.
+ * - The `getNode` method optimizes traversal by starting from the closer end
+ *   (head or tail) based on the target index.
+ * - When runtime type validation is enabled, each added or replaced element
+ *   is validated before insertion.
+ * - `subList` produces a snapshot copy, so changes to the original list do
+ *   not affect the returned list.
+ *
+ * ### Error behavior
+ * - Methods that access by index throw when the index is out of range.
+ * - `getFirst`, `getLast`, `removeFirst`, and `removeLast` throw when the list is empty.
+ * - Iterator `next()` throws when no elements remain.
+ *
+ * @typeParam T - The element type stored in the list.
  *
  * @example
  * ```typescript
  * import { LinkedList } from 'ts-collections';
- * 
+ *
  * // Automatic type safety (enabled by default, like Java)
  * const list = new LinkedList<number>();
  * list.add(1);
@@ -30,483 +57,576 @@ interface Node<T> {
  * list.addLast(2);
  * console.log(list.toArray()); // [0, 1, 2]
  * list.add("text" as any); // ✗ Throws TypeError: type mismatch
- * 
+ *
  * // Bidirectional iteration
  * const fwd = list.iterator();
  * while (fwd.hasNext()) console.log(fwd.next());
- * 
+ *
  * const rev = list.reverseIterator();
  * while (rev.hasNext()) console.log(rev.next());
- * ```
  */
 export class LinkedList<T> extends AbstractList<T> implements List<T> {
-  /** First node in the list */
-  private head: Node<T> | null = null;
-  /** Last node in the list */
-  private tail: Node<T> | null = null;
-  /** Number of elements in the list */
-  private elementCount: number = 0;
+	/** First node in the list */
+	private head: Node<T> | null = null;
+	/** Last node in the list */
+	private tail: Node<T> | null = null;
+	/** Number of elements in the list */
+	private elementCount = 0;
 
-  constructor(options?: TypeValidationOptions<T>) {
-    super(options);
-  }
+	/**
+	 * Appends an element to the end of the list.
+	 * @param element Element to add.
+	 * @returns true if added.
+	 */
+	override add(element: T): boolean {
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"add",
+				`element at index ${this.elementCount}`,
+				element,
+				this.elementCount
+			)
+		);
+		this.addLast(element);
+		return true;
+	}
 
-  /**
-   * Appends an element to the end of the list.
-   * @param element Element to add.
-   * @returns true if added.
-   */
-  override add(element: T): boolean {
-    this.validateElementType(element);
-    this.addLast(element);
-    return true;
-  }
+	/**
+	 * Inserts an element at the beginning of the list.
+	 * @param element Element to add.
+	 */
+	override addFirst(element: T): void {
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"addFirst",
+				"element at the front of the list",
+				element,
+				this.elementCount
+			)
+		);
+		const newNode: Node<T> = {
+			value: element,
+			previous: null,
+			next: this.head,
+		};
 
-  /**
-   * Inserts an element at the beginning of the list.
-   * @param element Element to add.
-   */
-  addFirst(element: T): void {
-    this.validateElementType(element);
-    const newNode: Node<T> = {
-      value: element,
-      previous: null,
-      next: this.head,
-    };
+		if (this.head === null) {
+			// List was empty; new node is also the tail
+			this.tail = newNode;
+		} else {
+			// List is non-empty; update old head's previous pointer
+			this.head.previous = newNode;
+		}
 
-    if (this.head !== null) {
-      // List is non-empty; update old head's previous pointer
-      this.head.previous = newNode;
-    } else {
-      // List was empty; new node is also the tail
-      this.tail = newNode;
-    }
+		this.head = newNode;
+		this.elementCount++;
+	}
 
-    this.head = newNode;
-    this.elementCount++;
-  }
+	/**
+	 * Appends an element to the end of the list.
+	 * @param element Element to add.
+	 */
+	override addLast(element: T): void {
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"addLast",
+				"element at the end of the list",
+				element,
+				this.elementCount
+			)
+		);
+		const newNode: Node<T> = {
+			value: element,
+			previous: this.tail,
+			next: null,
+		};
 
-  /**
-   * Appends an element to the end of the list.
-   * @param element Element to add.
-   */
-  addLast(element: T): void {
-    this.validateElementType(element);
-    const newNode: Node<T> = {
-      value: element,
-      previous: this.tail,
-      next: null,
-    };
+		if (this.tail === null) {
+			// List was empty; new node is also the head
+			this.head = newNode;
+		} else {
+			// List is non-empty; update old tail's next pointer
+			this.tail.next = newNode;
+		}
 
-    if (this.tail !== null) {
-      // List is non-empty; update old tail's next pointer
-      this.tail.next = newNode;
-    } else {
-      // List was empty; new node is also the head
-      this.head = newNode;
-    }
+		this.tail = newNode;
+		this.elementCount++;
+	}
 
-    this.tail = newNode;
-    this.elementCount++;
-  }
+	override addAll(elements: Iterable<T>): boolean {
+		let modified = false;
+		for (const element of elements) {
+			this.validateElementType(
+				element,
+				this.createValidationContext(
+					"addAll",
+					`element at index ${this.elementCount}`,
+					element,
+					this.elementCount
+				)
+			);
+			this.addLast(element);
+			modified = true;
+		}
+		return modified;
+	}
 
-  /**
-   * Gets the element at the specified index.
-   * @param index Index to retrieve.
-   * @returns The element at the index.
-   * @throws Error if index is out of bounds.
-   */
-  override get(index: number): T {
-    this.checkIndex(index);
-    const node = this.getNode(index);
-    if (node === null) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
-    return node.value;
-  }
+	/**
+	 * Gets the element at the specified index.
+	 * @param index Index to retrieve.
+	 * @returns The element at the index.
+	 * @throws Error if index is out of bounds.
+	 */
+	override get(index: number): T {
+		this.checkIndex(index);
+		const node = this.getNode(index);
+		if (node === null) {
+			throw new Error(`Element at index ${index} is undefined`);
+		}
+		return node.value;
+	}
 
-  /**
-   * Gets the first element in the list.
-   * @returns The first element.
-   * @throws Error if the list is empty.
-   */
-  getFirst(): T {
-    if (this.head === null) {
-      throw new Error("List is empty");
-    }
-    return this.head.value;
-  }
+	/**
+	 * Gets the first element in the list.
+	 * @returns The first element.
+	 * @throws Error if the list is empty.
+	 */
+	override getFirst(): T {
+		if (this.head === null) {
+			throw new Error("List is empty");
+		}
+		return this.head.value;
+	}
 
-  /**
-   * Gets the last element in the list.
-   * @returns The last element.
-   * @throws Error if the list is empty.
-   */
-  getLast(): T {
-    if (this.tail === null) {
-      throw new Error("List is empty");
-    }
-    return this.tail.value;
-  }
+	/**
+	 * Gets the last element in the list.
+	 * @returns The last element.
+	 * @throws Error if the list is empty.
+	 */
+	override getLast(): T {
+		if (this.tail === null) {
+			throw new Error("List is empty");
+		}
+		return this.tail.value;
+	}
 
-  /**
-   * Removes and returns the first element in the list.
-   * @returns The removed element.
-   * @throws Error if the list is empty.
-   */
-  removeFirst(): T {
-    if (this.head === null) {
-      throw new Error("List is empty");
-    }
+	/**
+	 * Removes and returns the first element in the list.
+	 * @returns The removed element.
+	 * @throws Error if the list is empty.
+	 */
+	override removeFirst(): T {
+		if (this.head === null) {
+			throw new Error("List is empty");
+		}
 
-    const value = this.head.value;
-    if (this.head.next !== null) {
-      // More than one element; update head and clear new head's previous pointer
-      this.head.next.previous = null;
-      this.head = this.head.next;
-    } else {
-      // Only one element; list becomes empty
-      this.head = null;
-      this.tail = null;
-    }
-    this.elementCount--;
+		const value = this.head.value;
+		if (this.head.next === null) {
+			// Only one element; list becomes empty
+			this.head = null;
+			this.tail = null;
+		} else {
+			// More than one element; update head and clear new head's previous pointer
+			this.head.next.previous = null;
+			this.head = this.head.next;
+		}
+		this.elementCount--;
 
-    if (this.elementCount === 0) {
-      this.resetTypeInference();
-    }
+		if (this.elementCount === 0) {
+			this.resetTypeInference();
+		}
 
-    return value;
-  }
+		return value;
+	}
 
-  /**
-   * Removes and returns the last element in the list.
-   * @returns The removed element.
-   * @throws Error if the list is empty.
-   */
-  removeLast(): T {
-    if (this.tail === null) {
-      throw new Error("List is empty");
-    }
+	/**
+	 * Removes and returns the last element in the list.
+	 * @returns The removed element.
+	 * @throws Error if the list is empty.
+	 */
+	override removeLast(): T {
+		if (this.tail === null) {
+			throw new Error("List is empty");
+		}
 
-    const value = this.tail.value;
-    if (this.tail.previous !== null) {
-      // More than one element; update tail and clear old tail's previous
-      this.tail.previous.next = null;
-      this.tail = this.tail.previous;
-    } else {
-      // Only one element; list becomes empty
-      this.head = null;
-      this.tail = null;
-    }
-    this.elementCount--;
+		const value = this.tail.value;
+		if (this.tail.previous === null) {
+			// Only one element; list becomes empty
+			this.head = null;
+			this.tail = null;
+		} else {
+			// More than one element; update tail and clear old tail's previous
+			this.tail.previous.next = null;
+			this.tail = this.tail.previous;
+		}
+		this.elementCount--;
 
-    if (this.elementCount === 0) {
-      this.resetTypeInference();
-    }
+		if (this.elementCount === 0) {
+			this.resetTypeInference();
+		}
 
-    return value;
-  }
+		return value;
+	}
 
-  /**
-   * Replaces the element at the specified index with a new value.
-   * @param index Index to replace.
-   * @param element New value.
-   * @returns The old value at the index.
-   * @throws Error if index is out of bounds.
-   */
-  override set(index: number, element: T): T {
-    this.checkIndex(index);
-    this.validateElementType(element);
-    const node = this.getNode(index);
-    if (node === null) {
-      throw new Error(`Element at index ${index} is undefined`);
-    }
-    const oldElement = node.value;
-    node.value = element;
-    return oldElement;
-  }
+	override remove(element: T): boolean {
+		let current = this.head;
+		while (current !== null) {
+			if (current.value === element) {
+				if (current.previous !== null) {
+					current.previous.next = current.next;
+				} else {
+					// Removing head
+					this.head = current.next;
+				}
+				if (current.next !== null) {
+					current.next.previous = current.previous;
+				} else {
+					// Removing tail
+					this.tail = current.previous;
+				}
+				this.elementCount--;
+				if (this.elementCount === 0) {
+					this.resetTypeInference();
+				}
+				return true;
+			}
+			current = current.next;
+		}
+		return false;
+	}
 
-  /**
-   * Inserts an element at the specified index.
-   * @param index Index to insert at.
-   * @param element Element to insert.
-   * @throws Error if index is out of bounds.
-   */
-  override addAt(index: number, element: T): void {
-    if (index < 0 || index > this.elementCount) {
-      throw new Error(`Index out of bounds: ${index}`);
-    }
+	/**
+	 * Replaces the element at the specified index with a new value.
+	 * @param index Index to replace.
+	 * @param element New value.
+	 * @returns The old value at the index.
+	 * @throws Error if index is out of bounds.
+	 */
+	override set(index: number, element: T): T {
+		this.checkIndex(index);
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"set",
+				`element at index ${index}`,
+				element,
+				this.elementCount
+			)
+		);
+		const node = this.getNode(index);
+		if (node === null) {
+			throw new Error(`Element at index ${index} is undefined`);
+		}
+		const oldElement = node.value;
+		node.value = element;
+		return oldElement;
+	}
 
-    this.validateElementType(element);
+	/**
+	 * Inserts an element at the specified index.
+	 * @param index Index to insert at.
+	 * @param element Element to insert.
+	 * @throws Error if index is out of bounds.
+	 */
+	override addAt(index: number, element: T): void {
+		if (index < 0 || index > this.elementCount) {
+			throw new Error(`Index out of bounds: ${index}`);
+		}
 
-    if (index === this.elementCount) {
-      // Insert at end
-      this.addLast(element);
-      return;
-    }
+		this.validateElementType(
+			element,
+			this.createValidationContext(
+				"addAt",
+				`element at index ${index}`,
+				element,
+				this.elementCount
+			)
+		);
 
-    if (index === 0) {
-      // Insert at head
-      this.addFirst(element);
-      return;
-    }
+		if (index === this.elementCount) {
+			// Insert at end
+			this.addLast(element);
+			return;
+		}
 
-    // Insert in the middle
-    const nextNode = this.getNode(index);
-    if (nextNode === null) {
-      throw new Error(`Cannot insert at index ${index}`);
-    }
+		if (index === 0) {
+			// Insert at head
+			this.addFirst(element);
+			return;
+		}
 
-    const newNode: Node<T> = {
-      value: element,
-      previous: nextNode.previous,
-      next: nextNode,
-    };
+		// Insert in the middle
+		const nextNode = this.getNode(index);
+		if (nextNode === null) {
+			throw new Error(`Cannot insert at index ${index}`);
+		}
 
-    if (nextNode.previous !== null) {
-      nextNode.previous.next = newNode;
-    }
-    nextNode.previous = newNode;
+		const newNode: Node<T> = {
+			value: element,
+			previous: nextNode.previous,
+			next: nextNode,
+		};
 
-    this.elementCount++;
-  }
+		if (nextNode.previous !== null) {
+			nextNode.previous.next = newNode;
+		}
+		nextNode.previous = newNode;
 
-  /**
-   * Removes and returns the element at the specified index.
-   * @param index Index to remove.
-   * @returns The removed element.
-   * @throws Error if index is out of bounds.
-   */
-  override removeAt(index: number): T {
-    this.checkIndex(index);
+		this.elementCount++;
+	}
 
-    if (index === 0) {
-      // Remove head
-      return this.removeFirst();
-    }
+	/**
+	 * Removes and returns the element at the specified index.
+	 * @param index Index to remove.
+	 * @returns The removed element.
+	 * @throws Error if index is out of bounds.
+	 */
+	override removeAt(index: number): T {
+		this.checkIndex(index);
 
-    if (index === this.elementCount - 1) {
-      // Remove tail
-      return this.removeLast();
-    }
+		if (index === 0) {
+			// Remove head
+			return this.removeFirst();
+		}
 
-    // Remove from the middle
-    const node = this.getNode(index);
-    if (node === null) {
-      throw new Error(`Failed to remove element at index ${index}`);
-    }
+		if (index === this.elementCount - 1) {
+			// Remove tail
+			return this.removeLast();
+		}
 
-    const value = node.value;
+		// Remove from the middle
+		const node = this.getNode(index);
+		if (node === null) {
+			throw new Error(`Failed to remove element at index ${index}`);
+		}
 
-    if (node.previous !== null) {
-      node.previous.next = node.next;
-    }
-    if (node.next !== null) {
-      node.next.previous = node.previous;
-    }
+		const value = node.value;
 
-    this.elementCount--;
+		if (node.previous !== null) {
+			node.previous.next = node.next;
+		}
+		if (node.next !== null) {
+			node.next.previous = node.previous;
+		}
 
-    if (this.elementCount === 0) {
-      this.resetTypeInference();
-    }
+		this.elementCount--;
 
-    return value;
-  }
+		if (this.elementCount === 0) {
+			this.resetTypeInference();
+		}
 
-  /**
-   * Returns the index of the first occurrence of the specified element, or -1 if not found.
-   * @param element Element to search for.
-   * @returns Index of the element, or -1.
-   */
-  override indexOf(element: T): number {
-    let index = 0;
-    let current = this.head;
+		return value;
+	}
 
-    while (current !== null) {
-      if (current.value === element) {
-        return index;
-      }
-      current = current.next;
-      index++;
-    }
+	/**
+	 * Returns the index of the first occurrence of the specified element, or -1 if not found.
+	 * @param element Element to search for.
+	 * @returns Index of the element, or -1.
+	 */
+	override indexOf(element: T): number {
+		let index = 0;
+		let current = this.head;
 
-    return -1;
-  }
+		while (current !== null) {
+			if (current.value === element) {
+				return index;
+			}
+			current = current.next;
+			index++;
+		}
 
-  /**
-   * Returns the index of the last occurrence of the specified element, or -1 if not found.
-   * @param element Element to search for.
-   * @returns Index of the last occurrence, or -1.
-   */
-  override lastIndexOf(element: T): number {
-    let index = this.elementCount - 1;
-    let current = this.tail;
+		return -1;
+	}
 
-    while (current !== null) {
-      if (current.value === element) {
-        return index;
-      }
-      current = current.previous;
-      index--;
-    }
+	/**
+	 * Returns the index of the last occurrence of the specified element, or -1 if not found.
+	 * @param element Element to search for.
+	 * @returns Index of the last occurrence, or -1.
+	 */
+	override lastIndexOf(element: T): number {
+		let index = this.elementCount - 1;
+		let current = this.tail;
 
-    return -1;
-  }
+		while (current !== null) {
+			if (current.value === element) {
+				return index;
+			}
+			current = current.previous;
+			index--;
+		}
 
-  /**
-   * Returns a view of the portion of this list between the specified fromIndex (inclusive) and toIndex (exclusive).
-   * @param fromIndex Starting index (inclusive).
-   * @param toIndex Ending index (exclusive).
-   * @returns A new list containing the elements in the specified range.
-   * @throws Error if indices are invalid.
-   */
-  override subList(fromIndex: number, toIndex: number): List<T> {
-    if (fromIndex < 0 || toIndex > this.elementCount || fromIndex > toIndex) {
-      throw new Error("Invalid index range");
-    }
+		return -1;
+	}
 
-    const subList = new LinkedList<T>();
-    for (let i = fromIndex; i < toIndex; i++) {
-      const node = this.getNode(i);
-      if (node !== null) {
-        subList.add(node.value);
-      }
-    }
-    return subList;
-  }
+	/**
+	 * Returns a view of the portion of this list between the specified fromIndex (inclusive) and toIndex (exclusive).
+	 * @param fromIndex Starting index (inclusive).
+	 * @param toIndex Ending index (exclusive).
+	 * @returns A new list containing the elements in the specified range.
+	 * @throws Error if indices are invalid.
+	 */
+	override subList(fromIndex: number, toIndex: number): List<T> {
+		if (fromIndex < 0 || toIndex > this.elementCount || fromIndex > toIndex) {
+			throw new Error("Invalid index range");
+		}
 
-  /**
-   * Returns the number of elements in the list.
-   * @returns The size of the list.
-   */
-  override size(): number {
-    return this.elementCount;
-  }
+		const subList = new LinkedList<T>();
+		for (let i = fromIndex; i < toIndex; i++) {
+			const node = this.getNode(i);
+			if (node !== null) {
+				subList.add(node.value);
+			}
+		}
+		return subList;
+	}
 
-  /**
-   * Removes all elements from the list.
-   */
-  override clear(): void {
-    this.head = null;
-    this.tail = null;
-    this.elementCount = 0;
-    this.resetTypeInference();
-  }
+	/**
+	 * Returns the number of elements in the list.
+	 * @returns The size of the list.
+	 */
+	override size(): number {
+		return this.elementCount;
+	}
 
-  /**
-   * Checks if the list contains the specified element.
-   * @param element Element to check for.
-   * @returns true if the element is found, false otherwise.
-   */
-  override contains(element: T): boolean {
-    let current = this.head;
+	/**
+	 * Removes all elements from the list.
+	 */
+	override clear(): void {
+		this.head = null;
+		this.tail = null;
+		this.elementCount = 0;
+		this.resetTypeInference();
+	}
 
-    while (current !== null) {
-      if (current.value === element) {
-        return true;
-      }
-      current = current.next;
-    }
+	/**
+	 * Checks if the list contains the specified element.
+	 * @param element Element to check for.
+	 * @returns true if the element is found, false otherwise.
+	 */
+	override contains(element: T): boolean {
+		let current = this.head;
 
-    return false;
-  }
+		while (current !== null) {
+			if (current.value === element) {
+				return true;
+			}
+			current = current.next;
+		}
 
-  /**
-   * Returns an iterator over the elements in the list (from head to tail).
-   * @returns An iterator for forward traversal.
-   */
-  override iterator(): Iterator<T> {
-    let current = this.head;
+		return false;
+	}
 
-    return {
-      hasNext: () => current !== null,
-      next: () => {
-        if (current === null) {
-          throw new Error("No more elements");
-        }
-        const value = current.value;
-        current = current.next;
-        return value;
-      },
-    };
-  }
+	/**
+	 * Returns an iterator over the elements in the list (from head to tail).
+	 * @returns An iterator for forward traversal.
+	 */
+	override iterator(): Iterator<T> {
+		let current = this.head;
 
-  /**
-   * Converts the list to an array.
-   * @returns An array containing all elements in order.
-   */
-  override toArray(): T[] {
-    const array: T[] = [];
-    let current = this.head;
+		return {
+			hasNext: () => current !== null,
+			next: () => {
+				if (current === null) {
+					throw new Error("No more elements");
+				}
+				const value = current.value;
+				current = current.next;
+				return value;
+			},
+		};
+	}
 
-    while (current !== null) {
-      array.push(current.value);
-      current = current.next;
-    }
+	/**
+	 * Converts the list to an array.
+	 * @returns An array containing all elements in order.
+	 */
+	override toArray(): T[] {
+		const array: T[] = [];
+		let current = this.head;
 
-    return array;
-  }
+		while (current !== null) {
+			array.push(current.value);
+			current = current.next;
+		}
 
-  /**
-   * Returns a reverse iterator over the elements in the list (from tail to head).
-   * @returns An iterator for backward traversal.
-   */
-  reverseIterator(): Iterator<T> {
-    let current = this.tail;
+		return array;
+	}
 
-    return {
-      hasNext: () => current !== null,
-      next: () => {
-        if (current === null) {
-          throw new Error("No more elements");
-        }
-        const value = current.value;
-        current = current.previous;
-        return value;
-      },
-    };
-  }
+	override isEmpty(): boolean {
+		return this.elementCount === 0;
+	}
 
-  /**
-   * Returns the node at the specified index, or null if out of bounds.
-   * Optimizes traversal by starting from head or tail depending on index.
-   * @param index Index of the node to retrieve.
-   */
-  private getNode(index: number): Node<T> | null {
-    if (index < 0 || index >= this.elementCount) {
-      return null;
-    }
+	override toString(): string {
+		const elements: string[] = [];
+		let current = this.head;
+		while (current !== null) {
+			elements.push(String(current.value));
+			current = current.next;
+		}
+		return `[${elements.join(", ")}]`;
+	}
 
-    // Optimize traversal: start from head or tail depending on index
-    if (index < this.elementCount / 2) {
-      let current = this.head;
-      for (let i = 0; i < index; i++) {
-        if (current === null) {
-          return null;
-        }
-        current = current.next;
-      }
-      return current;
-    } else {
-      let current = this.tail;
-      for (let i = this.elementCount - 1; i > index; i--) {
-        if (current === null) {
-          return null;
-        }
-        current = current.previous;
-      }
-      return current;
-    }
-  }
+	/**
+	 * Returns a reverse iterator over the elements in the list (from tail to head).
+	 * @returns An iterator for backward traversal.
+	 */
+	reverseIterator(): Iterator<T> {
+		let current = this.tail;
 
-  /**
-   * Throws if the index is out of bounds for the list.
-   * @param index Index to check.
-   */
-  private checkIndex(index: number): void {
-    if (index < 0 || index >= this.elementCount) {
-      throw new Error(`Index out of bounds: ${index}`);
-    }
-  }
+		return {
+			hasNext: () => current !== null,
+			next: () => {
+				if (current === null) {
+					throw new Error("No more elements");
+				}
+				const value = current.value;
+				current = current.previous;
+				return value;
+			},
+		};
+	}
+
+	/**
+	 * Returns the node at the specified index, or null if out of bounds.
+	 * Optimizes traversal by starting from head or tail depending on index.
+	 * @param index Index of the node to retrieve.
+	 */
+	private getNode(index: number): Node<T> | null {
+		if (index < 0 || index >= this.elementCount) {
+			return null;
+		}
+
+		// Optimize traversal: start from head or tail depending on index
+		if (index < this.elementCount / 2) {
+			let current = this.head;
+			for (let i = 0; i < index; i++) {
+				if (current === null) {
+					return null;
+				}
+				current = current.next;
+			}
+			return current;
+		}
+		let current = this.tail;
+		for (let i = this.elementCount - 1; i > index; i--) {
+			if (current === null) {
+				return null;
+			}
+			current = current.previous;
+		}
+		return current;
+	}
+
+	/**
+	 * Throws if the index is out of bounds for the list.
+	 * @param index Index to check.
+	 */
+	private checkIndex(index: number): void {
+		if (index < 0 || index >= this.elementCount) {
+			throw new Error(`Index out of bounds: ${index}`);
+		}
+	}
 }

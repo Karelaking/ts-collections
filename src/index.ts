@@ -94,49 +94,70 @@
  * @see {@link https://github.com/yourusername/ts-collections} GitHub Repository
  */
 
-// Core Interfaces
-export type {
-  Iterator,
-  Collection,
-  List,
-  Set,
-  Map,
-  Queue,
-  Stack,
-} from "./interfaces";
+// Abstract Base Classes
+export {
+	AbstractCollection,
+	AbstractDeque,
+	AbstractList,
+	AbstractMap,
+	AbstractQueue,
+	AbstractSet,
+	AbstractStack,
+} from "./abstracts";
 
 // Type Validation Options (Zod-based)
 export type { TypeValidationOptions } from "./abstracts/AbstractCollection";
 export type { MapTypeValidationOptions } from "./abstracts/AbstractMap";
-
-// Validation Utilities
+// Error Handling
 export {
-  validateSafe,
-  createValidator,
-  createUnionValidator,
-  getSchemaDescription,
-  createTransformingValidator,
-  formatValidationError,
-  type ValidationResult,
-  type ValidationError,
-  type ValidationIssue,
-  type SchemaType,
-} from "./utils/validation";
-
-// Abstract Base Classes
-export {
-  AbstractCollection,
-  AbstractList,
-  AbstractSet,
-  AbstractMap,
-  AbstractQueue,
-  AbstractStack,
-} from "./abstracts";
-
+	BaseCollectionError,
+	CollectionEmptyError,
+	ComparatorRequiredError,
+	ConsoleErrorLogger,
+	DuplicateKeyError,
+	type ErrorContext,
+	type ICollectionError,
+	type IErrorLogger,
+	IndexOutOfBoundsError,
+	InvalidOperationError,
+	TypeMismatchError,
+	ValidationError,
+} from "./errors";
+// Core Interfaces
+export type {
+	Collection,
+	Deque,
+	Iterator,
+	List,
+	Map,
+	NavigableMap,
+	NavigableSet,
+	Queue,
+	Set,
+	SortedMap,
+	SortedSet,
+	Stack,
+} from "./interfaces";
 // Concrete Implementations
 export { ArrayList } from "./list/ArrayList";
 export { LinkedList } from "./list/LinkedList";
-export { HashSet } from "./set/HashSet";
 export { HashMap } from "./map/HashMap";
+export { TreeMap } from "./map/TreeMap";
+export { LinkedDeque } from "./queue/LinkedDeque";
 export { LinkedQueue } from "./queue/LinkedQueue";
+export { PriorityQueue } from "./queue/PriorityQueue";
+export { HashSet } from "./set/HashSet";
+export { TreeSet } from "./set/TreeSet";
 export { LinkedStack } from "./stack/LinkedStack";
+// Validation Utilities
+export {
+	createTransformingValidator,
+	createUnionValidator,
+	createValidator,
+	formatValidationError,
+	getSchemaDescription,
+	type SchemaType,
+	type ValidationIssue,
+	type ValidationResult,
+	validateSafe,
+} from "./utils/validation";
