@@ -213,6 +213,15 @@ describe("LinkedQueue - Core Methods", () => {
 			expect(queue.peek()).toBe(3);
 			expect(queue.poll()).toBe(3);
 		});
+
+		it("should preserve order for safe integer boundaries", () => {
+			queue.offer(Number.MAX_SAFE_INTEGER);
+			queue.offer(Number.MIN_SAFE_INTEGER);
+
+			expect(queue.dequeue()).toBe(Number.MAX_SAFE_INTEGER);
+			expect(queue.dequeue()).toBe(Number.MIN_SAFE_INTEGER);
+			expect(queue.isEmpty()).toBe(true);
+		});
 	});
 
 	describe("contains method", () => {
@@ -428,6 +437,17 @@ describe("LinkedQueue - Core Methods", () => {
 
 			expect(queue.size()).toBe(1);
 			expect(queue.peek()).toBe(1);
+		});
+
+		it("should enqueue again after becoming empty", () => {
+			queue.offer(1);
+			expect(queue.dequeue()).toBe(1);
+			expect(queue.isEmpty()).toBe(true);
+
+			queue.offer(2);
+
+			expect(queue.peek()).toBe(2);
+			expect(queue.size()).toBe(1);
 		});
 
 		it("should maintain integrity after multiple operations", () => {

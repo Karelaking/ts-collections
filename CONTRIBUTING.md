@@ -512,6 +512,24 @@ describe("ArrayList", () => {
 });
 ```
 
+### ⚠️ Do Not Use `strict: false` in Tests
+
+Avoid disabling strict mode in test suites unless the test is **specifically testing the `strict: false` behaviour itself**.
+
+```typescript
+// ❌ Wrong — hides real type-safety bugs
+const list = new ArrayList<number>({ strict: false });
+list.add("not a number"); // passes silently, masking a potential issue
+
+// ✅ Correct — tests run with the same safety guarantees as production code
+const list = new ArrayList<number>();
+list.add(1); // type-safe
+```
+
+Using `strict: false` in general tests defeats the purpose of the runtime type guarantees this library provides. A test suite that passes only because strict mode is disabled gives a false sense of correctness — the same code in production (with strict mode on by default) may throw errors.
+
+The only valid reason to use `strict: false` in a test file is when you are writing a dedicated test case that verifies the collection correctly accepts mixed types when strict mode is explicitly disabled by the user.
+
 ### ✔️ Test Coverage Checklist
 
 For new features/fixes, include tests for:

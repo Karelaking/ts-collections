@@ -1,0 +1,113 @@
+name: npm publish
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "package.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Check whether package version changed
+        id: version_check
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          package_name=$(node -p "require('./package.json').name")
+          package_version=$(node -p "require('./package.json').version")
+
+          echo "package_name=$package_name" >> "$GITHUB_OUTPUT"
+          echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
+
+          before_sha="${{ github.event.before }}"
+
+          if [[ "$before_sha" == "0000000000000000000000000000000000000000" ]]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "reason=initial_push" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git cat-file -e "${before_sha}:package.json" 2>/dev/null; then
+            previous_version=$(git show "${before_sha}:package.json" | node -p "const fs=require('node:fs'); const data=JSON.parse(fs.readFileSync(0,'utf8')); data.version")
+            echo "previous_version=$previous_version" >> "$GITHUB_OUTPUT"
+
+            if [[ "$previous_version" != "$package_version" ]]; then
+              echo "publish=true" >> "$GITHUB_OUTPUT"
+              echo "reason=version_changed" >> "$GITHUB_OUTPUT"
+            else
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              echo "reason=version_unchanged" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "reason=package_json_missing_in_previous_commit" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check npm registry version
+        id: registry_check
+        if: steps.version_check.outputs.publish == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          published_version=$(npm view "${{ steps.version_check.outputs.package_name }}" version 2>/dev/null || true)
+          echo "published_version=$published_version" >> "$GITHUB_OUTPUT"
+
+          if [[ "$published_version" == "${{ steps.version_check.outputs.package_version }}" ]]; then
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip (version unchanged)
+        if: steps.version_check.outputs.publish != 'true'
+        run: |
+          echo "Skipping publish: package.json version did not change."
+
+      - name: Skip (version already on npm)
+        if: steps.version_check.outputs.publish == 'true' && steps.registry_check.outputs.should_publish != 'true'
+        run: |
+          echo "Skipping publish: version ${{ steps.version_check.outputs.package_version }} is already on npm."
+
+      - name: Install dependencies
+        if: steps.version_check.outputs.publish == 'true' && steps.registry_check.outputs.should_publish == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        if: steps.version_check.outputs.publish == 'true' && steps.registry_check.outputs.should_publish == 'true'
+        run: CI=1 pnpm test
+
+      - name: Build package
+        if: steps.version_check.outputs.publish == 'true' && steps.registry_check.outputs.should_publish == 'true'
+        run: pnpm build
+
+      - name: Publish to npm
+        if: steps.version_check.outputs.publish == 'true' && steps.registry_check.outputs.should_publish == 'true'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

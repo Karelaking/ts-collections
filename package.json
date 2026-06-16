@@ -1,6 +1,6 @@
 {
-  "name": "ts-collections",
-  "version": "1.0.0",
+  "name": "@karelaking/ts-collections",
+  "version": "1.0.1",
   "description": "A fully-typed, Java-inspired Collections Framework for TypeScript, providing industry-grade implementations of Lists, Sets, Maps, Queues, and Iterators with strict type safety, predictable behavior, and performance transparency. Designed for education, large-scale applications, and library-level reuse, with clean abstractions, extensible contracts, and tree-shakable ESM builds",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -18,7 +18,17 @@ export default defineConfig({
 			provider: "v8",
 			reporter: ["text", "json", "html"],
 			include: ["src/**/*.ts"],
-			exclude: ["src/**/index.ts", "**/*.d.ts", "**/node_modules/**"],
+			exclude: [
+				// Exclude subdirectory barrel files (pure re-exports, no logic to test)
+				"src/abstracts/index.ts",
+				"src/errors/index.ts",
+				"src/interfaces/index.ts",
+				"src/types/index.ts",
+				"src/utils/index.ts",
+				// Standard exclusions
+				"**/*.d.ts",
+				"**/node_modules/**",
+			],
 		},
 	},
 	resolve: {

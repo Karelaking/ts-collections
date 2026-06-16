@@ -135,8 +135,8 @@ export class HashSet<T> extends AbstractSet<T> implements SetInterface<T> {
 	 * @param elements The collection containing elements to be removed from this set
 	 * @returns true if this set changed as a result of the call
 	 */
-	override removeAll(elements: Collection<T>): boolean {
-		const otherArray = elements.toArray();
+	override removeAll(elements: Collection<T> | Iterable<T>): boolean {
+		const otherArray = this.toElementArray(elements);
 		let modified = false;
 
 		for (const element of otherArray) {
@@ -153,8 +153,8 @@ export class HashSet<T> extends AbstractSet<T> implements SetInterface<T> {
 	 * @param elements The collection containing elements to be retained in this set
 	 * @returns true if this set changed as a result of the call
 	 */
-	override retainAll(elements: Collection<T>): boolean {
-		const otherSet = new globalThis.Set(elements.toArray());
+	override retainAll(elements: Collection<T> | Iterable<T>): boolean {
+		const otherSet = new globalThis.Set(this.toElementArray(elements));
 		const toRemove: T[] = [];
 
 		for (const element of this.elements) {
@@ -172,5 +172,19 @@ export class HashSet<T> extends AbstractSet<T> implements SetInterface<T> {
 		}
 
 		return true;
+	}
+
+	private toElementArray(elements: Collection<T> | Iterable<T>): T[] {
+		if (this.isCollectionLike(elements)) {
+			return (elements as Collection<T>).toArray();
+		}
+
+		return Array.from(elements);
+	}
+
+	private isCollectionLike(
+		elements: Collection<T> | Iterable<T>
+	): elements is Collection<T> {
+		return typeof (elements as Collection<T>).toArray === "function";
 	}
 }

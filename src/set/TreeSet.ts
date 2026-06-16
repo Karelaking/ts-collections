@@ -243,9 +243,10 @@ export class TreeSet<T> extends AbstractSet<T> implements NavigableSet<T> {
 		return result;
 	}
 
-	override removeAll(elements: Collection<T>): boolean {
+	override removeAll(elements: Collection<T> | Iterable<T>): boolean {
 		let modified = false;
-		for (const element of elements.toArray()) {
+		const otherValues = this.toElementArray(elements);
+		for (const element of otherValues) {
 			if (this.remove(element)) {
 				modified = true;
 			}
@@ -253,8 +254,8 @@ export class TreeSet<T> extends AbstractSet<T> implements NavigableSet<T> {
 		return modified;
 	}
 
-	override retainAll(elements: Collection<T>): boolean {
-		const keepValues = elements.toArray();
+	override retainAll(elements: Collection<T> | Iterable<T>): boolean {
+		const keepValues = this.toElementArray(elements);
 		const toRemove: T[] = [];
 
 		for (const value of this.orderedValues) {
@@ -274,6 +275,20 @@ export class TreeSet<T> extends AbstractSet<T> implements NavigableSet<T> {
 		}
 
 		return true;
+	}
+
+	private toElementArray(elements: Collection<T> | Iterable<T>): T[] {
+		if (this.isCollectionLike(elements)) {
+			return (elements as Collection<T>).toArray();
+		}
+
+		return Array.from(elements);
+	}
+
+	private isCollectionLike(
+		elements: Collection<T> | Iterable<T>
+	): elements is Collection<T> {
+		return typeof (elements as Collection<T>).toArray === "function";
 	}
 
 	/**

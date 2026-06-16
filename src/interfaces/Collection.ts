@@ -81,21 +81,21 @@ export interface Collection<E> {
 
 	/**
 	 * Removes all of this collection's elements that are also contained in the
-	 * specified collection (optional operation).
+	 * specified collection or iterable (optional operation).
 	 *
-	 * @param elements Collection containing elements to be removed from this collection
+	 * @param elements Collection or iterable containing elements to be removed from this collection
 	 * @returns true if this collection changed as a result of the call
 	 */
-	removeAll(elements: Collection<E>): boolean;
+	removeAll(elements: Collection<E> | Iterable<E>): boolean;
 
 	/**
 	 * Retains only the elements in this collection that are contained in the
-	 * specified collection (optional operation).
+	 * specified collection or iterable (optional operation).
 	 *
-	 * @param elements Collection containing elements to be retained in this collection
+	 * @param elements Collection or iterable containing elements to be retained in this collection
 	 * @returns true if this collection changed as a result of the call
 	 */
-	retainAll(elements: Collection<E>): boolean;
+	retainAll(elements: Collection<E> | Iterable<E>): boolean;
 	/**
 	 * Returns the number of elements in this collection.
 	 */

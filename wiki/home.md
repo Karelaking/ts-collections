@@ -10,6 +10,11 @@
 
 Whether you're building a complex data-intensive application or need reliable, well-tested data structures, ts-collections has you covered.
 
+## 📚 Additional Guides
+
+- [Collection Conversion Guide](./Collection-Conversion-Guide.md)
+
+
 ### 🌟 Core Features
 
 | Feature                           | Description                                                      |
