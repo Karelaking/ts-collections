@@ -2,8 +2,8 @@ import {
 	AbstractMap,
 	type MapTypeValidationOptions,
 } from "../abstracts/AbstractMap";
-import type { Collection } from "../interfaces/Collection";
 import type { Iterator } from "../interfaces/Iterator";
+import type { ReadOnlyCollection } from "../interfaces/ReadOnlyCollection";
 import type { Map as MapInterface } from "../interfaces/Map";
 import { formatValidationContextValue } from "../utils/validation";
 
@@ -204,60 +204,41 @@ export class HashMap<K, V>
 		};
 	}
 
-	/**
-	 * Returns a collection view of the values contained in this map.
-	 * @returns A collection view of the values contained in this map
-	 */
-	override values(): Collection<V> {
-		const valueArray = Array.from(this.mapEntries.values());
-		return {
-			size: () => valueArray.length,
-			get length() {
-				return valueArray.length;
-			},
-			isEmpty: () => valueArray.length === 0,
-			contains: (v: V) => valueArray.includes(v),
-			add: () => {
-				throw new Error("Unsupported operation");
-			},
-			remove: () => {
-				throw new Error("Unsupported operation");
-			},
-			clear: () => {
-				throw new Error("Unsupported operation");
-			},
-			toArray: () => valueArray,
-			iterator: () => {
-				let idx = 0;
-				return {
-					hasNext: () => idx < valueArray.length,
-					next: () => {
-						if (idx >= valueArray.length) {
-							throw new Error("No more elements");
-						}
-						const value = valueArray[idx++];
-						if (value === undefined) {
-							throw new Error("Value is undefined");
-						}
-						return value;
-					},
-				};
-			},
-			containsAll: (other) => {
-				const otherArray = other.toArray();
-				return otherArray.every((v) => valueArray.includes(v));
-			},
-			addAll: () => {
-				throw new Error("Unsupported operation");
-			},
-			removeAll: () => {
-				throw new Error("Unsupported operation");
-			},
-			retainAll: () => {
-				throw new Error("Unsupported operation");
-			},
-		};
-	}
+  /**
+   * Returns a collection view of the values contained in this map.
+   * @returns A collection view of the values contained in this map
+   */
+  override values(): ReadOnlyCollection<V> {
+    const valueArray = Array.from(this.mapEntries.values());
+    return {
+      size: () => valueArray.length,
+      get length() {
+        return valueArray.length;
+      },
+      isEmpty: () => valueArray.length === 0,
+      contains: (v: V) => valueArray.includes(v),
+      iterator: () => {
+        let idx = 0;
+        return {
+          hasNext: () => idx < valueArray.length,
+          next: () => {
+            if (idx >= valueArray.length) {
+              throw new Error("No more elements");
+            }
+            const value = valueArray[idx++];
+            if (value === undefined) {
+              throw new Error("Value is undefined");
+            }
+            return value;
+          },
+        };
+      },
+      toArray: () => [...valueArray],
+      containsAll: (other) => {
+        return other.toArray().every((v) => valueArray.includes(v));
+      },
+    };
+  }
 
 	/**
 	 * Returns an array of the keys contained in this map.
