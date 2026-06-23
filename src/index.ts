@@ -143,6 +143,7 @@ export { ArrayList } from "./list/ArrayList";
 export { LinkedList } from "./list/LinkedList";
 export { HashMap } from "./map/HashMap";
 export { TreeMap } from "./map/TreeMap";
+export { ArrayDeque } from "./queue/ArrayDeque";
 export { LinkedDeque } from "./queue/LinkedDeque";
 export { LinkedQueue } from "./queue/LinkedQueue";
 export { PriorityQueue } from "./queue/PriorityQueue";
