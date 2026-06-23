@@ -110,7 +110,10 @@ describe("HashMap - Core Methods", () => {
       const errorString = String(thrownError);
       expect(errorString).toContain("HashMap.put() key validation failed");
       expect(errorString).toContain("expected string, received number");
-      const originalError = (thrownError as any).originalError;
+      interface ErrorWithOriginal extends Error {
+        originalError?: Error;
+      }
+      const originalError = (thrownError as ErrorWithOriginal).originalError;
       expect(originalError).toBeInstanceOf(Error);
       expect((originalError as Error).name).toBe("ZodError");
     });

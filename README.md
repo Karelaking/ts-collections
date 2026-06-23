@@ -139,6 +139,7 @@ This table helps developers quickly map ts-collections data structures to famili
 | `PriorityQueue` | No direct equivalent         |
 | `TreeMap`       | No direct equivalent         |
 | `TreeSet`       | No direct equivalent         |
+| `ArrayDeque`    | `Array` (deque pattern)      |
 
 ### Architecture
 
