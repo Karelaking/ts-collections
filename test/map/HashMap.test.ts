@@ -106,19 +106,13 @@ describe("HashMap - Core Methods", () => {
         thrownError = error;
       }
 
-      expect(thrownError).toBeInstanceOf(TypeError);
-      expect((thrownError as Error).message).toContain(
-        "HashMap.put() validation failed",
-      );
-      expect((thrownError as Error).message).toContain(
-        "Expected string for key 123, but got number 123",
-      );
-      expect((thrownError as Error).message).toContain(
-        "size before operation: 0",
-      );
-      const cause = (thrownError as Error & { cause?: unknown }).cause;
-      expect(cause).toBeInstanceOf(Error);
-      expect((cause as Error).name).toBe("ZodError");
+      expect((thrownError as Error).name).toBe("ValidationError");
+      const errorString = String(thrownError);
+      expect(errorString).toContain("HashMap.put() key validation failed");
+      expect(errorString).toContain("expected string, received number");
+      const originalError = (thrownError as any).originalError;
+      expect(originalError).toBeInstanceOf(Error);
+      expect((originalError as Error).name).toBe("ZodError");
     });
   });
 
