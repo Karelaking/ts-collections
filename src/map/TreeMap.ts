@@ -3,6 +3,7 @@ import {
 	type MapTypeValidationOptions,
 } from "../abstracts/AbstractMap";
 import type { Iterator } from "../interfaces/Iterator";
+import type { Collection } from "../interfaces/Collection";
 import type { ReadOnlyCollection } from "../interfaces/ReadOnlyCollection";
 import type { NavigableMap } from "../interfaces/NavigableMap";
 import { compareComparableValues } from "../utils/comparison";

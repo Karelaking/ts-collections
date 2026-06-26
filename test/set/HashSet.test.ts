@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { HashSet } from "../../src/set/HashSet";
 import { describeSet } from "../interfaces/Set";
+import { ValidationError } from "../../src/errors";
 
 /**
  * Test suite for HashSet implementation
@@ -102,11 +103,17 @@ describe("HashSet - Core Methods", () => {
 			// Should throw ValidationError (extends BaseCollectionError)
 			expect(thrownError).toBeInstanceOf(Error);
 			expect((thrownError as Error).name).toBe("ValidationError");
-			const { issues, originalError } = thrownError as any;
-			expect(issues).toBeDefined();
-			expect(issues.length).toBeGreaterThan(0);
-			expect(originalError).toBeInstanceOf(Error);
-			expect((originalError as Error).name).toBe("ZodError");
+			const validationError = thrownError as ValidationError;
+
+expect(validationError.context.collectionType).toBe("HashSet");
+expect(validationError.context.operation).toBe("add");
+expect(validationError.received).toBe("text");
+
+expect(validationError.issues).toBeDefined();
+expect(validationError.issues.length).toBeGreaterThan(0);
+
+expect(validationError.originalError).toBeInstanceOf(Error);
+expect(validationError.originalError?.name).toBe("ZodError");
 		});
 
 		it("should maintain uniqueness when adding many duplicates", () => {
