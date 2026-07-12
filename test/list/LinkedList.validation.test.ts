@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { LinkedList } from "../../src/list/LinkedList";
+import { ValidationError } from "../../src/errors";
 
 describe("LinkedList - Validation (Zod)", () => {
   it("reports contextual validation failures with original Zod cause", () => {
@@ -15,14 +16,14 @@ describe("LinkedList - Validation (Zod)", () => {
 
     expect(thrownError).toBeInstanceOf(Error);
     expect((thrownError as Error).name).toBe("ValidationError");
-    const validationError = thrownError as Error & {
-      issues?: unknown[];
-      originalError?: unknown;
-    };
+    const validationError = thrownError as ValidationError;
     expect(validationError.issues).toBeDefined();
     expect(validationError.issues?.length).toBeGreaterThan(0);
     expect(validationError.originalError).toBeInstanceOf(Error);
     expect((validationError.originalError as Error).name).toBe("ZodError");
+    expect(validationError.context.collectionType).toBe("LinkedList");
+expect(validationError.context.operation).toBe("add");
+expect(validationError.received).toBe("text");
   });
 
   it("type inference resets after clear and strict mode enforces types", () => {

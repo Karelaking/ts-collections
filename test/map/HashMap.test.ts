@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { HashMap } from "../../src/map/HashMap";
+import { ValidationError } from "../../src/errors";
 import { describeMap } from "../interfaces/Map";
 
 /**
@@ -106,19 +107,21 @@ describe("HashMap - Core Methods", () => {
         thrownError = error;
       }
 
-      expect(thrownError).toBeInstanceOf(TypeError);
+      expect(thrownError).toBeInstanceOf(ValidationError);
       expect((thrownError as Error).message).toContain(
-        "HashMap.put() validation failed",
+        "HashMap.put() key validation failed",
       );
-      expect((thrownError as Error).message).toContain(
-        "Expected string for key 123, but got number 123",
-      );
-      expect((thrownError as Error).message).toContain(
-        "size before operation: 0",
-      );
-      const cause = (thrownError as Error & { cause?: unknown }).cause;
-      expect(cause).toBeInstanceOf(Error);
-      expect((cause as Error).name).toBe("ZodError");
+      const validationError = thrownError as ValidationError;
+
+expect(validationError.received).toBe(123);
+expect(validationError.issues[0]?.expected).toBe("string");
+expect(validationError.issues[0]?.code).toBe("invalid_type");
+      expect(validationError.context.collectionType).toBe("HashMap");
+expect(validationError.context.operation).toBe("put");
+      
+
+expect(validationError.originalError).toBeInstanceOf(Error);
+expect(validationError.originalError?.name).toBe("ZodError");
     });
   });
 
