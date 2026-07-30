@@ -1,6 +1,7 @@
 import type { ZodSchema } from "zod";
 import { ZodError } from "zod";
 import { TypeMismatchError, ValidationError } from "../errors";
+import type { AsyncIterator } from "../interfaces/AsyncIterator";
 import type { Collection, Iterator } from "../interfaces";
 import {
 	describeValidationValue,
@@ -241,6 +242,72 @@ export abstract class AbstractCollection<E> implements Collection<E> {
 	 * Must be implemented by subclasses.
 	 */
 	abstract clear(): void;
+
+	/**
+	 * Returns an async iterator over the elements in this collection.
+	 *
+	 * Each call to `hasNext()` and `next()` returns a Promise, making it
+	 * suitable for use in async pipelines and `for await...of` loops.
+	 *
+	 * The default implementation wraps the synchronous iterator, so
+	 * subclasses do not need to override this unless they have a genuinely
+	 * asynchronous data source.
+	 *
+	 * @example
+	 * ```typescript
+	 * const list = new ArrayList<number>();
+	 * list.add(1); list.add(2);
+	 *
+	 * // Explicit async iterator
+	 * const it = list.asyncIterator();
+	 * while (await it.hasNext()) {
+	 *   console.log(await it.next());
+	 * }
+	 *
+	 * // for-await-of loop (uses Symbol.asyncIterator)
+	 * for await (const item of list) {
+	 *   console.log(item);
+	 * }
+	 * ```
+	 */
+	asyncIterator(): AsyncIterator<E> {
+		const syncIt = this.iterator();
+		return {
+			hasNext: () => Promise.resolve(syncIt.hasNext()),
+			next: () => {
+				try {
+					return Promise.resolve(syncIt.next());
+				} catch (error) {
+					return Promise.reject(error);
+				}
+			},
+		};
+	}
+
+	/**
+	 * Implements the TC39 AsyncIterable protocol so that collections can be
+	 * used directly in `for await...of` loops.
+	 *
+	 * @example
+	 * ```typescript
+	 * for await (const item of list) {
+	 *   await processAsync(item);
+	 * }
+	 * ```
+	 */
+	[Symbol.asyncIterator](): globalThis.AsyncIterator<E> {
+		const asyncIt = this.asyncIterator();
+		return {
+			next: async () => {
+				const hasMore = await asyncIt.hasNext();
+				if (!hasMore) {
+					return { done: true as const, value: undefined as unknown as E };
+				}
+				const value = await asyncIt.next();
+				return { done: false as const, value };
+			},
+		};
+	}
 
 	/**
 	 * Returns true if this collection contains all of the elements

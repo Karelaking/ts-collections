@@ -125,6 +125,7 @@ export {
 } from "./errors";
 // Core Interfaces
 export type {
+	AsyncIterator,
 	Collection,
 	Deque,
 	Iterator,

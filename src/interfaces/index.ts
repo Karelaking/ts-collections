@@ -4,6 +4,7 @@
 
 export type { Collection } from "./Collection";
 export type { Deque } from "./Deque";
+export type { AsyncIterator } from "./AsyncIterator";
 export type { Iterator } from "./Iterator";
 export type { List } from "./List";
 export type { Map } from "./Map";
