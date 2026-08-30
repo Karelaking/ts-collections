@@ -1,7 +1,7 @@
 import type { ZodSchema } from "zod";
 import { ZodError } from "zod";
 import { TypeMismatchError, ValidationError } from "../errors";
-import type { Collection, Iterator, Map as MapInterface } from "../interfaces";
+import type { ReadOnlyCollection, Iterator, Map as MapInterface } from "../interfaces";
 import {
 	describeValidationValue,
 	toValidationIssues,
@@ -367,7 +367,7 @@ export abstract class AbstractMap<K, V> implements MapInterface<K, V> {
 	 * Returns a Collection view of the values contained in this map.
 	 * Must be implemented by subclasses.
 	 */
-	abstract values(): Collection<V>;
+	abstract values(): ReadOnlyCollection<V>;
 
 	/**
 	 * Returns all keys in this map as an array.

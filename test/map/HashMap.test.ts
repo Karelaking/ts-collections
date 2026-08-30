@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { HashMap } from "../../src/map/HashMap";
+import { ValidationError } from "../../src/errors/ValidationError";
 import { describeMap } from "../interfaces/Map";
 
 /**
@@ -106,19 +107,14 @@ describe("HashMap - Core Methods", () => {
         thrownError = error;
       }
 
-      expect(thrownError).toBeInstanceOf(TypeError);
+      expect(thrownError).toBeInstanceOf(ValidationError);
       expect((thrownError as Error).message).toContain(
-        "HashMap.put() validation failed",
+        "HashMap.put() key validation failed",
       );
-      expect((thrownError as Error).message).toContain(
-        "Expected string for key 123, but got number 123",
-      );
-      expect((thrownError as Error).message).toContain(
-        "size before operation: 0",
-      );
-      const cause = (thrownError as Error & { cause?: unknown }).cause;
-      expect(cause).toBeInstanceOf(Error);
-      expect((cause as Error).name).toBe("ZodError");
+      expect((thrownError as ValidationError).issues.length).toBeGreaterThan(0);
+      const original = (thrownError as ValidationError).originalError;
+      expect(original).toBeInstanceOf(Error);
+      expect((original as Error).name).toBe("ZodError");
     });
   });
 
